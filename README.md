@@ -3,7 +3,7 @@
 Meteroid API client
 
 ```sh
-npm install meteroid
+npm install @meteroid/node
 ```
 
 The package ships ESM and CommonJS builds and runs on Node.js 20+, Deno, Bun, browsers and edge
@@ -12,7 +12,7 @@ runtimes: it only needs `fetch`. Every method of the API is listed in [api.md](a
 ## Usage
 
 ```ts
-import { Meteroid } from "meteroid";
+import { Meteroid } from "@meteroid/node";
 
 const client = new Meteroid({ apiKey: "your-api-key", baseURL: "https://api.example.com" });
 
@@ -49,7 +49,7 @@ Everything the SDK throws is a `MeteroidError`:
 | `APIDecodeError` | A successful response that is not valid JSON or not the expected event stream |
 
 ```ts
-import { NotFoundError } from "meteroid";
+import { NotFoundError } from "@meteroid/node";
 
 try {
   await client.addOns.retrieve("addon_id");
@@ -85,5 +85,5 @@ await client.addOns.retrieve("addon_id", { maxRetries: 0, timeout: 5_000 });
 `middleware` wraps every attempt, for logging, caching or custom headers, and `fetch` replaces
 the `fetch` implementation.
 
-- Source: https://github.com/meteroid-oss/meteroid-typescript
+- Source: https://github.com/meteroid-oss/meteroid-node
 - License: Apache-2.0
