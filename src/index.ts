@@ -68,6 +68,7 @@ export { APIPromise } from "./apiPromise.js";
 export { Page, PagePromise } from "./pagination.js";
 export { EventStream, Stream } from "./streaming.js";
 export type { WithResponse } from "./apiPromise.js";
+export * from "./webhook.js";
 export * from "./models/index.js";
 export type { SseEvent, Upload, UploadBody } from "./streaming.js";
 
