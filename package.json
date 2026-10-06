@@ -1,9 +1,12 @@
 {
   "name": "@meteroid/node",
-  "version": "0.1.0",
+  "version": "0.27.0",
   "description": "Meteroid API client",
   "license": "Apache-2.0",
-  "repository": { "type": "git", "url": "git+https://github.com/meteroid-oss/meteroid-node.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meteroid-oss/meteroid-node.git"
+  },
   "homepage": "https://meteroid.com",
   "author": "Meteroid <hey@meteroid.com>",
   "type": "module",
@@ -23,7 +26,10 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "engines": {
     "node": ">=20"
