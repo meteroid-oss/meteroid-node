@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.27.1](https://github.com/meteroid-oss/meteroid-node/compare/v0.27.0...v0.27.1) (2026-10-06)
+
+
+### Bug Fixes
+
+* **api:** update SDKs to meteroid 0.1.0 ([#3](https://github.com/meteroid-oss/meteroid-node/issues/3)) ([620141f](https://github.com/meteroid-oss/meteroid-node/commit/620141f49c82ab3a335cb58e80a64388b779ab4a))
+
 ## [0.27.0](https://github.com/meteroid-oss/meteroid-node/compare/v0.1.0...v0.27.0) (2026-10-06)
 
 
