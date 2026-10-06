@@ -1,0 +1,44 @@
+{
+  "name": "meteroid",
+  "version": "0.1.0",
+  "description": "Meteroid API client",
+  "license": "Apache-2.0",
+  "repository": { "type": "git", "url": "git+https://github.com/meteroid-oss/meteroid-typescript.git" },
+  "homepage": "https://meteroid.com",
+  "author": "Meteroid <hey@meteroid.com>",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "src"],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm run clean && tsc && tsc -p tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist/cjs/package.json', JSON.stringify({ type: 'commonjs' }))\"",
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
+    "prepublishOnly": "npm run build",
+    "test": "tsc -p tsconfig.test.json && cd dist-test && node --test"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}
