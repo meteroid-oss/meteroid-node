@@ -1,13 +1,30 @@
 {
   "name": "@meteroid/node",
   "version": "0.27.1",
-  "description": "Meteroid API client",
+  "description": "Official Node.js / TypeScript SDK for Meteroid, the open-source billing platform: subscriptions, invoicing, usage-based billing and webhooks.",
+  "keywords": [
+    "meteroid",
+    "billing",
+    "subscriptions",
+    "invoicing",
+    "usage-based-billing",
+    "metering",
+    "pricing",
+    "webhooks",
+    "api",
+    "sdk",
+    "typescript",
+    "nodejs"
+  ],
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/meteroid-oss/meteroid-node.git"
   },
   "homepage": "https://meteroid.com",
+  "bugs": {
+    "url": "https://github.com/meteroid-oss/meteroid-node/issues"
+  },
   "author": "Meteroid <hey@meteroid.com>",
   "type": "module",
   "main": "./dist/cjs/index.js",

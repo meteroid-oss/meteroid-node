@@ -1,6 +1,8 @@
-# Meteroid TypeScript SDK
+# Meteroid Node.js SDK
 
-Meteroid API client
+The official Node.js / TypeScript SDK for [Meteroid](https://meteroid.com), the open-source billing and pricing platform. Meteroid manages subscriptions, usage-based billing and metering, invoicing and revenue analytics; this library calls its REST API and verifies its webhooks, against Meteroid Cloud (`https://api.meteroid.com`) or a self-hosted instance.
+
+[Website](https://meteroid.com) · [Documentation](https://docs.meteroid.com) · [API reference](https://docs.meteroid.com/api-reference) · [Meteroid on GitHub](https://github.com/meteroid-oss/meteroid)
 
 ```sh
 npm install @meteroid/node
@@ -14,7 +16,7 @@ runtimes: it only needs `fetch`. Every method of the API is listed in [api.md](a
 ```ts
 import { Meteroid } from "@meteroid/node";
 
-const client = new Meteroid({ apiKey: "your-api-key", baseURL: "https://api.example.com" });
+const client = new Meteroid({ apiKey: "your-api-key", baseURL: "https://api.meteroid.com" });
 
 const addOn = await client.addOns.retrieve("addon_id");
 console.log(addOn);
@@ -78,7 +80,7 @@ an `Idempotency-Key` (POST requests get one automatically). Each attempt times o
 `timeout` milliseconds (`Infinity` waits forever).
 
 ```ts
-const client = new Meteroid({ baseURL: "https://api.example.com", maxRetries: 5, timeout: 20_000 });
+const client = new Meteroid({ baseURL: "https://api.meteroid.com", maxRetries: 5, timeout: 20_000 });
 await client.addOns.retrieve("addon_id", { maxRetries: 0, timeout: 5_000 });
 ```
 
