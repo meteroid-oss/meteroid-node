@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import { type BankAccountId, BankAccountIdSerializer } from "./bankAccountId.js";
 
 export interface BankTransferPaymentMethodConfig {
@@ -8,12 +9,16 @@ export interface BankTransferPaymentMethodConfig {
 
 /** Converts `BankTransferPaymentMethodConfig` values from (`parse`) and to (`serialize`) their JSON form. */
 export const BankTransferPaymentMethodConfigSerializer = {
-  parse(json: any): BankTransferPaymentMethodConfig {
+  parse(json: any, path = "$"): BankTransferPaymentMethodConfig {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["account_id"]),
       accountId:
         json["account_id"] != null
-          ? BankAccountIdSerializer.parse(json["account_id"])
+          ? BankAccountIdSerializer.parse(
+              json["account_id"],
+              decodePath(path, "account_id")
+            )
           : json["account_id"],
     };
   },

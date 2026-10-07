@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import { type FixedDiscount, FixedDiscountSerializer } from "./fixedDiscount.js";
 import {
   type PercentageDiscount,
@@ -16,16 +17,17 @@ export type CouponDiscount = CouponDiscountPercentage | CouponDiscountFixed;
 
 /** Converts `CouponDiscount` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CouponDiscountSerializer = {
-  parse(json: any): CouponDiscount {
+  parse(json: any, path = "$"): CouponDiscount {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "PERCENTAGE":
         return {
-          ...PercentageDiscountSerializer.parse(json),
+          ...PercentageDiscountSerializer.parse(json, path),
           type: "PERCENTAGE",
         };
       case "FIXED":
         return {
-          ...FixedDiscountSerializer.parse(json),
+          ...FixedDiscountSerializer.parse(json, path),
           type: "FIXED",
         };
       default:

@@ -1,6 +1,12 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type BatchJobId, BatchJobIdSerializer } from "./batchJobId.js";
 import { type BatchJobStatus, BatchJobStatusSerializer } from "./batchJobStatus.js";
 import { type BatchJobType, BatchJobTypeSerializer } from "./batchJobType.js";
@@ -20,7 +26,8 @@ export interface BatchJobResponse {
 
 /** Converts `BatchJobResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const BatchJobResponseSerializer = {
-  parse(json: any): BatchJobResponse {
+  parse(json: any, path = "$"): BatchJobResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "completed_at",
@@ -36,17 +43,26 @@ export const BatchJobResponseSerializer = {
       ]),
       completedAt:
         json["completed_at"] != null
-          ? parseDateTime(json["completed_at"])
+          ? decodeDateTime(json["completed_at"], path, "completed_at")
           : json["completed_at"],
-      createdAt: parseDateTime(json["created_at"]),
-      createdBy: json["created_by"],
-      failedItems: json["failed_items"],
-      id: BatchJobIdSerializer.parse(json["id"]),
-      inputFileName: json["input_file_name"],
-      jobType: BatchJobTypeSerializer.parse(json["job_type"]),
-      processedItems: json["processed_items"],
-      status: BatchJobStatusSerializer.parse(json["status"]),
-      totalItems: json["total_items"],
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      createdBy: decodeString(json["created_by"], path, "created_by"),
+      failedItems: decodeInteger(json["failed_items"], path, "failed_items"),
+      id: BatchJobIdSerializer.parse(json["id"], decodePath(path, "id")),
+      inputFileName:
+        json["input_file_name"] != null
+          ? decodeString(json["input_file_name"], path, "input_file_name")
+          : json["input_file_name"],
+      jobType: BatchJobTypeSerializer.parse(
+        json["job_type"],
+        decodePath(path, "job_type")
+      ),
+      processedItems: decodeInteger(json["processed_items"], path, "processed_items"),
+      status: BatchJobStatusSerializer.parse(json["status"], decodePath(path, "status")),
+      totalItems:
+        json["total_items"] != null
+          ? decodeInteger(json["total_items"], path, "total_items")
+          : json["total_items"],
     };
   },
 

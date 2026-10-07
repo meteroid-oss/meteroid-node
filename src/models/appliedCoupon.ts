@@ -1,6 +1,13 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type AppliedCouponId, AppliedCouponIdSerializer } from "./appliedCouponId.js";
 import { type CouponId, CouponIdSerializer } from "./couponId.js";
 
@@ -16,7 +23,8 @@ export interface AppliedCoupon {
 
 /** Converts `AppliedCoupon` values from (`parse`) and to (`serialize`) their JSON form. */
 export const AppliedCouponSerializer = {
-  parse(json: any): AppliedCoupon {
+  parse(json: any, path = "$"): AppliedCoupon {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "applied_amount",
@@ -27,15 +35,24 @@ export const AppliedCouponSerializer = {
         "is_active",
         "last_applied_at",
       ]),
-      appliedAmount: json["applied_amount"],
-      appliedCount: json["applied_count"],
-      couponId: CouponIdSerializer.parse(json["coupon_id"]),
-      createdAt: parseDateTime(json["created_at"]),
-      id: AppliedCouponIdSerializer.parse(json["id"]),
-      isActive: json["is_active"],
+      appliedAmount:
+        json["applied_amount"] != null
+          ? decodeString(json["applied_amount"], path, "applied_amount")
+          : json["applied_amount"],
+      appliedCount:
+        json["applied_count"] != null
+          ? decodeInteger(json["applied_count"], path, "applied_count")
+          : json["applied_count"],
+      couponId: CouponIdSerializer.parse(
+        json["coupon_id"],
+        decodePath(path, "coupon_id")
+      ),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      id: AppliedCouponIdSerializer.parse(json["id"], decodePath(path, "id")),
+      isActive: decodeBoolean(json["is_active"], path, "is_active"),
       lastAppliedAt:
         json["last_applied_at"] != null
-          ? parseDateTime(json["last_applied_at"])
+          ? decodeDateTime(json["last_applied_at"], path, "last_applied_at")
           : json["last_applied_at"],
     };
   },

@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type CouponDiscount, CouponDiscountSerializer } from "./couponDiscount.js";
 import { type PlanId, PlanIdSerializer } from "./planId.js";
 
@@ -11,17 +12,27 @@ export interface UpdateCouponRequest {
 
 /** Converts `UpdateCouponRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const UpdateCouponRequestSerializer = {
-  parse(json: any): UpdateCouponRequest {
+  parse(json: any, path = "$"): UpdateCouponRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["description", "discount", "plan_ids"]),
-      description: json["description"],
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
       discount:
         json["discount"] != null
-          ? CouponDiscountSerializer.parse(json["discount"])
+          ? CouponDiscountSerializer.parse(json["discount"], decodePath(path, "discount"))
           : json["discount"],
       planIds:
         json["plan_ids"] != null
-          ? json["plan_ids"].map((item: any) => PlanIdSerializer.parse(item))
+          ? decodeList(
+              json["plan_ids"],
+              path,
+              "plan_ids",
+              (item: any, p: string, i: number) =>
+                PlanIdSerializer.parse(item, decodePath(p, i))
+            )
           : json["plan_ids"],
     };
   },

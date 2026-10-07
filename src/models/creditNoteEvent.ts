@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties, pickProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath } from "../decode.js";
 import {
   type CreditNoteEventData,
   CreditNoteEventDataSerializer,
@@ -16,7 +16,8 @@ export interface CreditNoteEvent extends CreditNoteEventData {
 
 /** Converts `CreditNoteEvent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CreditNoteEventSerializer = {
-  parse(json: any): CreditNoteEvent {
+  parse(json: any, path = "$"): CreditNoteEvent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "id",
@@ -41,7 +42,7 @@ export const CreditNoteEventSerializer = {
         "tax_breakdown",
         "total",
       ]),
-      ...pickProperties(CreditNoteEventDataSerializer.parse(json), [
+      ...pickProperties(CreditNoteEventDataSerializer.parse(json, path), [
         "createdAt",
         "creditNoteId",
         "creditNoteNumber",
@@ -61,9 +62,9 @@ export const CreditNoteEventSerializer = {
         "taxBreakdown",
         "total",
       ]),
-      id: EventIdSerializer.parse(json["id"]),
-      timestamp: parseDateTime(json["timestamp"]),
-      type: EventTypeSerializer.parse(json["type"]),
+      id: EventIdSerializer.parse(json["id"], decodePath(path, "id")),
+      timestamp: decodeDateTime(json["timestamp"], path, "timestamp"),
+      type: EventTypeSerializer.parse(json["type"], decodePath(path, "type")),
     };
   },
 

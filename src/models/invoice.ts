@@ -1,6 +1,14 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeInteger,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type CouponLineItem, CouponLineItemSerializer } from "./couponLineItem.js";
 import { type Currency, CurrencySerializer } from "./currency.js";
 import { type CustomerDetails, CustomerDetailsSerializer } from "./customerDetails.js";
@@ -70,7 +78,8 @@ export interface Invoice {
 
 /** Converts `Invoice` values from (`parse`) and to (`serialize`) their JSON form. */
 export const InvoiceSerializer = {
-  parse(json: any): Invoice {
+  parse(json: any, path = "$"): Invoice {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "amount_due",
@@ -111,71 +120,139 @@ export const InvoiceSerializer = {
         "updated_at",
         "voided_at",
       ]),
-      amountDue: json["amount_due"],
-      appliedCredits: json["applied_credits"],
-      billingPeriodStart: json["billing_period_start"],
+      amountDue: decodeInteger(json["amount_due"], path, "amount_due"),
+      appliedCredits: decodeInteger(json["applied_credits"], path, "applied_credits"),
+      billingPeriodStart:
+        json["billing_period_start"] != null
+          ? decodeString(json["billing_period_start"], path, "billing_period_start")
+          : json["billing_period_start"],
       childInvoiceId:
         json["child_invoice_id"] != null
-          ? InvoiceIdSerializer.parse(json["child_invoice_id"])
+          ? InvoiceIdSerializer.parse(
+              json["child_invoice_id"],
+              decodePath(path, "child_invoice_id")
+            )
           : json["child_invoice_id"],
-      coupons: json["coupons"].map((item: any) => CouponLineItemSerializer.parse(item)),
-      createdAt: parseDateTime(json["created_at"]),
-      currency: CurrencySerializer.parse(json["currency"]),
+      coupons: decodeList(
+        json["coupons"],
+        path,
+        "coupons",
+        (item: any, p: string, i: number) =>
+          CouponLineItemSerializer.parse(item, decodePath(p, i))
+      ),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      currency: CurrencySerializer.parse(json["currency"], decodePath(path, "currency")),
       customProperties: json["custom_properties"],
-      customerDetails: CustomerDetailsSerializer.parse(json["customer_details"]),
-      customerId: CustomerIdSerializer.parse(json["customer_id"]),
-      dueDate: json["due_date"],
+      customerDetails: CustomerDetailsSerializer.parse(
+        json["customer_details"],
+        decodePath(path, "customer_details")
+      ),
+      customerId: CustomerIdSerializer.parse(
+        json["customer_id"],
+        decodePath(path, "customer_id")
+      ),
+      dueDate:
+        json["due_date"] != null
+          ? decodeString(json["due_date"], path, "due_date")
+          : json["due_date"],
       einvoicingStatus:
         json["einvoicing_status"] != null
-          ? EInvoicingStatusSerializer.parse(json["einvoicing_status"])
+          ? EInvoicingStatusSerializer.parse(
+              json["einvoicing_status"],
+              decodePath(path, "einvoicing_status")
+            )
           : json["einvoicing_status"],
       finalizedAt:
         json["finalized_at"] != null
-          ? parseDateTime(json["finalized_at"])
+          ? decodeDateTime(json["finalized_at"], path, "finalized_at")
           : json["finalized_at"],
-      id: InvoiceIdSerializer.parse(json["id"]),
-      invoiceDate: json["invoice_date"],
-      invoiceNumber: json["invoice_number"],
-      invoiceType: InvoiceTypeSerializer.parse(json["invoice_type"]),
-      lineItems: json["line_items"].map((item: any) =>
-        InvoiceLineItemSerializer.parse(item)
+      id: InvoiceIdSerializer.parse(json["id"], decodePath(path, "id")),
+      invoiceDate: decodeString(json["invoice_date"], path, "invoice_date"),
+      invoiceNumber: decodeString(json["invoice_number"], path, "invoice_number"),
+      invoiceType: InvoiceTypeSerializer.parse(
+        json["invoice_type"],
+        decodePath(path, "invoice_type")
+      ),
+      lineItems: decodeList(
+        json["line_items"],
+        path,
+        "line_items",
+        (item: any, p: string, i: number) =>
+          InvoiceLineItemSerializer.parse(item, decodePath(p, i))
       ),
       markedAsUncollectibleAt:
         json["marked_as_uncollectible_at"] != null
-          ? parseDateTime(json["marked_as_uncollectible_at"])
+          ? decodeDateTime(
+              json["marked_as_uncollectible_at"],
+              path,
+              "marked_as_uncollectible_at"
+            )
           : json["marked_as_uncollectible_at"],
-      memo: json["memo"],
-      netTerms: json["net_terms"],
-      paidAt: json["paid_at"] != null ? parseDateTime(json["paid_at"]) : json["paid_at"],
+      memo:
+        json["memo"] != null ? decodeString(json["memo"], path, "memo") : json["memo"],
+      netTerms: decodeInteger(json["net_terms"], path, "net_terms"),
+      paidAt:
+        json["paid_at"] != null
+          ? decodeDateTime(json["paid_at"], path, "paid_at")
+          : json["paid_at"],
       parentInvoiceId:
         json["parent_invoice_id"] != null
-          ? InvoiceIdSerializer.parse(json["parent_invoice_id"])
+          ? InvoiceIdSerializer.parse(
+              json["parent_invoice_id"],
+              decodePath(path, "parent_invoice_id")
+            )
           : json["parent_invoice_id"],
-      paymentStatus: InvoicePaymentStatusSerializer.parse(json["payment_status"]),
-      purchaseOrder: json["purchase_order"],
-      reference: json["reference"],
-      status: InvoiceStatusSerializer.parse(json["status"]),
+      paymentStatus: InvoicePaymentStatusSerializer.parse(
+        json["payment_status"],
+        decodePath(path, "payment_status")
+      ),
+      purchaseOrder:
+        json["purchase_order"] != null
+          ? decodeString(json["purchase_order"], path, "purchase_order")
+          : json["purchase_order"],
+      reference:
+        json["reference"] != null
+          ? decodeString(json["reference"], path, "reference")
+          : json["reference"],
+      status: InvoiceStatusSerializer.parse(json["status"], decodePath(path, "status")),
       subscriptionId:
         json["subscription_id"] != null
-          ? SubscriptionIdSerializer.parse(json["subscription_id"])
+          ? SubscriptionIdSerializer.parse(
+              json["subscription_id"],
+              decodePath(path, "subscription_id")
+            )
           : json["subscription_id"],
-      subtotal: json["subtotal"],
-      subtotalRecurring: json["subtotal_recurring"],
-      taxAmount: json["tax_amount"],
-      taxBreakdown: json["tax_breakdown"].map((item: any) =>
-        TaxBreakdownItemSerializer.parse(item)
+      subtotal: decodeInteger(json["subtotal"], path, "subtotal"),
+      subtotalRecurring: decodeInteger(
+        json["subtotal_recurring"],
+        path,
+        "subtotal_recurring"
       ),
-      taxInclusive: json["tax_inclusive"],
-      total: json["total"],
-      transactions: json["transactions"].map((item: any) =>
-        TransactionSerializer.parse(item)
+      taxAmount: decodeInteger(json["tax_amount"], path, "tax_amount"),
+      taxBreakdown: decodeList(
+        json["tax_breakdown"],
+        path,
+        "tax_breakdown",
+        (item: any, p: string, i: number) =>
+          TaxBreakdownItemSerializer.parse(item, decodePath(p, i))
+      ),
+      taxInclusive: decodeBoolean(json["tax_inclusive"], path, "tax_inclusive"),
+      total: decodeInteger(json["total"], path, "total"),
+      transactions: decodeList(
+        json["transactions"],
+        path,
+        "transactions",
+        (item: any, p: string, i: number) =>
+          TransactionSerializer.parse(item, decodePath(p, i))
       ),
       updatedAt:
         json["updated_at"] != null
-          ? parseDateTime(json["updated_at"])
+          ? decodeDateTime(json["updated_at"], path, "updated_at")
           : json["updated_at"],
       voidedAt:
-        json["voided_at"] != null ? parseDateTime(json["voided_at"]) : json["voided_at"],
+        json["voided_at"] != null
+          ? decodeDateTime(json["voided_at"], path, "voided_at")
+          : json["voided_at"],
     };
   },
 

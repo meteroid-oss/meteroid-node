@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import {
   type SubscriptionDetails,
   SubscriptionDetailsSerializer,
@@ -11,10 +12,14 @@ export interface SubscriptionUpdateResponse {
 
 /** Converts `SubscriptionUpdateResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionUpdateResponseSerializer = {
-  parse(json: any): SubscriptionUpdateResponse {
+  parse(json: any, path = "$"): SubscriptionUpdateResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["subscription"]),
-      subscription: SubscriptionDetailsSerializer.parse(json["subscription"]),
+      subscription: SubscriptionDetailsSerializer.parse(
+        json["subscription"],
+        decodePath(path, "subscription")
+      ),
     };
   },
 

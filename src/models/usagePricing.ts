@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import {
   type UsagePricingModel,
   UsagePricingModelSerializer,
@@ -11,10 +12,11 @@ export interface UsagePricing {
 
 /** Converts `UsagePricing` values from (`parse`) and to (`serialize`) their JSON form. */
 export const UsagePricingSerializer = {
-  parse(json: any): UsagePricing {
+  parse(json: any, path = "$"): UsagePricing {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["model"]),
-      model: UsagePricingModelSerializer.parse(json["model"]),
+      model: UsagePricingModelSerializer.parse(json["model"], decodePath(path, "model")),
     };
   },
 

@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath, decodeString } from "../decode.js";
 import {
   type MetricFilterOperator,
   MetricFilterOperatorSerializer,
@@ -17,12 +18,18 @@ export interface MetricFilter {
 
 /** Converts `MetricFilter` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MetricFilterSerializer = {
-  parse(json: any): MetricFilter {
+  parse(json: any, path = "$"): MetricFilter {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["op", "property", "values"]),
-      op: MetricFilterOperatorSerializer.parse(json["op"]),
-      property: json["property"],
-      values: json["values"],
+      op: MetricFilterOperatorSerializer.parse(json["op"], decodePath(path, "op")),
+      property: decodeString(json["property"], path, "property"),
+      values: decodeList(
+        json["values"],
+        path,
+        "values",
+        (item: any, p: string, i: number) => decodeString(item, p, i)
+      ),
     };
   },
 

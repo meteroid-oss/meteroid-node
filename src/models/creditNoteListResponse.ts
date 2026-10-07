@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import { type CreditNote, CreditNoteSerializer } from "./creditNote.js";
 import {
   type PaginationResponse,
@@ -13,11 +14,17 @@ export interface CreditNoteListResponse {
 
 /** Converts `CreditNoteListResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CreditNoteListResponseSerializer = {
-  parse(json: any): CreditNoteListResponse {
+  parse(json: any, path = "$"): CreditNoteListResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["data", "pagination_meta"]),
-      data: json["data"].map((item: any) => CreditNoteSerializer.parse(item)),
-      paginationMeta: PaginationResponseSerializer.parse(json["pagination_meta"]),
+      data: decodeList(json["data"], path, "data", (item: any, p: string, i: number) =>
+        CreditNoteSerializer.parse(item, decodePath(p, i))
+      ),
+      paginationMeta: PaginationResponseSerializer.parse(
+        json["pagination_meta"],
+        decodePath(path, "pagination_meta")
+      ),
     };
   },
 

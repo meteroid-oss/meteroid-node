@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import { type BillableMetricId, BillableMetricIdSerializer } from "./billableMetricId.js";
 import {
   type BillingPeriodEnum,
@@ -18,13 +19,24 @@ export interface CapacityPlanFee {
 
 /** Converts `CapacityPlanFee` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CapacityPlanFeeSerializer = {
-  parse(json: any): CapacityPlanFee {
+  parse(json: any, path = "$"): CapacityPlanFee {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["cadence", "metric_id", "thresholds"]),
-      cadence: BillingPeriodEnumSerializer.parse(json["cadence"]),
-      metricId: BillableMetricIdSerializer.parse(json["metric_id"]),
-      thresholds: json["thresholds"].map((item: any) =>
-        CapacityThresholdSerializer.parse(item)
+      cadence: BillingPeriodEnumSerializer.parse(
+        json["cadence"],
+        decodePath(path, "cadence")
+      ),
+      metricId: BillableMetricIdSerializer.parse(
+        json["metric_id"],
+        decodePath(path, "metric_id")
+      ),
+      thresholds: decodeList(
+        json["thresholds"],
+        path,
+        "thresholds",
+        (item: any, p: string, i: number) =>
+          CapacityThresholdSerializer.parse(item, decodePath(p, i))
       ),
     };
   },

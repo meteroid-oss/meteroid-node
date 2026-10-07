@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import { type CapacityFee, CapacityFeeSerializer } from "./capacityFee.js";
 import { type OneTimeFee, OneTimeFeeSerializer } from "./oneTimeFee.js";
 import { type RateFee, RateFeeSerializer } from "./rateFee.js";
@@ -35,36 +36,37 @@ export type SubscriptionFee =
 
 /** Converts `SubscriptionFee` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionFeeSerializer = {
-  parse(json: any): SubscriptionFee {
+  parse(json: any, path = "$"): SubscriptionFee {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "RATE":
         return {
-          ...RateFeeSerializer.parse(json),
+          ...RateFeeSerializer.parse(json, path),
           type: "RATE",
         };
       case "ONE_TIME":
         return {
-          ...OneTimeFeeSerializer.parse(json),
+          ...OneTimeFeeSerializer.parse(json, path),
           type: "ONE_TIME",
         };
       case "RECURRING":
         return {
-          ...RecurringFeeSerializer.parse(json),
+          ...RecurringFeeSerializer.parse(json, path),
           type: "RECURRING",
         };
       case "CAPACITY":
         return {
-          ...CapacityFeeSerializer.parse(json),
+          ...CapacityFeeSerializer.parse(json, path),
           type: "CAPACITY",
         };
       case "SLOT":
         return {
-          ...SlotFeeSerializer.parse(json),
+          ...SlotFeeSerializer.parse(json, path),
           type: "SLOT",
         };
       case "USAGE":
         return {
-          ...UsageFeeSerializer.parse(json),
+          ...UsageFeeSerializer.parse(json, path),
           type: "USAGE",
         };
       default:

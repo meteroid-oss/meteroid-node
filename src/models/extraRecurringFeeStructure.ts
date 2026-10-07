@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import {
   type ExtraRecurringBillingTypeEnum,
   ExtraRecurringBillingTypeEnumSerializer,
@@ -11,10 +12,14 @@ export interface ExtraRecurringFeeStructure {
 
 /** Converts `ExtraRecurringFeeStructure` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ExtraRecurringFeeStructureSerializer = {
-  parse(json: any): ExtraRecurringFeeStructure {
+  parse(json: any, path = "$"): ExtraRecurringFeeStructure {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["billing_type"]),
-      billingType: ExtraRecurringBillingTypeEnumSerializer.parse(json["billing_type"]),
+      billingType: ExtraRecurringBillingTypeEnumSerializer.parse(
+        json["billing_type"],
+        decodePath(path, "billing_type")
+      ),
     };
   },
 

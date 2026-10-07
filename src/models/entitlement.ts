@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath } from "../decode.js";
 import { type EntitlementId, EntitlementIdSerializer } from "./entitlementId.js";
 import { type EntitlementValue, EntitlementValueSerializer } from "./entitlementValue.js";
 import { type FeatureId, FeatureIdSerializer } from "./featureId.js";
@@ -15,14 +15,18 @@ export interface Entitlement {
 
 /** Converts `Entitlement` values from (`parse`) and to (`serialize`) their JSON form. */
 export const EntitlementSerializer = {
-  parse(json: any): Entitlement {
+  parse(json: any, path = "$"): Entitlement {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["created_at", "feature_id", "id", "updated_at", "value"]),
-      createdAt: parseDateTime(json["created_at"]),
-      featureId: FeatureIdSerializer.parse(json["feature_id"]),
-      id: EntitlementIdSerializer.parse(json["id"]),
-      updatedAt: parseDateTime(json["updated_at"]),
-      value: EntitlementValueSerializer.parse(json["value"]),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      featureId: FeatureIdSerializer.parse(
+        json["feature_id"],
+        decodePath(path, "feature_id")
+      ),
+      id: EntitlementIdSerializer.parse(json["id"], decodePath(path, "id")),
+      updatedAt: decodeDateTime(json["updated_at"], path, "updated_at"),
+      value: EntitlementValueSerializer.parse(json["value"], decodePath(path, "value")),
     };
   },
 

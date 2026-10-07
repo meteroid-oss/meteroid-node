@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import {
   type PaginationResponse,
   PaginationResponseSerializer,
@@ -13,11 +14,17 @@ export interface SubscriptionListResponse {
 
 /** Converts `SubscriptionListResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionListResponseSerializer = {
-  parse(json: any): SubscriptionListResponse {
+  parse(json: any, path = "$"): SubscriptionListResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["data", "pagination_meta"]),
-      data: json["data"].map((item: any) => SubscriptionSerializer.parse(item)),
-      paginationMeta: PaginationResponseSerializer.parse(json["pagination_meta"]),
+      data: decodeList(json["data"], path, "data", (item: any, p: string, i: number) =>
+        SubscriptionSerializer.parse(item, decodePath(p, i))
+      ),
+      paginationMeta: PaginationResponseSerializer.parse(
+        json["pagination_meta"],
+        decodePath(path, "pagination_meta")
+      ),
     };
   },
 

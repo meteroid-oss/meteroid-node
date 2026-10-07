@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeMap, decodeObject, decodeString } from "../decode.js";
 
 export interface Event {
   /** Billable metric code. Max 512 characters. */
@@ -19,7 +20,8 @@ export interface Event {
 
 /** Converts `Event` values from (`parse`) and to (`serialize`) their JSON form. */
 export const EventSerializer = {
-  parse(json: any): Event {
+  parse(json: any, path = "$"): Event {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "code",
@@ -28,11 +30,19 @@ export const EventSerializer = {
         "properties",
         "timestamp",
       ]),
-      code: json["code"],
-      customerId: json["customer_id"],
-      eventId: json["event_id"],
-      properties: json["properties"],
-      timestamp: json["timestamp"],
+      code: decodeString(json["code"], path, "code"),
+      customerId: decodeString(json["customer_id"], path, "customer_id"),
+      eventId: decodeString(json["event_id"], path, "event_id"),
+      properties:
+        json["properties"] != null
+          ? decodeMap(
+              json["properties"],
+              path,
+              "properties",
+              (entry: any, p: string, key: string) => decodeString(entry, p, key)
+            )
+          : undefined,
+      timestamp: decodeString(json["timestamp"], path, "timestamp"),
     };
   },
 

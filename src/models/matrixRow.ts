@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath, decodeString } from "../decode.js";
 import { type MatrixDimension, MatrixDimensionSerializer } from "./matrixDimension.js";
 
 export interface MatrixRow {
@@ -10,15 +11,22 @@ export interface MatrixRow {
 
 /** Converts `MatrixRow` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MatrixRowSerializer = {
-  parse(json: any): MatrixRow {
+  parse(json: any, path = "$"): MatrixRow {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["dimension1", "dimension2", "per_unit_price"]),
-      dimension1: MatrixDimensionSerializer.parse(json["dimension1"]),
+      dimension1: MatrixDimensionSerializer.parse(
+        json["dimension1"],
+        decodePath(path, "dimension1")
+      ),
       dimension2:
         json["dimension2"] != null
-          ? MatrixDimensionSerializer.parse(json["dimension2"])
+          ? MatrixDimensionSerializer.parse(
+              json["dimension2"],
+              decodePath(path, "dimension2")
+            )
           : json["dimension2"],
-      perUnitPrice: json["per_unit_price"],
+      perUnitPrice: decodeString(json["per_unit_price"], path, "per_unit_price"),
     };
   },
 

@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath, decodeString } from "../decode.js";
 import {
   type MinimumCommitmentInputScope,
   MinimumCommitmentInputScopeSerializer,
@@ -13,11 +14,15 @@ export interface MinimumCommitmentInput {
 
 /** Converts `MinimumCommitmentInput` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MinimumCommitmentInputSerializer = {
-  parse(json: any): MinimumCommitmentInput {
+  parse(json: any, path = "$"): MinimumCommitmentInput {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["amount", "scope"]),
-      amount: json["amount"],
-      scope: MinimumCommitmentInputScopeSerializer.parse(json["scope"]),
+      amount: decodeString(json["amount"], path, "amount"),
+      scope: MinimumCommitmentInputScopeSerializer.parse(
+        json["scope"],
+        decodePath(path, "scope")
+      ),
     };
   },
 

@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodeString } from "../decode.js";
 
 export interface CapacityPricing {
   included: number;
@@ -9,12 +10,13 @@ export interface CapacityPricing {
 
 /** Converts `CapacityPricing` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CapacityPricingSerializer = {
-  parse(json: any): CapacityPricing {
+  parse(json: any, path = "$"): CapacityPricing {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["included", "overage_rate", "rate"]),
-      included: json["included"],
-      overageRate: json["overage_rate"],
-      rate: json["rate"],
+      included: decodeInteger(json["included"], path, "included"),
+      overageRate: decodeString(json["overage_rate"], path, "overage_rate"),
+      rate: decodeString(json["rate"], path, "rate"),
     };
   },
 

@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import {
   type ResolvedEntitlement,
   ResolvedEntitlementSerializer,
@@ -11,10 +12,13 @@ export interface ResolvedEntitlementListResponse {
 
 /** Converts `ResolvedEntitlementListResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ResolvedEntitlementListResponseSerializer = {
-  parse(json: any): ResolvedEntitlementListResponse {
+  parse(json: any, path = "$"): ResolvedEntitlementListResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["data"]),
-      data: json["data"].map((item: any) => ResolvedEntitlementSerializer.parse(item)),
+      data: decodeList(json["data"], path, "data", (item: any, p: string, i: number) =>
+        ResolvedEntitlementSerializer.parse(item, decodePath(p, i))
+      ),
     };
   },
 

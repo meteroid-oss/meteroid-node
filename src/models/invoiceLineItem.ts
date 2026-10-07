@@ -1,5 +1,12 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import {
+  decodeInteger,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type SubLineItem, SubLineItemSerializer } from "./subLineItem.js";
 
 export interface InvoiceLineItem {
@@ -21,7 +28,8 @@ export interface InvoiceLineItem {
 
 /** Converts `InvoiceLineItem` values from (`parse`) and to (`serialize`) their JSON form. */
 export const InvoiceLineItemSerializer = {
-  parse(json: any): InvoiceLineItem {
+  parse(json: any, path = "$"): InvoiceLineItem {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "amount_total",
@@ -35,18 +43,34 @@ export const InvoiceLineItemSerializer = {
         "tax_rate",
         "unit_price",
       ]),
-      amountTotal: json["amount_total"],
-      description: json["description"],
-      endDate: json["end_date"],
-      name: json["name"],
-      quantity: json["quantity"],
-      quotedUnitPrice: json["quoted_unit_price"],
-      startDate: json["start_date"],
-      subLineItems: json["sub_line_items"].map((item: any) =>
-        SubLineItemSerializer.parse(item)
+      amountTotal: decodeInteger(json["amount_total"], path, "amount_total"),
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
+      endDate: decodeString(json["end_date"], path, "end_date"),
+      name: decodeString(json["name"], path, "name"),
+      quantity:
+        json["quantity"] != null
+          ? decodeString(json["quantity"], path, "quantity")
+          : undefined,
+      quotedUnitPrice:
+        json["quoted_unit_price"] != null
+          ? decodeString(json["quoted_unit_price"], path, "quoted_unit_price")
+          : undefined,
+      startDate: decodeString(json["start_date"], path, "start_date"),
+      subLineItems: decodeList(
+        json["sub_line_items"],
+        path,
+        "sub_line_items",
+        (item: any, p: string, i: number) =>
+          SubLineItemSerializer.parse(item, decodePath(p, i))
       ),
-      taxRate: json["tax_rate"],
-      unitPrice: json["unit_price"],
+      taxRate: decodeString(json["tax_rate"], path, "tax_rate"),
+      unitPrice:
+        json["unit_price"] != null
+          ? decodeString(json["unit_price"], path, "unit_price")
+          : undefined,
     };
   },
 

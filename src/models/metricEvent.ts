@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties, pickProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath } from "../decode.js";
 import { type EventId, EventIdSerializer } from "./eventId.js";
 import { type EventType, EventTypeSerializer } from "./eventType.js";
 import { type MetricEventData, MetricEventDataSerializer } from "./metricEventData.js";
@@ -13,7 +13,8 @@ export interface MetricEvent extends MetricEventData {
 
 /** Converts `MetricEvent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MetricEventSerializer = {
-  parse(json: any): MetricEvent {
+  parse(json: any, path = "$"): MetricEvent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "id",
@@ -33,7 +34,7 @@ export const MetricEventSerializer = {
         "unit_conversion_rounding",
         "usage_group_key",
       ]),
-      ...pickProperties(MetricEventDataSerializer.parse(json), [
+      ...pickProperties(MetricEventDataSerializer.parse(json, path), [
         "aggregationKey",
         "aggregationType",
         "code",
@@ -48,9 +49,9 @@ export const MetricEventSerializer = {
         "unitConversionRounding",
         "usageGroupKey",
       ]),
-      id: EventIdSerializer.parse(json["id"]),
-      timestamp: parseDateTime(json["timestamp"]),
-      type: EventTypeSerializer.parse(json["type"]),
+      id: EventIdSerializer.parse(json["id"], decodePath(path, "id")),
+      timestamp: decodeDateTime(json["timestamp"], path, "timestamp"),
+      type: EventTypeSerializer.parse(json["type"], decodePath(path, "type")),
     };
   },
 

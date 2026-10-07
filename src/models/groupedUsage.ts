@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeMap, decodeObject, decodeString } from "../decode.js";
 
 export interface GroupedUsage {
   dimensions: { [key: string]: string };
@@ -8,11 +9,17 @@ export interface GroupedUsage {
 
 /** Converts `GroupedUsage` values from (`parse`) and to (`serialize`) their JSON form. */
 export const GroupedUsageSerializer = {
-  parse(json: any): GroupedUsage {
+  parse(json: any, path = "$"): GroupedUsage {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["dimensions", "value"]),
-      dimensions: json["dimensions"],
-      value: json["value"],
+      dimensions: decodeMap(
+        json["dimensions"],
+        path,
+        "dimensions",
+        (entry: any, p: string, key: string) => decodeString(entry, p, key)
+      ),
+      value: decodeString(json["value"], path, "value"),
     };
   },
 

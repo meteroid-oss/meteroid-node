@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeBoolean, decodeInteger, decodeObject, decodePath } from "../decode.js";
 import { type PlanId, PlanIdSerializer } from "./planId.js";
 
 export interface TrialConfig {
@@ -10,14 +11,18 @@ export interface TrialConfig {
 
 /** Converts `TrialConfig` values from (`parse`) and to (`serialize`) their JSON form. */
 export const TrialConfigSerializer = {
-  parse(json: any): TrialConfig {
+  parse(json: any, path = "$"): TrialConfig {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["duration_days", "is_free", "trialing_plan_id"]),
-      durationDays: json["duration_days"],
-      isFree: json["is_free"],
+      durationDays: decodeInteger(json["duration_days"], path, "duration_days"),
+      isFree: decodeBoolean(json["is_free"], path, "is_free"),
       trialingPlanId:
         json["trialing_plan_id"] != null
-          ? PlanIdSerializer.parse(json["trialing_plan_id"])
+          ? PlanIdSerializer.parse(
+              json["trialing_plan_id"],
+              decodePath(path, "trialing_plan_id")
+            )
           : json["trialing_plan_id"],
     };
   },

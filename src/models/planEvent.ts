@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties, pickProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath } from "../decode.js";
 import { type EventId, EventIdSerializer } from "./eventId.js";
 import { type EventType, EventTypeSerializer } from "./eventType.js";
 import { type PlanEventData, PlanEventDataSerializer } from "./planEventData.js";
@@ -13,7 +13,8 @@ export interface PlanEvent extends PlanEventData {
 
 /** Converts `PlanEvent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PlanEventSerializer = {
-  parse(json: any): PlanEvent {
+  parse(json: any, path = "$"): PlanEvent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "id",
@@ -28,7 +29,7 @@ export const PlanEventSerializer = {
         "status",
         "version",
       ]),
-      ...pickProperties(PlanEventDataSerializer.parse(json), [
+      ...pickProperties(PlanEventDataSerializer.parse(json, path), [
         "createdAt",
         "currency",
         "description",
@@ -38,9 +39,9 @@ export const PlanEventSerializer = {
         "status",
         "version",
       ]),
-      id: EventIdSerializer.parse(json["id"]),
-      timestamp: parseDateTime(json["timestamp"]),
-      type: EventTypeSerializer.parse(json["type"]),
+      id: EventIdSerializer.parse(json["id"], decodePath(path, "id")),
+      timestamp: decodeDateTime(json["timestamp"], path, "timestamp"),
+      type: EventTypeSerializer.parse(json["type"], decodePath(path, "type")),
     };
   },
 

@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import { type BillableMetricId, BillableMetricIdSerializer } from "./billableMetricId.js";
 import {
   type UsagePricingModel,
@@ -13,11 +14,15 @@ export interface UsageFee {
 
 /** Converts `UsageFee` values from (`parse`) and to (`serialize`) their JSON form. */
 export const UsageFeeSerializer = {
-  parse(json: any): UsageFee {
+  parse(json: any, path = "$"): UsageFee {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["metric_id", "model"]),
-      metricId: BillableMetricIdSerializer.parse(json["metric_id"]),
-      model: UsagePricingModelSerializer.parse(json["model"]),
+      metricId: BillableMetricIdSerializer.parse(
+        json["metric_id"],
+        decodePath(path, "metric_id")
+      ),
+      model: UsagePricingModelSerializer.parse(json["model"], decodePath(path, "model")),
     };
   },
 

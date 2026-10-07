@@ -30,6 +30,7 @@ import {
   EffectiveEntitlementListResponseSerializer,
 } from "../models/effectiveEntitlementListResponse.js";
 import type { APIPromise } from "../apiPromise.js";
+import { PagePromise } from "../pagination.js";
 import {
   MeteroidRequest,
   type MeteroidRequestContext,
@@ -53,8 +54,30 @@ export class Customers {
   /** @internal */
   public constructor(private readonly requestCtx: MeteroidRequestContext) {}
 
-  /** List customers with optional pagination and search filtering. */
+  /**
+   * List customers with optional pagination and search filtering.
+   *
+   * Await it for the first page: the response body, its properties read on the page, with
+   * `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`. Or iterate it with `for await`
+   * over every item of every page, fetched on demand.
+   */
   public list(
+    options?: CustomersListOptions,
+    requestOptions?: RequestOptions
+  ): PagePromise<CustomerListResponse, Customer> {
+    return new PagePromise<CustomerListResponse, Customer>(
+      {
+        style: "page",
+        items: (page) => page.data,
+        totalPages: (page) => page.paginationMeta?.totalPages,
+        firstPage: 0,
+        fetch: (page) => this.#list({ ...options, page: page }, requestOptions),
+      },
+      options?.page
+    );
+  }
+
+  #list(
     options?: CustomersListOptions,
     requestOptions?: RequestOptions
   ): APIPromise<CustomerListResponse> {

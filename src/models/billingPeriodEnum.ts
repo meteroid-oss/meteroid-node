@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const BillingPeriodEnum = {
   Monthly: "MONTHLY",
@@ -12,8 +13,8 @@ export type BillingPeriodEnum =
 
 /** Converts `BillingPeriodEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const BillingPeriodEnumSerializer = {
-  parse(json: any): BillingPeriodEnum {
-    return json;
+  parse(json: any, path = "$"): BillingPeriodEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: BillingPeriodEnum): any {

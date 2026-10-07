@@ -1,6 +1,13 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type PlanVersionId, PlanVersionIdSerializer } from "./planVersionId.js";
 
 export interface PlanVersionSummary {
@@ -13,14 +20,15 @@ export interface PlanVersionSummary {
 
 /** Converts `PlanVersionSummary` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PlanVersionSummarySerializer = {
-  parse(json: any): PlanVersionSummary {
+  parse(json: any, path = "$"): PlanVersionSummary {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["created_at", "currency", "id", "is_draft", "version"]),
-      createdAt: parseDateTime(json["created_at"]),
-      currency: json["currency"],
-      id: PlanVersionIdSerializer.parse(json["id"]),
-      isDraft: json["is_draft"],
-      version: json["version"],
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      currency: decodeString(json["currency"], path, "currency"),
+      id: PlanVersionIdSerializer.parse(json["id"], decodePath(path, "id")),
+      isDraft: decodeBoolean(json["is_draft"], path, "is_draft"),
+      version: decodeInteger(json["version"], path, "version"),
     };
   },
 

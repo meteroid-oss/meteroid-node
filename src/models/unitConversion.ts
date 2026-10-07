@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodePath } from "../decode.js";
 import {
   type UnitConversionRoundingEnum,
   UnitConversionRoundingEnumSerializer,
@@ -12,11 +13,15 @@ export interface UnitConversion {
 
 /** Converts `UnitConversion` values from (`parse`) and to (`serialize`) their JSON form. */
 export const UnitConversionSerializer = {
-  parse(json: any): UnitConversion {
+  parse(json: any, path = "$"): UnitConversion {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["factor", "rounding"]),
-      factor: json["factor"],
-      rounding: UnitConversionRoundingEnumSerializer.parse(json["rounding"]),
+      factor: decodeInteger(json["factor"], path, "factor"),
+      rounding: UnitConversionRoundingEnumSerializer.parse(
+        json["rounding"],
+        decodePath(path, "rounding")
+      ),
     };
   },
 

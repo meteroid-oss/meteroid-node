@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeBoolean, decodeObject, decodePath } from "../decode.js";
 import { type Address, AddressSerializer } from "./address.js";
 
 export interface ShippingAddress {
@@ -9,14 +10,15 @@ export interface ShippingAddress {
 
 /** Converts `ShippingAddress` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ShippingAddressSerializer = {
-  parse(json: any): ShippingAddress {
+  parse(json: any, path = "$"): ShippingAddress {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["address", "same_as_billing"]),
       address:
         json["address"] != null
-          ? AddressSerializer.parse(json["address"])
+          ? AddressSerializer.parse(json["address"], decodePath(path, "address"))
           : json["address"],
-      sameAsBilling: json["same_as_billing"],
+      sameAsBilling: decodeBoolean(json["same_as_billing"], path, "same_as_billing"),
     };
   },
 

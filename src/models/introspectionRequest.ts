@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 /** Token introspection request */
 export interface IntrospectionRequest {
   /** The token to introspect */
@@ -8,10 +9,11 @@ export interface IntrospectionRequest {
 
 /** Converts `IntrospectionRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const IntrospectionRequestSerializer = {
-  parse(json: any): IntrospectionRequest {
+  parse(json: any, path = "$"): IntrospectionRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["token"]),
-      token: json["token"],
+      token: decodeString(json["token"], path, "token"),
     };
   },
 

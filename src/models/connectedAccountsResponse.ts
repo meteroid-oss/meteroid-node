@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import { type ConnectedAccount, ConnectedAccountSerializer } from "./connectedAccount.js";
 
 export interface ConnectedAccountsResponse {
@@ -8,10 +9,13 @@ export interface ConnectedAccountsResponse {
 
 /** Converts `ConnectedAccountsResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ConnectedAccountsResponseSerializer = {
-  parse(json: any): ConnectedAccountsResponse {
+  parse(json: any, path = "$"): ConnectedAccountsResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["data"]),
-      data: json["data"].map((item: any) => ConnectedAccountSerializer.parse(item)),
+      data: decodeList(json["data"], path, "data", (item: any, p: string, i: number) =>
+        ConnectedAccountSerializer.parse(item, decodePath(p, i))
+      ),
     };
   },
 

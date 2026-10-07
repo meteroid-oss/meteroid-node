@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import {
   type MatrixPlanPricing,
   MatrixPlanPricingSerializer,
@@ -45,31 +46,32 @@ export type PlanUsagePricingModel =
 
 /** Converts `PlanUsagePricingModel` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PlanUsagePricingModelSerializer = {
-  parse(json: any): PlanUsagePricingModel {
+  parse(json: any, path = "$"): PlanUsagePricingModel {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "PER_UNIT":
         return {
-          ...PerUnitPlanPricingSerializer.parse(json),
+          ...PerUnitPlanPricingSerializer.parse(json, path),
           type: "PER_UNIT",
         };
       case "TIERED":
         return {
-          ...TieredPlanPricingSerializer.parse(json),
+          ...TieredPlanPricingSerializer.parse(json, path),
           type: "TIERED",
         };
       case "VOLUME":
         return {
-          ...VolumePlanPricingSerializer.parse(json),
+          ...VolumePlanPricingSerializer.parse(json, path),
           type: "VOLUME",
         };
       case "PACKAGE":
         return {
-          ...PackagePlanPricingSerializer.parse(json),
+          ...PackagePlanPricingSerializer.parse(json, path),
           type: "PACKAGE",
         };
       case "MATRIX":
         return {
-          ...MatrixPlanPricingSerializer.parse(json),
+          ...MatrixPlanPricingSerializer.parse(json, path),
           type: "MATRIX",
         };
       default:

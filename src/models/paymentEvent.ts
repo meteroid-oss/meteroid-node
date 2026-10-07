@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties, pickProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath } from "../decode.js";
 import { type EventId, EventIdSerializer } from "./eventId.js";
 import { type EventType, EventTypeSerializer } from "./eventType.js";
 import { type RefundEventData, RefundEventDataSerializer } from "./refundEventData.js";
@@ -13,7 +13,8 @@ export interface PaymentEvent extends RefundEventData {
 
 /** Converts `PaymentEvent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PaymentEventSerializer = {
-  parse(json: any): PaymentEvent {
+  parse(json: any, path = "$"): PaymentEvent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "id",
@@ -36,7 +37,7 @@ export const PaymentEventSerializer = {
         "status",
         "transaction_id",
       ]),
-      ...pickProperties(RefundEventDataSerializer.parse(json), [
+      ...pickProperties(RefundEventDataSerializer.parse(json, path), [
         "amount",
         "amountRefunded",
         "amountReversed",
@@ -54,9 +55,9 @@ export const PaymentEventSerializer = {
         "status",
         "transactionId",
       ]),
-      id: EventIdSerializer.parse(json["id"]),
-      timestamp: parseDateTime(json["timestamp"]),
-      type: EventTypeSerializer.parse(json["type"]),
+      id: EventIdSerializer.parse(json["id"], decodePath(path, "id")),
+      timestamp: decodeDateTime(json["timestamp"], path, "timestamp"),
+      type: EventTypeSerializer.parse(json["type"], decodePath(path, "type")),
     };
   },
 

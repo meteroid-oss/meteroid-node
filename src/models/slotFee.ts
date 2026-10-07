@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodeString } from "../decode.js";
 
 export interface SlotFee {
   initialSlots: number;
@@ -11,7 +12,8 @@ export interface SlotFee {
 
 /** Converts `SlotFee` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SlotFeeSerializer = {
-  parse(json: any): SlotFee {
+  parse(json: any, path = "$"): SlotFee {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "initial_slots",
@@ -20,11 +22,17 @@ export const SlotFeeSerializer = {
         "unit",
         "unit_rate",
       ]),
-      initialSlots: json["initial_slots"],
-      maxSlots: json["max_slots"],
-      minSlots: json["min_slots"],
-      unit: json["unit"],
-      unitRate: json["unit_rate"],
+      initialSlots: decodeInteger(json["initial_slots"], path, "initial_slots"),
+      maxSlots:
+        json["max_slots"] != null
+          ? decodeInteger(json["max_slots"], path, "max_slots")
+          : json["max_slots"],
+      minSlots:
+        json["min_slots"] != null
+          ? decodeInteger(json["min_slots"], path, "min_slots")
+          : json["min_slots"],
+      unit: decodeString(json["unit"], path, "unit"),
+      unitRate: decodeString(json["unit_rate"], path, "unit_rate"),
     };
   },
 

@@ -1,5 +1,12 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type PriceId, PriceIdSerializer } from "./priceId.js";
 import { type ProductId, ProductIdSerializer } from "./productId.js";
 
@@ -14,7 +21,8 @@ export interface CreateAddOnRequest {
 
 /** Converts `CreateAddOnRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CreateAddOnRequestSerializer = {
-  parse(json: any): CreateAddOnRequest {
+  parse(json: any, path = "$"): CreateAddOnRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "description",
@@ -24,12 +32,28 @@ export const CreateAddOnRequestSerializer = {
         "product_id",
         "self_serviceable",
       ]),
-      description: json["description"],
-      maxInstancesPerSubscription: json["max_instances_per_subscription"],
-      name: json["name"],
-      priceId: PriceIdSerializer.parse(json["price_id"]),
-      productId: ProductIdSerializer.parse(json["product_id"]),
-      selfServiceable: json["self_serviceable"],
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
+      maxInstancesPerSubscription:
+        json["max_instances_per_subscription"] != null
+          ? decodeInteger(
+              json["max_instances_per_subscription"],
+              path,
+              "max_instances_per_subscription"
+            )
+          : json["max_instances_per_subscription"],
+      name: decodeString(json["name"], path, "name"),
+      priceId: PriceIdSerializer.parse(json["price_id"], decodePath(path, "price_id")),
+      productId: ProductIdSerializer.parse(
+        json["product_id"],
+        decodePath(path, "product_id")
+      ),
+      selfServiceable:
+        json["self_serviceable"] != null
+          ? decodeBoolean(json["self_serviceable"], path, "self_serviceable")
+          : undefined,
     };
   },
 

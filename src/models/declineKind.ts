@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 /** Why the payment provider declined a charge. */
 export const DeclineKind = {
   InsufficientFunds: "INSUFFICIENT_FUNDS",
@@ -14,8 +15,8 @@ export type DeclineKind = (typeof DeclineKind)[keyof typeof DeclineKind] | (stri
 
 /** Converts `DeclineKind` values from (`parse`) and to (`serialize`) their JSON form. */
 export const DeclineKindSerializer = {
-  parse(json: any): DeclineKind {
-    return json;
+  parse(json: any, path = "$"): DeclineKind {
+    return decodeString(json, path);
   },
 
   serialize(value: DeclineKind): any {

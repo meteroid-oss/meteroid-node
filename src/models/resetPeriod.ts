@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import {
   type BillingCycleResetPeriod,
   BillingCycleResetPeriodSerializer,
@@ -42,31 +43,32 @@ export type ResetPeriod =
 
 /** Converts `ResetPeriod` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ResetPeriodSerializer = {
-  parse(json: any): ResetPeriod {
+  parse(json: any, path = "$"): ResetPeriod {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "BILLING_CYCLE":
         return {
-          ...BillingCycleResetPeriodSerializer.parse(json),
+          ...BillingCycleResetPeriodSerializer.parse(json, path),
           type: "BILLING_CYCLE",
         };
       case "CALENDAR":
         return {
-          ...CalendarResetPeriodSerializer.parse(json),
+          ...CalendarResetPeriodSerializer.parse(json, path),
           type: "CALENDAR",
         };
       case "FIXED_WINDOW":
         return {
-          ...FixedWindowResetPeriodSerializer.parse(json),
+          ...FixedWindowResetPeriodSerializer.parse(json, path),
           type: "FIXED_WINDOW",
         };
       case "SLIDING_WINDOW":
         return {
-          ...SlidingWindowResetPeriodSerializer.parse(json),
+          ...SlidingWindowResetPeriodSerializer.parse(json, path),
           type: "SLIDING_WINDOW",
         };
       case "NEVER":
         return {
-          ...NeverResetPeriodSerializer.parse(json),
+          ...NeverResetPeriodSerializer.parse(json, path),
           type: "NEVER",
         };
       default:

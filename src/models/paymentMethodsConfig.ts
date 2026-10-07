@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import {
   type BankTransferPaymentMethodConfig,
   BankTransferPaymentMethodConfigSerializer,
@@ -31,21 +32,22 @@ export type PaymentMethodsConfig =
 
 /** Converts `PaymentMethodsConfig` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PaymentMethodsConfigSerializer = {
-  parse(json: any): PaymentMethodsConfig {
+  parse(json: any, path = "$"): PaymentMethodsConfig {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "online":
         return {
-          ...OnlinePaymentMethodConfigSerializer.parse(json),
+          ...OnlinePaymentMethodConfigSerializer.parse(json, path),
           type: "online",
         };
       case "bank_transfer":
         return {
-          ...BankTransferPaymentMethodConfigSerializer.parse(json),
+          ...BankTransferPaymentMethodConfigSerializer.parse(json, path),
           type: "bank_transfer",
         };
       case "external":
         return {
-          ...ExternalPaymentMethodConfigSerializer.parse(json),
+          ...ExternalPaymentMethodConfigSerializer.parse(json, path),
           type: "external",
         };
       default:

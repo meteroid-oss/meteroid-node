@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 /** Authoritative value type of a Config feature. `MAP`/`JSON` both carry a JSON value. */
 export const ConfigValueType = {
   Number: "NUMBER",
@@ -14,8 +15,8 @@ export type ConfigValueType =
 
 /** Converts `ConfigValueType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ConfigValueTypeSerializer = {
-  parse(json: any): ConfigValueType {
-    return json;
+  parse(json: any, path = "$"): ConfigValueType {
+    return decodeString(json, path);
   },
 
   serialize(value: ConfigValueType): any {

@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject } from "../decode.js";
 
 export interface PaginationResponse {
   page: number;
@@ -10,13 +11,14 @@ export interface PaginationResponse {
 
 /** Converts `PaginationResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PaginationResponseSerializer = {
-  parse(json: any): PaginationResponse {
+  parse(json: any, path = "$"): PaginationResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["page", "per_page", "total_items", "total_pages"]),
-      page: json["page"],
-      perPage: json["per_page"],
-      totalItems: json["total_items"],
-      totalPages: json["total_pages"],
+      page: decodeInteger(json["page"], path, "page"),
+      perPage: decodeInteger(json["per_page"], path, "per_page"),
+      totalItems: decodeInteger(json["total_items"], path, "total_items"),
+      totalPages: decodeInteger(json["total_pages"], path, "total_pages"),
     };
   },
 

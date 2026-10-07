@@ -1,6 +1,13 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeDateTime,
+  decodeInteger,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type CreditNoteId, CreditNoteIdSerializer } from "./creditNoteId.js";
 import { type CreditNoteStatus, CreditNoteStatusSerializer } from "./creditNoteStatus.js";
 import { type CreditType, CreditTypeSerializer } from "./creditType.js";
@@ -42,7 +49,8 @@ export interface CreditNote {
 
 /** Converts `CreditNote` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CreditNoteSerializer = {
-  parse(json: any): CreditNote {
+  parse(json: any, path = "$"): CreditNote {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "created_at",
@@ -70,47 +78,91 @@ export const CreditNoteSerializer = {
         "updated_at",
         "voided_at",
       ]),
-      createdAt: parseDateTime(json["created_at"]),
-      creditNoteNumber: json["credit_note_number"],
-      creditType: CreditTypeSerializer.parse(json["credit_type"]),
-      creditedAmountCents: json["credited_amount_cents"],
-      currency: CurrencySerializer.parse(json["currency"]),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      creditNoteNumber: decodeString(
+        json["credit_note_number"],
+        path,
+        "credit_note_number"
+      ),
+      creditType: CreditTypeSerializer.parse(
+        json["credit_type"],
+        decodePath(path, "credit_type")
+      ),
+      creditedAmountCents: decodeInteger(
+        json["credited_amount_cents"],
+        path,
+        "credited_amount_cents"
+      ),
+      currency: CurrencySerializer.parse(json["currency"], decodePath(path, "currency")),
       customProperties: json["custom_properties"],
-      customerId: CustomerIdSerializer.parse(json["customer_id"]),
+      customerId: CustomerIdSerializer.parse(
+        json["customer_id"],
+        decodePath(path, "customer_id")
+      ),
       finalizedAt:
         json["finalized_at"] != null
-          ? parseDateTime(json["finalized_at"])
+          ? decodeDateTime(json["finalized_at"], path, "finalized_at")
           : json["finalized_at"],
-      id: CreditNoteIdSerializer.parse(json["id"]),
-      invoiceId: InvoiceIdSerializer.parse(json["invoice_id"]),
-      invoiceNumber: json["invoice_number"],
-      lineItems: json["line_items"].map((item: any) =>
-        InvoiceLineItemSerializer.parse(item)
+      id: CreditNoteIdSerializer.parse(json["id"], decodePath(path, "id")),
+      invoiceId: InvoiceIdSerializer.parse(
+        json["invoice_id"],
+        decodePath(path, "invoice_id")
       ),
-      memo: json["memo"],
+      invoiceNumber: decodeString(json["invoice_number"], path, "invoice_number"),
+      lineItems: decodeList(
+        json["line_items"],
+        path,
+        "line_items",
+        (item: any, p: string, i: number) =>
+          InvoiceLineItemSerializer.parse(item, decodePath(p, i))
+      ),
+      memo:
+        json["memo"] != null ? decodeString(json["memo"], path, "memo") : json["memo"],
       planVersionId:
         json["plan_version_id"] != null
-          ? PlanVersionIdSerializer.parse(json["plan_version_id"])
+          ? PlanVersionIdSerializer.parse(
+              json["plan_version_id"],
+              decodePath(path, "plan_version_id")
+            )
           : json["plan_version_id"],
-      reason: json["reason"],
-      refundedAmountCents: json["refunded_amount_cents"],
-      status: CreditNoteStatusSerializer.parse(json["status"]),
+      reason:
+        json["reason"] != null
+          ? decodeString(json["reason"], path, "reason")
+          : json["reason"],
+      refundedAmountCents: decodeInteger(
+        json["refunded_amount_cents"],
+        path,
+        "refunded_amount_cents"
+      ),
+      status: CreditNoteStatusSerializer.parse(
+        json["status"],
+        decodePath(path, "status")
+      ),
       subscriptionId:
         json["subscription_id"] != null
-          ? SubscriptionIdSerializer.parse(json["subscription_id"])
+          ? SubscriptionIdSerializer.parse(
+              json["subscription_id"],
+              decodePath(path, "subscription_id")
+            )
           : json["subscription_id"],
-      subtotal: json["subtotal"],
-      taxAmount: json["tax_amount"],
-      taxBreakdown: json["tax_breakdown"].map((item: any) =>
-        TaxBreakdownItemSerializer.parse(item)
+      subtotal: decodeInteger(json["subtotal"], path, "subtotal"),
+      taxAmount: decodeInteger(json["tax_amount"], path, "tax_amount"),
+      taxBreakdown: decodeList(
+        json["tax_breakdown"],
+        path,
+        "tax_breakdown",
+        (item: any, p: string, i: number) =>
+          TaxBreakdownItemSerializer.parse(item, decodePath(p, i))
       ),
-      total: json["total"],
+      total: decodeInteger(json["total"], path, "total"),
       updatedAt:
         json["updated_at"] != null
-          ? parseDateTime(json["updated_at"])
+          ? decodeDateTime(json["updated_at"], path, "updated_at")
           : json["updated_at"],
       voidedAt:
-        json["voided_at"] != null ? parseDateTime(json["voided_at"]) : json["voided_at"],
+        json["voided_at"] != null
+          ? decodeDateTime(json["voided_at"], path, "voided_at")
+          : json["voided_at"],
     };
   },
 

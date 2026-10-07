@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeBoolean, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type BillableMetricId, BillableMetricIdSerializer } from "./billableMetricId.js";
 import { type ResetPeriod, ResetPeriodSerializer } from "./resetPeriod.js";
 
@@ -12,13 +13,23 @@ export interface MeteredEntitlementSpec {
 
 /** Converts `MeteredEntitlementSpec` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MeteredEntitlementSpecSerializer = {
-  parse(json: any): MeteredEntitlementSpec {
+  parse(json: any, path = "$"): MeteredEntitlementSpec {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["enabled", "limit", "metric_id", "reset_period"]),
-      enabled: json["enabled"],
-      limit: json["limit"],
-      metricId: BillableMetricIdSerializer.parse(json["metric_id"]),
-      resetPeriod: ResetPeriodSerializer.parse(json["reset_period"]),
+      enabled: decodeBoolean(json["enabled"], path, "enabled"),
+      limit:
+        json["limit"] != null
+          ? decodeString(json["limit"], path, "limit")
+          : json["limit"],
+      metricId: BillableMetricIdSerializer.parse(
+        json["metric_id"],
+        decodePath(path, "metric_id")
+      ),
+      resetPeriod: ResetPeriodSerializer.parse(
+        json["reset_period"],
+        decodePath(path, "reset_period")
+      ),
     };
   },
 

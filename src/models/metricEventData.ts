@@ -1,6 +1,12 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type BillableMetricId, BillableMetricIdSerializer } from "./billableMetricId.js";
 import {
   type BillingMetricAggregateEnum,
@@ -35,7 +41,8 @@ export interface MetricEventData {
 
 /** Converts `MetricEventData` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MetricEventDataSerializer = {
-  parse(json: any): MetricEventData {
+  parse(json: any, path = "$"): MetricEventData {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "aggregation_key",
@@ -52,30 +59,55 @@ export const MetricEventDataSerializer = {
         "unit_conversion_rounding",
         "usage_group_key",
       ]),
-      aggregationKey: json["aggregation_key"],
+      aggregationKey:
+        json["aggregation_key"] != null
+          ? decodeString(json["aggregation_key"], path, "aggregation_key")
+          : json["aggregation_key"],
       aggregationType: BillingMetricAggregateEnumSerializer.parse(
-        json["aggregation_type"]
+        json["aggregation_type"],
+        decodePath(path, "aggregation_type")
       ),
-      code: json["code"],
-      createdAt: parseDateTime(json["created_at"]),
-      description: json["description"],
-      metricId: BillableMetricIdSerializer.parse(json["metric_id"]),
-      name: json["name"],
-      productFamilyId: ProductFamilyIdSerializer.parse(json["product_family_id"]),
+      code: decodeString(json["code"], path, "code"),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
+      metricId: BillableMetricIdSerializer.parse(
+        json["metric_id"],
+        decodePath(path, "metric_id")
+      ),
+      name: decodeString(json["name"], path, "name"),
+      productFamilyId: ProductFamilyIdSerializer.parse(
+        json["product_family_id"],
+        decodePath(path, "product_family_id")
+      ),
       productId:
         json["product_id"] != null
-          ? ProductIdSerializer.parse(json["product_id"])
+          ? ProductIdSerializer.parse(json["product_id"], decodePath(path, "product_id"))
           : json["product_id"],
       segmentationMatrix:
         json["segmentation_matrix"] != null
-          ? MetricSegmentationMatrixSerializer.parse(json["segmentation_matrix"])
+          ? MetricSegmentationMatrixSerializer.parse(
+              json["segmentation_matrix"],
+              decodePath(path, "segmentation_matrix")
+            )
           : json["segmentation_matrix"],
-      unitConversionFactor: json["unit_conversion_factor"],
+      unitConversionFactor:
+        json["unit_conversion_factor"] != null
+          ? decodeInteger(json["unit_conversion_factor"], path, "unit_conversion_factor")
+          : json["unit_conversion_factor"],
       unitConversionRounding:
         json["unit_conversion_rounding"] != null
-          ? UnitConversionRoundingEnumSerializer.parse(json["unit_conversion_rounding"])
+          ? UnitConversionRoundingEnumSerializer.parse(
+              json["unit_conversion_rounding"],
+              decodePath(path, "unit_conversion_rounding")
+            )
           : json["unit_conversion_rounding"],
-      usageGroupKey: json["usage_group_key"],
+      usageGroupKey:
+        json["usage_group_key"] != null
+          ? decodeString(json["usage_group_key"], path, "usage_group_key")
+          : json["usage_group_key"],
     };
   },
 

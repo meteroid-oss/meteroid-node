@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 /** Token request (from POST body, application/x-www-form-urlencoded) */
 export interface TokenRequest {
   /** Client ID (if not using HTTP Basic auth) */
@@ -20,7 +21,8 @@ export interface TokenRequest {
 
 /** Converts `TokenRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const TokenRequestSerializer = {
-  parse(json: any): TokenRequest {
+  parse(json: any, path = "$"): TokenRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "client_id",
@@ -31,13 +33,29 @@ export const TokenRequestSerializer = {
         "redirect_uri",
         "refresh_token",
       ]),
-      clientId: json["client_id"],
-      clientSecret: json["client_secret"],
-      code: json["code"],
-      codeVerifier: json["code_verifier"],
-      grantType: json["grant_type"],
-      redirectUri: json["redirect_uri"],
-      refreshToken: json["refresh_token"],
+      clientId:
+        json["client_id"] != null
+          ? decodeString(json["client_id"], path, "client_id")
+          : json["client_id"],
+      clientSecret:
+        json["client_secret"] != null
+          ? decodeString(json["client_secret"], path, "client_secret")
+          : json["client_secret"],
+      code:
+        json["code"] != null ? decodeString(json["code"], path, "code") : json["code"],
+      codeVerifier:
+        json["code_verifier"] != null
+          ? decodeString(json["code_verifier"], path, "code_verifier")
+          : json["code_verifier"],
+      grantType: decodeString(json["grant_type"], path, "grant_type"),
+      redirectUri:
+        json["redirect_uri"] != null
+          ? decodeString(json["redirect_uri"], path, "redirect_uri")
+          : json["redirect_uri"],
+      refreshToken:
+        json["refresh_token"] != null
+          ? decodeString(json["refresh_token"], path, "refresh_token")
+          : json["refresh_token"],
     };
   },
 

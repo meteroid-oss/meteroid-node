@@ -108,7 +108,10 @@ export class APIUserAbortError extends MeteroidError {
   }
 }
 
-/** A successful response the SDK could not read: invalid JSON, or not the expected media type. */
+/**
+ * A successful response the SDK could not read: invalid JSON, not the expected media type, or
+ * a body that does not match its schema.
+ */
 export class APIDecodeError extends MeteroidError {
   override name = "APIDecodeError";
 
@@ -119,6 +122,20 @@ export class APIDecodeError extends MeteroidError {
     options?: { cause?: unknown }
   ) {
     super(message, options);
+  }
+}
+
+/** @internal `parse(json)`, throwing what it throws as an `APIDecodeError` holding `body`. */
+export function decodeBody<R>(parse: (json: any) => R, json: unknown, body: string): R {
+  try {
+    return parse(json);
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    throw new APIDecodeError(
+      `The response body does not match its schema: ${reason}`,
+      body,
+      { cause: error }
+    );
   }
 }
 

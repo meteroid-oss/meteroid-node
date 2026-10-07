@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath, decodeString } from "../decode.js";
 import { type PriceComponentId, PriceComponentIdSerializer } from "./priceComponentId.js";
 import { type ProductId, ProductIdSerializer } from "./productId.js";
 import { type SubscriptionFee, SubscriptionFeeSerializer } from "./subscriptionFee.js";
@@ -18,7 +19,8 @@ export interface SubscriptionComponent {
 
 /** Converts `SubscriptionComponent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionComponentSerializer = {
-  parse(json: any): SubscriptionComponent {
+  parse(json: any, path = "$"): SubscriptionComponent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "fee",
@@ -27,16 +29,22 @@ export const SubscriptionComponentSerializer = {
         "price_component_id",
         "product_id",
       ]),
-      fee: SubscriptionFeeSerializer.parse(json["fee"]),
-      name: json["name"],
-      period: SubscriptionFeeBillingPeriodEnumSerializer.parse(json["period"]),
+      fee: SubscriptionFeeSerializer.parse(json["fee"], decodePath(path, "fee")),
+      name: decodeString(json["name"], path, "name"),
+      period: SubscriptionFeeBillingPeriodEnumSerializer.parse(
+        json["period"],
+        decodePath(path, "period")
+      ),
       priceComponentId:
         json["price_component_id"] != null
-          ? PriceComponentIdSerializer.parse(json["price_component_id"])
+          ? PriceComponentIdSerializer.parse(
+              json["price_component_id"],
+              decodePath(path, "price_component_id")
+            )
           : json["price_component_id"],
       productId:
         json["product_id"] != null
-          ? ProductIdSerializer.parse(json["product_id"])
+          ? ProductIdSerializer.parse(json["product_id"], decodePath(path, "product_id"))
           : json["product_id"],
     };
   },

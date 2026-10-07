@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeList, decodeObject, decodePath } from "../decode.js";
 import {
   type CustomerPortalScope,
   CustomerPortalScopeSerializer,
@@ -20,13 +21,23 @@ export interface CustomerPortalTokenRequest {
 
 /** Converts `CustomerPortalTokenRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomerPortalTokenRequestSerializer = {
-  parse(json: any): CustomerPortalTokenRequest {
+  parse(json: any, path = "$"): CustomerPortalTokenRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["expires_in_seconds", "scopes"]),
-      expiresInSeconds: json["expires_in_seconds"],
+      expiresInSeconds:
+        json["expires_in_seconds"] != null
+          ? decodeInteger(json["expires_in_seconds"], path, "expires_in_seconds")
+          : json["expires_in_seconds"],
       scopes:
         json["scopes"] != null
-          ? json["scopes"].map((item: any) => CustomerPortalScopeSerializer.parse(item))
+          ? decodeList(
+              json["scopes"],
+              path,
+              "scopes",
+              (item: any, p: string, i: number) =>
+                CustomerPortalScopeSerializer.parse(item, decodePath(p, i))
+            )
           : json["scopes"],
     };
   },

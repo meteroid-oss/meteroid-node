@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const BillingTypeEnum = {
   Advance: "ADVANCE",
@@ -10,8 +11,8 @@ export type BillingTypeEnum =
 
 /** Converts `BillingTypeEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const BillingTypeEnumSerializer = {
-  parse(json: any): BillingTypeEnum {
-    return json;
+  parse(json: any, path = "$"): BillingTypeEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: BillingTypeEnum): any {

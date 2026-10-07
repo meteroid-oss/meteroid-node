@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import { type ConfigValue, ConfigValueSerializer } from "./configValue.js";
 
 export interface ConfigResolvedEntitlementValue {
@@ -8,10 +9,11 @@ export interface ConfigResolvedEntitlementValue {
 
 /** Converts `ConfigResolvedEntitlementValue` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ConfigResolvedEntitlementValueSerializer = {
-  parse(json: any): ConfigResolvedEntitlementValue {
+  parse(json: any, path = "$"): ConfigResolvedEntitlementValue {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["value"]),
-      value: ConfigValueSerializer.parse(json["value"]),
+      value: ConfigValueSerializer.parse(json["value"], decodePath(path, "value")),
     };
   },
 

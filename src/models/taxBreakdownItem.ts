@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type TaxExemptionType, TaxExemptionTypeSerializer } from "./taxExemptionType.js";
 
 export interface TaxBreakdownItem {
@@ -16,7 +17,8 @@ export interface TaxBreakdownItem {
 
 /** Converts `TaxBreakdownItem` values from (`parse`) and to (`serialize`) their JSON form. */
 export const TaxBreakdownItemSerializer = {
-  parse(json: any): TaxBreakdownItem {
+  parse(json: any, path = "$"): TaxBreakdownItem {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "exemption_reason",
@@ -27,16 +29,25 @@ export const TaxBreakdownItemSerializer = {
         "tax_reference",
         "taxable_amount",
       ]),
-      exemptionReason: json["exemption_reason"],
+      exemptionReason:
+        json["exemption_reason"] != null
+          ? decodeString(json["exemption_reason"], path, "exemption_reason")
+          : json["exemption_reason"],
       exemptionType:
         json["exemption_type"] != null
-          ? TaxExemptionTypeSerializer.parse(json["exemption_type"])
+          ? TaxExemptionTypeSerializer.parse(
+              json["exemption_type"],
+              decodePath(path, "exemption_type")
+            )
           : json["exemption_type"],
-      name: json["name"],
-      taxAmount: json["tax_amount"],
-      taxRate: json["tax_rate"],
-      taxReference: json["tax_reference"],
-      taxableAmount: json["taxable_amount"],
+      name: decodeString(json["name"], path, "name"),
+      taxAmount: decodeInteger(json["tax_amount"], path, "tax_amount"),
+      taxRate: decodeString(json["tax_rate"], path, "tax_rate"),
+      taxReference:
+        json["tax_reference"] != null
+          ? decodeString(json["tax_reference"], path, "tax_reference")
+          : json["tax_reference"],
+      taxableAmount: decodeInteger(json["taxable_amount"], path, "taxable_amount"),
     };
   },
 

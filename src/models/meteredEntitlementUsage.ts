@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodeString } from "../decode.js";
 
 export interface MeteredEntitlementUsage {
   consumed?: string | null | undefined;
@@ -10,13 +10,22 @@ export interface MeteredEntitlementUsage {
 
 /** Converts `MeteredEntitlementUsage` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MeteredEntitlementUsageSerializer = {
-  parse(json: any): MeteredEntitlementUsage {
+  parse(json: any, path = "$"): MeteredEntitlementUsage {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["consumed", "remaining", "reset_at"]),
-      consumed: json["consumed"],
-      remaining: json["remaining"],
+      consumed:
+        json["consumed"] != null
+          ? decodeString(json["consumed"], path, "consumed")
+          : json["consumed"],
+      remaining:
+        json["remaining"] != null
+          ? decodeString(json["remaining"], path, "remaining")
+          : json["remaining"],
       resetAt:
-        json["reset_at"] != null ? parseDateTime(json["reset_at"]) : json["reset_at"],
+        json["reset_at"] != null
+          ? decodeDateTime(json["reset_at"], path, "reset_at")
+          : json["reset_at"],
     };
   },
 

@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties, pickProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath } from "../decode.js";
 import { type EventId, EventIdSerializer } from "./eventId.js";
 import { type EventType, EventTypeSerializer } from "./eventType.js";
 import { type InvoiceEventData, InvoiceEventDataSerializer } from "./invoiceEventData.js";
@@ -13,7 +13,8 @@ export interface InvoiceEvent extends InvoiceEventData {
 
 /** Converts `InvoiceEvent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const InvoiceEventSerializer = {
-  parse(json: any): InvoiceEvent {
+  parse(json: any, path = "$"): InvoiceEvent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "id",
@@ -31,7 +32,7 @@ export const InvoiceEventSerializer = {
         "tax_amount",
         "total",
       ]),
-      ...pickProperties(InvoiceEventDataSerializer.parse(json), [
+      ...pickProperties(InvoiceEventDataSerializer.parse(json, path), [
         "consolidatedIntoInvoiceId",
         "createdAt",
         "currency",
@@ -44,9 +45,9 @@ export const InvoiceEventSerializer = {
         "taxAmount",
         "total",
       ]),
-      id: EventIdSerializer.parse(json["id"]),
-      timestamp: parseDateTime(json["timestamp"]),
-      type: EventTypeSerializer.parse(json["type"]),
+      id: EventIdSerializer.parse(json["id"], decodePath(path, "id")),
+      timestamp: decodeDateTime(json["timestamp"], path, "timestamp"),
+      type: EventTypeSerializer.parse(json["type"], decodePath(path, "type")),
     };
   },
 

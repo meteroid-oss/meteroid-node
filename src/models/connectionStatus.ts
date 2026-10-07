@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 /** Status of a connected account */
 export const ConnectionStatus = {
   Pending: "pending",
@@ -12,8 +13,8 @@ export type ConnectionStatus =
 
 /** Converts `ConnectionStatus` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ConnectionStatusSerializer = {
-  parse(json: any): ConnectionStatus {
-    return json;
+  parse(json: any, path = "$"): ConnectionStatus {
+    return decodeString(json, path);
   },
 
   serialize(value: ConnectionStatus): any {

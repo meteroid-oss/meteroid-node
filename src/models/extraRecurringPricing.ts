@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodeString } from "../decode.js";
 
 export interface ExtraRecurringPricing {
   quantity: number;
@@ -8,11 +9,12 @@ export interface ExtraRecurringPricing {
 
 /** Converts `ExtraRecurringPricing` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ExtraRecurringPricingSerializer = {
-  parse(json: any): ExtraRecurringPricing {
+  parse(json: any, path = "$"): ExtraRecurringPricing {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["quantity", "unit_price"]),
-      quantity: json["quantity"],
-      unitPrice: json["unit_price"],
+      quantity: decodeInteger(json["quantity"], path, "quantity"),
+      unitPrice: decodeString(json["unit_price"], path, "unit_price"),
     };
   },
 

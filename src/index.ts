@@ -119,7 +119,8 @@ export type MeteroidOptions = {
    */
   apiKey?: string | null | undefined;
   /**
-   * The API server URL. Defaults to the `METEROID_BASE_URL` environment variable; one of them is required.
+   * The API server URL. Defaults to the `METEROID_BASE_URL` environment variable, then
+   * `https://api.meteroid.com`.
    */
   baseURL?: string | null | undefined;
   /**
@@ -151,6 +152,7 @@ export type MeteroidOptions = {
   tokenProvider?: (() => string | Promise<string>) | undefined;
 };
 
+const DEFAULT_BASE_URL = "https://api.meteroid.com";
 const DEFAULT_TIMEOUT_MS = 60000;
 
 const AUTH: { schemes: Record<string, SecurityScheme>; security: Security } = {
@@ -165,7 +167,7 @@ const AUTH: { schemes: Record<string, SecurityScheme>; security: Security } = {
  *
  * @example
  * ```typescript
- * const meteroid = new Meteroid({ apiKey: "your-api-key", baseURL: "https://api.example.com" });
+ * const meteroid = new Meteroid({ apiKey: "your-api-key" });
  *
  * // Access the generated resources through the client.
  * ```
@@ -214,12 +216,7 @@ export class Meteroid {
    */
   public constructor(options: MeteroidOptions = {}) {
     const token = options.apiKey ?? readEnv("METEROID_API_KEY");
-    const baseUrl = options.baseURL ?? readEnv("METEROID_BASE_URL");
-    if (baseUrl === undefined) {
-      throw new MeteroidError(
-        "No base URL: pass the `baseURL` option or set the `METEROID_BASE_URL` environment variable."
-      );
-    }
+    const baseUrl = options.baseURL ?? readEnv("METEROID_BASE_URL") ?? DEFAULT_BASE_URL;
     this.requestCtx = {
       auth: AUTH,
       token,

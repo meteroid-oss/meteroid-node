@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeBoolean, decodeInteger, decodeObject, decodeString } from "../decode.js";
 /** Token introspection response as per RFC 7662 */
 export interface TokenIntrospectionResponse {
   active: boolean;
@@ -13,7 +14,8 @@ export interface TokenIntrospectionResponse {
 
 /** Converts `TokenIntrospectionResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const TokenIntrospectionResponseSerializer = {
-  parse(json: any): TokenIntrospectionResponse {
+  parse(json: any, path = "$"): TokenIntrospectionResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "active",
@@ -24,13 +26,22 @@ export const TokenIntrospectionResponseSerializer = {
         "sub",
         "token_type",
       ]),
-      active: json["active"],
-      clientId: json["client_id"],
-      exp: json["exp"],
-      iat: json["iat"],
-      scope: json["scope"],
-      sub: json["sub"],
-      tokenType: json["token_type"],
+      active: decodeBoolean(json["active"], path, "active"),
+      clientId:
+        json["client_id"] != null
+          ? decodeString(json["client_id"], path, "client_id")
+          : json["client_id"],
+      exp: json["exp"] != null ? decodeInteger(json["exp"], path, "exp") : json["exp"],
+      iat: json["iat"] != null ? decodeInteger(json["iat"], path, "iat") : json["iat"],
+      scope:
+        json["scope"] != null
+          ? decodeString(json["scope"], path, "scope")
+          : json["scope"],
+      sub: json["sub"] != null ? decodeString(json["sub"], path, "sub") : json["sub"],
+      tokenType:
+        json["token_type"] != null
+          ? decodeString(json["token_type"], path, "token_type")
+          : json["token_type"],
     };
   },
 

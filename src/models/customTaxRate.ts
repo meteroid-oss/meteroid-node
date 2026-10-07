@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 
 export interface CustomTaxRate {
   name: string;
@@ -9,12 +10,13 @@ export interface CustomTaxRate {
 
 /** Converts `CustomTaxRate` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomTaxRateSerializer = {
-  parse(json: any): CustomTaxRate {
+  parse(json: any, path = "$"): CustomTaxRate {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["name", "rate", "tax_code"]),
-      name: json["name"],
-      rate: json["rate"],
-      taxCode: json["tax_code"],
+      name: decodeString(json["name"], path, "name"),
+      rate: decodeString(json["rate"], path, "rate"),
+      taxCode: decodeString(json["tax_code"], path, "tax_code"),
     };
   },
 

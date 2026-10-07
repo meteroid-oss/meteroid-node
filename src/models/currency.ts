@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const Currency = {
   Aed: "AED",
@@ -165,8 +166,8 @@ export type Currency = (typeof Currency)[keyof typeof Currency] | (string & {});
 
 /** Converts `Currency` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CurrencySerializer = {
-  parse(json: any): Currency {
-    return json;
+  parse(json: any, path = "$"): Currency {
+    return decodeString(json, path);
   },
 
   serialize(value: Currency): any {

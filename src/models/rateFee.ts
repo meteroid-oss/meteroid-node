@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 
 export interface RateFee {
   rate: string;
@@ -7,10 +8,11 @@ export interface RateFee {
 
 /** Converts `RateFee` values from (`parse`) and to (`serialize`) their JSON form. */
 export const RateFeeSerializer = {
-  parse(json: any): RateFee {
+  parse(json: any, path = "$"): RateFee {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["rate"]),
-      rate: json["rate"],
+      rate: decodeString(json["rate"], path, "rate"),
     };
   },
 

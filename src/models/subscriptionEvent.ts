@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties, pickProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath } from "../decode.js";
 import { type EventId, EventIdSerializer } from "./eventId.js";
 import { type EventType, EventTypeSerializer } from "./eventType.js";
 import {
@@ -16,7 +16,8 @@ export interface SubscriptionEvent extends SubscriptionEventData {
 
 /** Converts `SubscriptionEvent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionEventSerializer = {
-  parse(json: any): SubscriptionEvent {
+  parse(json: any, path = "$"): SubscriptionEvent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "id",
@@ -49,7 +50,7 @@ export const SubscriptionEventSerializer = {
         "trial_duration",
         "version",
       ]),
-      ...pickProperties(SubscriptionEventDataSerializer.parse(json), [
+      ...pickProperties(SubscriptionEventDataSerializer.parse(json, path), [
         "activatedAt",
         "autoAdvanceInvoices",
         "billingDayAnchor",
@@ -77,9 +78,9 @@ export const SubscriptionEventSerializer = {
         "trialDuration",
         "version",
       ]),
-      id: EventIdSerializer.parse(json["id"]),
-      timestamp: parseDateTime(json["timestamp"]),
-      type: EventTypeSerializer.parse(json["type"]),
+      id: EventIdSerializer.parse(json["id"], decodePath(path, "id")),
+      timestamp: decodeDateTime(json["timestamp"], path, "timestamp"),
+      type: EventTypeSerializer.parse(json["type"], decodePath(path, "type")),
     };
   },
 

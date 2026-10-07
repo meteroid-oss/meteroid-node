@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 
 export interface MatrixDimension {
   key: string;
@@ -8,11 +9,12 @@ export interface MatrixDimension {
 
 /** Converts `MatrixDimension` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MatrixDimensionSerializer = {
-  parse(json: any): MatrixDimension {
+  parse(json: any, path = "$"): MatrixDimension {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["key", "value"]),
-      key: json["key"],
-      value: json["value"],
+      key: decodeString(json["key"], path, "key"),
+      value: decodeString(json["value"], path, "value"),
     };
   },
 

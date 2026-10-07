@@ -30,11 +30,20 @@ export type Pagination<P, T> = {
 
 type Param = string | number | undefined;
 
+/** The properties of the response body `P` no paging member of `Members` shadows. */
+type BodyFields<P, Members> = {
+  [K in keyof P as K extends keyof Members ? never : K]: P[K];
+};
+
 /**
- * One page of a list operation. Iterating it with `for await` yields its items and those of
- * the pages after it, fetched on demand.
+ * One page of a list operation: its response body `P`, whose properties are read on the page,
+ * and the paging members, which win over the properties named like them (kept on `body`).
+ * Iterating it with `for await` yields its items and those of the pages after it.
  */
-export class Page<P, T> implements AsyncIterable<T> {
+export type Page<P, T> = PageMembers<P, T> & BodyFields<P, PageMembers<P, T>>;
+
+/** The paging members of a `Page`. */
+class PageMembers<P, T> implements AsyncIterable<T> {
   /** The items of this page. */
   public readonly items: readonly T[];
   readonly #pagination: Pagination<P, T>;
@@ -44,7 +53,7 @@ export class Page<P, T> implements AsyncIterable<T> {
   constructor(
     pagination: Pagination<P, T>,
     param: Param,
-    /** The response body. */
+    /** The decoded response body, with the properties a paging member shadows. */
     public readonly body: P,
     /** The HTTP response, for its status and headers. Its body has been read. */
     public readonly response: Response
@@ -52,6 +61,18 @@ export class Page<P, T> implements AsyncIterable<T> {
     this.#pagination = pagination;
     this.items = pagination.items(body) ?? [];
     this.#next = nextParam(pagination, body, param, this.items);
+    if (typeof body === "object" && body !== null) {
+      for (const [key, value] of Object.entries(body)) {
+        if (!isMember(this, key)) {
+          Object.defineProperty(this, key, {
+            value,
+            enumerable: true,
+            writable: true,
+            configurable: true,
+          });
+        }
+      }
+    }
   }
 
   /** Whether another page follows this one. */
@@ -69,7 +90,7 @@ export class Page<P, T> implements AsyncIterable<T> {
 
   /** Yields this page and the ones after it. */
   public async *iterPages(): AsyncGenerator<Page<P, T>, void, undefined> {
-    let page: Page<P, T> = this;
+    let page = this as unknown as Page<P, T>;
     yield page;
     while (page.hasNextPage()) {
       page = await page.getNextPage();
@@ -77,11 +98,34 @@ export class Page<P, T> implements AsyncIterable<T> {
     }
   }
 
+  /** The response body, which `JSON.stringify(page)` writes. */
+  public toJSON(): P {
+    return this.body;
+  }
+
   public async *[Symbol.asyncIterator](): AsyncGenerator<T, void, undefined> {
     for await (const page of this.iterPages()) {
       yield* page.items;
     }
   }
+}
+
+/** The class of every `Page`, for `instanceof`. */
+export const Page = PageMembers;
+
+/** Whether `key` names a paging member: an own field of `page` or a method of its class. */
+function isMember(page: object, key: string): boolean {
+  const owns = (target: object) => Object.prototype.hasOwnProperty.call(target, key);
+  return owns(page) || (key !== "constructor" && owns(PageMembers.prototype));
+}
+
+function newPage<P, T>(
+  pagination: Pagination<P, T>,
+  param: Param,
+  body: P,
+  response: Response
+): Page<P, T> {
+  return new PageMembers(pagination, param, body, response) as Page<P, T>;
 }
 
 /**
@@ -99,9 +143,8 @@ export class PagePromise<P, T>
   ) {
     const param = startParam(pagination, start);
     super(
-      ...APIPromise.chain(
-        fetchFrom(pagination, param),
-        (body, response) => new Page(pagination, param, body, response)
+      ...APIPromise.chain(fetchFrom(pagination, param), (body, response) =>
+        newPage(pagination, param, body, response)
       )
     );
   }
@@ -134,7 +177,7 @@ async function fetchPage<P, T>(
   param: Param
 ): Promise<Page<P, T>> {
   const { data, response } = await fetchFrom(pagination, param).withResponse();
-  return new Page(pagination, param, data, response);
+  return newPage(pagination, param, data, response);
 }
 
 function nextParam<P, T>(

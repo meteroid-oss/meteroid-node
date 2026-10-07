@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const ProductFeeTypeEnum = {
   Rate: "RATE",
@@ -14,8 +15,8 @@ export type ProductFeeTypeEnum =
 
 /** Converts `ProductFeeTypeEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ProductFeeTypeEnumSerializer = {
-  parse(json: any): ProductFeeTypeEnum {
-    return json;
+  parse(json: any, path = "$"): ProductFeeTypeEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: ProductFeeTypeEnum): any {

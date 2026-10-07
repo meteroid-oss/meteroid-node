@@ -13,6 +13,7 @@ import type { CreditNoteStatus } from "../models/creditNoteStatus.js";
 import type { CustomerId } from "../models/customerId.js";
 import type { InvoiceId } from "../models/invoiceId.js";
 import type { APIPromise } from "../apiPromise.js";
+import { PagePromise } from "../pagination.js";
 import {
   MeteroidRequest,
   type MeteroidRequestContext,
@@ -45,8 +46,28 @@ export class CreditNotes {
    * List credit notes
    *
    * List a tenant's credit notes, optionally filtered by customer, invoice or status.
+   *
+   * Await it for the first page: the response body, its properties read on the page, with
+   * `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`. Or iterate it with `for await`
+   * over every item of every page, fetched on demand.
    */
   public list(
+    options?: CreditNotesListOptions,
+    requestOptions?: RequestOptions
+  ): PagePromise<CreditNoteListResponse, CreditNote> {
+    return new PagePromise<CreditNoteListResponse, CreditNote>(
+      {
+        style: "page",
+        items: (page) => page.data,
+        totalPages: (page) => page.paginationMeta?.totalPages,
+        firstPage: 0,
+        fetch: (page) => this.#list({ ...options, page: page }, requestOptions),
+      },
+      options?.page
+    );
+  }
+
+  #list(
     options?: CreditNotesListOptions,
     requestOptions?: RequestOptions
   ): APIPromise<CreditNoteListResponse> {

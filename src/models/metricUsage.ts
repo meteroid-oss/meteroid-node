@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type BillableMetricId, BillableMetricIdSerializer } from "./billableMetricId.js";
 import { type GroupedUsage, GroupedUsageSerializer } from "./groupedUsage.js";
 
@@ -13,7 +14,8 @@ export interface MetricUsage {
 
 /** Converts `MetricUsage` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MetricUsageSerializer = {
-  parse(json: any): MetricUsage {
+  parse(json: any, path = "$"): MetricUsage {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "grouped_usage",
@@ -22,13 +24,20 @@ export const MetricUsageSerializer = {
         "metric_name",
         "total_value",
       ]),
-      groupedUsage: json["grouped_usage"].map((item: any) =>
-        GroupedUsageSerializer.parse(item)
+      groupedUsage: decodeList(
+        json["grouped_usage"],
+        path,
+        "grouped_usage",
+        (item: any, p: string, i: number) =>
+          GroupedUsageSerializer.parse(item, decodePath(p, i))
       ),
-      metricCode: json["metric_code"],
-      metricId: BillableMetricIdSerializer.parse(json["metric_id"]),
-      metricName: json["metric_name"],
-      totalValue: json["total_value"],
+      metricCode: decodeString(json["metric_code"], path, "metric_code"),
+      metricId: BillableMetricIdSerializer.parse(
+        json["metric_id"],
+        decodePath(path, "metric_id")
+      ),
+      metricName: decodeString(json["metric_name"], path, "metric_name"),
+      totalValue: decodeString(json["total_value"], path, "total_value"),
     };
   },
 

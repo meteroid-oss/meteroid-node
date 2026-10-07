@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import {
   type SubscriptionAddOnParameterization,
   SubscriptionAddOnParameterizationSerializer,
@@ -23,16 +24,17 @@ export type SubscriptionAddOnCustomization =
 
 /** Converts `SubscriptionAddOnCustomization` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionAddOnCustomizationSerializer = {
-  parse(json: any): SubscriptionAddOnCustomization {
+  parse(json: any, path = "$"): SubscriptionAddOnCustomization {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "PRICE_OVERRIDE":
         return {
-          ...SubscriptionAddOnPriceOverrideSerializer.parse(json),
+          ...SubscriptionAddOnPriceOverrideSerializer.parse(json, path),
           type: "PRICE_OVERRIDE",
         };
       case "PARAMETERIZATION":
         return {
-          ...SubscriptionAddOnParameterizationSerializer.parse(json),
+          ...SubscriptionAddOnParameterizationSerializer.parse(json, path),
           type: "PARAMETERIZATION",
         };
       default:

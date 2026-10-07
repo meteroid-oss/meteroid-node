@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import {
   type BooleanFeatureType,
   BooleanFeatureTypeSerializer,
@@ -26,21 +27,22 @@ export type FeatureType = FeatureTypeBoolean | FeatureTypeMetered | FeatureTypeC
 
 /** Converts `FeatureType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const FeatureTypeSerializer = {
-  parse(json: any): FeatureType {
+  parse(json: any, path = "$"): FeatureType {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "BOOLEAN":
         return {
-          ...BooleanFeatureTypeSerializer.parse(json),
+          ...BooleanFeatureTypeSerializer.parse(json, path),
           type: "BOOLEAN",
         };
       case "METERED":
         return {
-          ...MeteredFeatureTypeSerializer.parse(json),
+          ...MeteredFeatureTypeSerializer.parse(json, path),
           type: "METERED",
         };
       case "CONFIG":
         return {
-          ...ConfigFeatureTypeSerializer.parse(json),
+          ...ConfigFeatureTypeSerializer.parse(json, path),
           type: "CONFIG",
         };
       default:

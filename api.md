@@ -7,6 +7,10 @@ resource. Each method also takes a last `requestOptions?: RequestOptions` argume
 `APIPromise`, awaited for the body or asked for the response with `.withResponse()`. Models are
 in [`src/models`](src/models).
 
+List methods return a `PagePromise`. Awaited, it gives the first `Page`: the response body, its
+properties read on the page, with `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`.
+Iterated with `for await`, it yields every item of every page.
+
 [Add ons](#add-ons) · [Batch jobs](#batch-jobs) · [Checkout sessions](#checkout-sessions) · [Connect](#connect) · [Coupons](#coupons) · [Credit notes](#credit-notes) · [Custom properties](#custom-properties) · [Customers](#customers) · [Entitlements](#entitlements) · [Events](#events) · [Features](#features) · [Invoices](#invoices) · [Metrics](#metrics) · [Oauth](#oauth) · [Oauth apps](#oauth-apps) · [Plans](#plans) · [Product families](#product-families) · [Products](#products) · [Subscriptions](#subscriptions) · [Usage](#usage)
 
 ## Add ons
@@ -15,7 +19,7 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.addOns.list(options?: AddOnsListOptions): APIPromise<AddOnListResponse>` | `GET /api/v1/addons` | [`AddOnListResponse`](src/models/addOnListResponse.ts) |
+| `client.addOns.list(options?: AddOnsListOptions): PagePromise<AddOnListResponse, AddOn>` | `GET /api/v1/addons` | [`AddOnListResponse`](src/models/addOnListResponse.ts) pages of [`AddOn`](src/models/addOn.ts) |
 | `client.addOns.create(createAddOnRequest: CreateAddOnRequest): APIPromise<AddOn>` | `POST /api/v1/addons` | [`AddOn`](src/models/addOn.ts) |
 | `client.addOns.retrieve(addonId: string): APIPromise<AddOn>` | `GET /api/v1/addons/{addon_id}` | [`AddOn`](src/models/addOn.ts) |
 | `client.addOns.update(addonId: string, updateAddOnRequest: UpdateAddOnRequest): APIPromise<AddOn>` | `PATCH /api/v1/addons/{addon_id}` | [`AddOn`](src/models/addOn.ts) |
@@ -30,9 +34,9 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.batchJobs.list(options?: BatchJobsListOptions): APIPromise<BatchJobListResponse>` | `GET /api/v1/batch-jobs` | [`BatchJobListResponse`](src/models/batchJobListResponse.ts) |
+| `client.batchJobs.list(options?: BatchJobsListOptions): PagePromise<BatchJobListResponse, BatchJobResponse>` | `GET /api/v1/batch-jobs` | [`BatchJobListResponse`](src/models/batchJobListResponse.ts) pages of [`BatchJobResponse`](src/models/batchJobResponse.ts) |
 | `client.batchJobs.retrieve(batchJobId: string): APIPromise<BatchJobDetailResponse>` | `GET /api/v1/batch-jobs/{batch_job_id}` | [`BatchJobDetailResponse`](src/models/batchJobDetailResponse.ts) |
-| `client.batchJobs.listFailures(batchJobId: string, options?: BatchJobsListFailuresOptions): APIPromise<BatchJobFailuresResponse>` | `GET /api/v1/batch-jobs/{batch_job_id}/failures` | [`BatchJobFailuresResponse`](src/models/batchJobFailuresResponse.ts) |
+| `client.batchJobs.listFailures(batchJobId: string, options?: BatchJobsListFailuresOptions): PagePromise<BatchJobFailuresResponse, BatchJobItemFailureResponse>` | `GET /api/v1/batch-jobs/{batch_job_id}/failures` | [`BatchJobFailuresResponse`](src/models/batchJobFailuresResponse.ts) pages of [`BatchJobItemFailureResponse`](src/models/batchJobItemFailureResponse.ts) |
 
 ## Checkout sessions
 
@@ -63,7 +67,7 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.coupons.list(options?: CouponsListOptions): APIPromise<CouponListResponse>` | `GET /api/v1/coupons` | [`CouponListResponse`](src/models/couponListResponse.ts) |
+| `client.coupons.list(options?: CouponsListOptions): PagePromise<CouponListResponse, Coupon>` | `GET /api/v1/coupons` | [`CouponListResponse`](src/models/couponListResponse.ts) pages of [`Coupon`](src/models/coupon.ts) |
 | `client.coupons.create(createCouponRequest: CreateCouponRequest): APIPromise<Coupon>` | `POST /api/v1/coupons` | [`Coupon`](src/models/coupon.ts) |
 | `client.coupons.retrieve(couponId: string): APIPromise<Coupon>` | `GET /api/v1/coupons/{coupon_id}` | [`Coupon`](src/models/coupon.ts) |
 | `client.coupons.update(couponId: string, updateCouponRequest: UpdateCouponRequest): APIPromise<Coupon>` | `PATCH /api/v1/coupons/{coupon_id}` | [`Coupon`](src/models/coupon.ts) |
@@ -78,7 +82,7 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.creditNotes.list(options?: CreditNotesListOptions): APIPromise<CreditNoteListResponse>` | `GET /api/v1/credit-notes` | [`CreditNoteListResponse`](src/models/creditNoteListResponse.ts) |
+| `client.creditNotes.list(options?: CreditNotesListOptions): PagePromise<CreditNoteListResponse, CreditNote>` | `GET /api/v1/credit-notes` | [`CreditNoteListResponse`](src/models/creditNoteListResponse.ts) pages of [`CreditNote`](src/models/creditNote.ts) |
 | `client.creditNotes.retrieve(creditNoteId: string): APIPromise<CreditNote>` | `GET /api/v1/credit-notes/{credit_note_id}` | [`CreditNote`](src/models/creditNote.ts) |
 | `client.creditNotes.updateCustomProperties(creditNoteId: string, creditNoteCustomPropertiesRequest: CreditNoteCustomPropertiesRequest): APIPromise<CreditNote>` | `PATCH /api/v1/credit-notes/{credit_note_id}/custom-properties` | [`CreditNote`](src/models/creditNote.ts) |
 | `client.creditNotes.download(creditNoteId: string): APIPromise<Uint8Array>` | `GET /api/v1/credit-notes/{credit_note_id}/download` | bytes |
@@ -90,7 +94,7 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.customProperties.listCustomPropertyDefinitions(options?: CustomPropertiesListCustomPropertyDefinitionsOptions): APIPromise<CustomPropertyDefinitionListResponse>` | `GET /api/v1/custom-property-definitions` | [`CustomPropertyDefinitionListResponse`](src/models/customPropertyDefinitionListResponse.ts) |
+| `client.customProperties.listCustomPropertyDefinitions(options?: CustomPropertiesListCustomPropertyDefinitionsOptions): PagePromise<CustomPropertyDefinitionListResponse, CustomPropertyDefinition>` | `GET /api/v1/custom-property-definitions` | [`CustomPropertyDefinitionListResponse`](src/models/customPropertyDefinitionListResponse.ts) pages of [`CustomPropertyDefinition`](src/models/customPropertyDefinition.ts) |
 | `client.customProperties.createCustomPropertyDefinition(customPropertyDefinitionCreateRequest: CustomPropertyDefinitionCreateRequest): APIPromise<CustomPropertyDefinition>` | `POST /api/v1/custom-property-definitions` | [`CustomPropertyDefinition`](src/models/customPropertyDefinition.ts) |
 | `client.customProperties.retrieveCustomPropertyDefinition(id: string): APIPromise<CustomPropertyDefinition>` | `GET /api/v1/custom-property-definitions/{id}` | [`CustomPropertyDefinition`](src/models/customPropertyDefinition.ts) |
 | `client.customProperties.updateCustomPropertyDefinition(id: string, customPropertyDefinitionUpdateRequest: CustomPropertyDefinitionUpdateRequest): APIPromise<CustomPropertyDefinition>` | `PUT /api/v1/custom-property-definitions/{id}` | [`CustomPropertyDefinition`](src/models/customPropertyDefinition.ts) |
@@ -102,7 +106,7 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.customers.list(options?: CustomersListOptions): APIPromise<CustomerListResponse>` | `GET /api/v1/customers` | [`CustomerListResponse`](src/models/customerListResponse.ts) |
+| `client.customers.list(options?: CustomersListOptions): PagePromise<CustomerListResponse, Customer>` | `GET /api/v1/customers` | [`CustomerListResponse`](src/models/customerListResponse.ts) pages of [`Customer`](src/models/customer.ts) |
 | `client.customers.create(customerCreateRequest: CustomerCreateRequest): APIPromise<Customer>` | `POST /api/v1/customers` | [`Customer`](src/models/customer.ts) |
 | `client.customers.retrieve(idOrAlias: string): APIPromise<Customer>` | `GET /api/v1/customers/{id_or_alias}` | [`Customer`](src/models/customer.ts) |
 | `client.customers.replace(idOrAlias: string, customerUpdateRequest: CustomerUpdateRequest): APIPromise<Customer>` | `PUT /api/v1/customers/{id_or_alias}` | [`Customer`](src/models/customer.ts) |
@@ -136,7 +140,7 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.features.list(options?: FeaturesListOptions): APIPromise<FeatureListResponse>` | `GET /api/v1/features` | [`FeatureListResponse`](src/models/featureListResponse.ts) |
+| `client.features.list(options?: FeaturesListOptions): PagePromise<FeatureListResponse, Feature>` | `GET /api/v1/features` | [`FeatureListResponse`](src/models/featureListResponse.ts) pages of [`Feature`](src/models/feature.ts) |
 | `client.features.create(createFeatureRequest: CreateFeatureRequest): APIPromise<Feature>` | `POST /api/v1/features` | [`Feature`](src/models/feature.ts) |
 | `client.features.retrieve(idOrCode: string): APIPromise<Feature>` | `GET /api/v1/features/{id_or_code}` | [`Feature`](src/models/feature.ts) |
 | `client.features.update(idOrCode: string, updateFeatureRequest: UpdateFeatureRequest): APIPromise<Feature>` | `PATCH /api/v1/features/{id_or_code}` | [`Feature`](src/models/feature.ts) |
@@ -149,7 +153,7 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.invoices.list(options?: InvoicesListOptions): APIPromise<InvoiceListResponse>` | `GET /api/v1/invoices` | [`InvoiceListResponse`](src/models/invoiceListResponse.ts) |
+| `client.invoices.list(options?: InvoicesListOptions): PagePromise<InvoiceListResponse, Invoice>` | `GET /api/v1/invoices` | [`InvoiceListResponse`](src/models/invoiceListResponse.ts) pages of [`Invoice`](src/models/invoice.ts) |
 | `client.invoices.retrieve(invoiceId: string): APIPromise<Invoice>` | `GET /api/v1/invoices/{invoice_id}` | [`Invoice`](src/models/invoice.ts) |
 | `client.invoices.updateCustomProperties(invoiceId: string, invoiceCustomPropertiesRequest: InvoiceCustomPropertiesRequest): APIPromise<Invoice>` | `PATCH /api/v1/invoices/{invoice_id}/custom-properties` | [`Invoice`](src/models/invoice.ts) |
 | `client.invoices.download(invoiceId: string): APIPromise<Uint8Array>` | `GET /api/v1/invoices/{invoice_id}/download` | bytes |
@@ -162,7 +166,7 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.metrics.list(options?: MetricsListOptions): APIPromise<MetricListResponse>` | `GET /api/v1/metrics` | [`MetricListResponse`](src/models/metricListResponse.ts) |
+| `client.metrics.list(options?: MetricsListOptions): PagePromise<MetricListResponse, MetricSummary>` | `GET /api/v1/metrics` | [`MetricListResponse`](src/models/metricListResponse.ts) pages of [`MetricSummary`](src/models/metricSummary.ts) |
 | `client.metrics.create(createMetricRequest: CreateMetricRequest): APIPromise<Metric>` | `POST /api/v1/metrics` | [`Metric`](src/models/metric.ts) |
 | `client.metrics.retrieve(metricId: string): APIPromise<Metric>` | `GET /api/v1/metrics/{metric_id}` | [`Metric`](src/models/metric.ts) |
 | `client.metrics.update(metricId: string, updateMetricRequest: UpdateMetricRequest): APIPromise<Metric>` | `PATCH /api/v1/metrics/{metric_id}` | [`Metric`](src/models/metric.ts) |
@@ -199,7 +203,7 @@ in [`src/models`](src/models).
 | --- | --- | --- |
 | `client.plans.listPlanVersionEntitlements(planVersionId: string): APIPromise<ResolvedEntitlementListResponse>` | `GET /api/v1/plan-versions/{plan_version_id}/entitlements` | [`ResolvedEntitlementListResponse`](src/models/resolvedEntitlementListResponse.ts) |
 | `client.plans.createPlanVersionEntitlement(planVersionId: string, createEntitlementsRequest: CreateEntitlementsRequest): APIPromise<EntitlementListResponse>` | `POST /api/v1/plan-versions/{plan_version_id}/entitlements` | [`EntitlementListResponse`](src/models/entitlementListResponse.ts) |
-| `client.plans.list(options?: PlansListOptions): APIPromise<PlanListResponse>` | `GET /api/v1/plans` | [`PlanListResponse`](src/models/planListResponse.ts) |
+| `client.plans.list(options?: PlansListOptions): PagePromise<PlanListResponse, Plan>` | `GET /api/v1/plans` | [`PlanListResponse`](src/models/planListResponse.ts) pages of [`Plan`](src/models/plan.ts) |
 | `client.plans.create(createPlanRequest: CreatePlanRequest): APIPromise<Plan>` | `POST /api/v1/plans` | [`Plan`](src/models/plan.ts) |
 | `client.plans.updateVersionMinimum(planVersionId: string, minimumCommitment: MinimumCommitment): APIPromise<MinimumCommitment>` | `PUT /api/v1/plans/versions/{plan_version_id}/minimum` | [`MinimumCommitment`](src/models/minimumCommitment.ts) |
 | `client.plans.deleteVersionMinimum(planVersionId: string): APIPromise<void>` | `DELETE /api/v1/plans/versions/{plan_version_id}/minimum` | nothing |
@@ -209,7 +213,7 @@ in [`src/models`](src/models).
 | `client.plans.archive(planId: string): APIPromise<void>` | `POST /api/v1/plans/{plan_id}/archive` | nothing |
 | `client.plans.publish(planId: string): APIPromise<Plan>` | `POST /api/v1/plans/{plan_id}/publish` | [`Plan`](src/models/plan.ts) |
 | `client.plans.unarchive(planId: string): APIPromise<void>` | `POST /api/v1/plans/{plan_id}/unarchive` | nothing |
-| `client.plans.listVersions(planId: string, options?: PlansListVersionsOptions): APIPromise<PlanVersionListResponse>` | `GET /api/v1/plans/{plan_id}/versions` | [`PlanVersionListResponse`](src/models/planVersionListResponse.ts) |
+| `client.plans.listVersions(planId: string, options?: PlansListVersionsOptions): PagePromise<PlanVersionListResponse, PlanVersionSummary>` | `GET /api/v1/plans/{plan_id}/versions` | [`PlanVersionListResponse`](src/models/planVersionListResponse.ts) pages of [`PlanVersionSummary`](src/models/planVersionSummary.ts) |
 
 ## Product families
 
@@ -217,7 +221,7 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.productFamilies.list(options?: ProductFamiliesListOptions): APIPromise<ProductFamilyListResponse>` | `GET /api/v1/product_families` | [`ProductFamilyListResponse`](src/models/productFamilyListResponse.ts) |
+| `client.productFamilies.list(options?: ProductFamiliesListOptions): PagePromise<ProductFamilyListResponse, ProductFamily>` | `GET /api/v1/product_families` | [`ProductFamilyListResponse`](src/models/productFamilyListResponse.ts) pages of [`ProductFamily`](src/models/productFamily.ts) |
 | `client.productFamilies.create(productFamilyCreateRequest: ProductFamilyCreateRequest): APIPromise<ProductFamily>` | `POST /api/v1/product_families` | [`ProductFamily`](src/models/productFamily.ts) |
 | `client.productFamilies.retrieve(idOrAlias: string): APIPromise<ProductFamily>` | `GET /api/v1/product_families/{id_or_alias}` | [`ProductFamily`](src/models/productFamily.ts) |
 
@@ -227,7 +231,7 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.products.list(options?: ProductsListOptions): APIPromise<ProductListResponse>` | `GET /api/v1/products` | [`ProductListResponse`](src/models/productListResponse.ts) |
+| `client.products.list(options?: ProductsListOptions): PagePromise<ProductListResponse, Product>` | `GET /api/v1/products` | [`ProductListResponse`](src/models/productListResponse.ts) pages of [`Product`](src/models/product.ts) |
 | `client.products.create(createProductRequest: CreateProductRequest): APIPromise<Product>` | `POST /api/v1/products` | [`Product`](src/models/product.ts) |
 | `client.products.retrieve(productId: string): APIPromise<Product>` | `GET /api/v1/products/{product_id}` | [`Product`](src/models/product.ts) |
 | `client.products.update(productId: string, updateProductRequest: UpdateProductRequest): APIPromise<Product>` | `PATCH /api/v1/products/{product_id}` | [`Product`](src/models/product.ts) |
@@ -242,7 +246,7 @@ in [`src/models`](src/models).
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.subscriptions.list(options?: SubscriptionsListOptions): APIPromise<SubscriptionListResponse>` | `GET /api/v1/subscriptions` | [`SubscriptionListResponse`](src/models/subscriptionListResponse.ts) |
+| `client.subscriptions.list(options?: SubscriptionsListOptions): PagePromise<SubscriptionListResponse, Subscription>` | `GET /api/v1/subscriptions` | [`SubscriptionListResponse`](src/models/subscriptionListResponse.ts) pages of [`Subscription`](src/models/subscription.ts) |
 | `client.subscriptions.create(subscriptionCreateRequest: SubscriptionCreateRequest): APIPromise<SubscriptionDetails>` | `POST /api/v1/subscriptions` | [`SubscriptionDetails`](src/models/subscriptionDetails.ts) |
 | `client.subscriptions.retrieve(subscriptionId: string): APIPromise<SubscriptionDetails>` | `GET /api/v1/subscriptions/{subscription_id}` | [`SubscriptionDetails`](src/models/subscriptionDetails.ts) |
 | `client.subscriptions.update(subscriptionId: string, subscriptionUpdateRequest: SubscriptionUpdateRequest): APIPromise<SubscriptionUpdateResponse>` | `PATCH /api/v1/subscriptions/{subscription_id}` | [`SubscriptionUpdateResponse`](src/models/subscriptionUpdateResponse.ts) |

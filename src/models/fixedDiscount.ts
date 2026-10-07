@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 
 export interface FixedDiscount {
   amount: string;
@@ -8,11 +9,12 @@ export interface FixedDiscount {
 
 /** Converts `FixedDiscount` values from (`parse`) and to (`serialize`) their JSON form. */
 export const FixedDiscountSerializer = {
-  parse(json: any): FixedDiscount {
+  parse(json: any, path = "$"): FixedDiscount {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["amount", "currency"]),
-      amount: json["amount"],
-      currency: json["currency"],
+      amount: decodeString(json["amount"], path, "amount"),
+      currency: decodeString(json["currency"], path, "currency"),
     };
   },
 

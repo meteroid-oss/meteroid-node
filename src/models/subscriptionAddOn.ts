@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type AddOnId, AddOnIdSerializer } from "./addOnId.js";
 import {
   type SubscriptionAddOnId,
@@ -22,19 +23,25 @@ export interface SubscriptionAddOn {
 
 /** Converts `SubscriptionAddOn` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionAddOnSerializer = {
-  parse(json: any): SubscriptionAddOn {
+  parse(json: any, path = "$"): SubscriptionAddOn {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["add_on_id", "fee", "id", "name", "period", "quantity"]),
       addOnId:
         json["add_on_id"] != null
-          ? AddOnIdSerializer.parse(json["add_on_id"])
+          ? AddOnIdSerializer.parse(json["add_on_id"], decodePath(path, "add_on_id"))
           : undefined,
-      fee: SubscriptionFeeSerializer.parse(json["fee"]),
+      fee: SubscriptionFeeSerializer.parse(json["fee"], decodePath(path, "fee")),
       id:
-        json["id"] != null ? SubscriptionAddOnIdSerializer.parse(json["id"]) : undefined,
-      name: json["name"],
-      period: SubscriptionFeeBillingPeriodEnumSerializer.parse(json["period"]),
-      quantity: json["quantity"],
+        json["id"] != null
+          ? SubscriptionAddOnIdSerializer.parse(json["id"], decodePath(path, "id"))
+          : undefined,
+      name: decodeString(json["name"], path, "name"),
+      period: SubscriptionFeeBillingPeriodEnumSerializer.parse(
+        json["period"],
+        decodePath(path, "period")
+      ),
+      quantity: decodeInteger(json["quantity"], path, "quantity"),
     };
   },
 

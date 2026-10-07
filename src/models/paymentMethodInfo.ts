@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath, decodeString } from "../decode.js";
 import {
   type PaymentMethodTypeEnum,
   PaymentMethodTypeEnumSerializer,
@@ -14,7 +15,8 @@ export interface PaymentMethodInfo {
 
 /** Converts `PaymentMethodInfo` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PaymentMethodInfoSerializer = {
-  parse(json: any): PaymentMethodInfo {
+  parse(json: any, path = "$"): PaymentMethodInfo {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "account_number_hint",
@@ -22,11 +24,21 @@ export const PaymentMethodInfoSerializer = {
         "card_last4",
         "payment_method_type",
       ]),
-      accountNumberHint: json["account_number_hint"],
-      cardBrand: json["card_brand"],
-      cardLast4: json["card_last4"],
+      accountNumberHint:
+        json["account_number_hint"] != null
+          ? decodeString(json["account_number_hint"], path, "account_number_hint")
+          : json["account_number_hint"],
+      cardBrand:
+        json["card_brand"] != null
+          ? decodeString(json["card_brand"], path, "card_brand")
+          : json["card_brand"],
+      cardLast4:
+        json["card_last4"] != null
+          ? decodeString(json["card_last4"], path, "card_last4")
+          : json["card_last4"],
       paymentMethodType: PaymentMethodTypeEnumSerializer.parse(
-        json["payment_method_type"]
+        json["payment_method_type"],
+        decodePath(path, "payment_method_type")
       ),
     };
   },

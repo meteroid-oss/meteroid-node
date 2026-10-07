@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import { type ProductId, ProductIdSerializer } from "./productId.js";
 
 export interface ExistingProductRef {
@@ -8,10 +9,11 @@ export interface ExistingProductRef {
 
 /** Converts `ExistingProductRef` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ExistingProductRefSerializer = {
-  parse(json: any): ExistingProductRef {
+  parse(json: any, path = "$"): ExistingProductRef {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["id"]),
-      id: ProductIdSerializer.parse(json["id"]),
+      id: ProductIdSerializer.parse(json["id"], decodePath(path, "id")),
     };
   },
 

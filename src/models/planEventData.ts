@@ -1,6 +1,12 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type PlanId, PlanIdSerializer } from "./planId.js";
 import { type PlanStatusEnum, PlanStatusEnumSerializer } from "./planStatusEnum.js";
 import { type PlanTypeEnum, PlanTypeEnumSerializer } from "./planTypeEnum.js";
@@ -18,7 +24,8 @@ export interface PlanEventData {
 
 /** Converts `PlanEventData` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PlanEventDataSerializer = {
-  parse(json: any): PlanEventData {
+  parse(json: any, path = "$"): PlanEventData {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "created_at",
@@ -30,14 +37,20 @@ export const PlanEventDataSerializer = {
         "status",
         "version",
       ]),
-      createdAt: parseDateTime(json["created_at"]),
-      currency: json["currency"],
-      description: json["description"],
-      name: json["name"],
-      planId: PlanIdSerializer.parse(json["plan_id"]),
-      planType: PlanTypeEnumSerializer.parse(json["plan_type"]),
-      status: PlanStatusEnumSerializer.parse(json["status"]),
-      version: json["version"],
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      currency: decodeString(json["currency"], path, "currency"),
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
+      name: decodeString(json["name"], path, "name"),
+      planId: PlanIdSerializer.parse(json["plan_id"], decodePath(path, "plan_id")),
+      planType: PlanTypeEnumSerializer.parse(
+        json["plan_type"],
+        decodePath(path, "plan_type")
+      ),
+      status: PlanStatusEnumSerializer.parse(json["status"], decodePath(path, "status")),
+      version: decodeInteger(json["version"], path, "version"),
     };
   },
 

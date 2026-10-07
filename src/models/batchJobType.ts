@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const BatchJobType = {
   EventCsvImport: "EVENT_CSV_IMPORT",
@@ -13,8 +14,8 @@ export type BatchJobType =
 
 /** Converts `BatchJobType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const BatchJobTypeSerializer = {
-  parse(json: any): BatchJobType {
-    return json;
+  parse(json: any, path = "$"): BatchJobType {
+    return decodeString(json, path);
   },
 
   serialize(value: BatchJobType): any {

@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const TaxExemptionType = {
   ReverseCharge: "REVERSE_CHARGE",
@@ -13,8 +14,8 @@ export type TaxExemptionType =
 
 /** Converts `TaxExemptionType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const TaxExemptionTypeSerializer = {
-  parse(json: any): TaxExemptionType {
-    return json;
+  parse(json: any, path = "$"): TaxExemptionType {
+    return decodeString(json, path);
   },
 
   serialize(value: TaxExemptionType): any {

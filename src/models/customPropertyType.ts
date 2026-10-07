@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const CustomPropertyType = {
   Text: "TEXT",
@@ -18,8 +19,8 @@ export type CustomPropertyType =
 
 /** Converts `CustomPropertyType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomPropertyTypeSerializer = {
-  parse(json: any): CustomPropertyType {
-    return json;
+  parse(json: any, path = "$"): CustomPropertyType {
+    return decodeString(json, path);
   },
 
   serialize(value: CustomPropertyType): any {

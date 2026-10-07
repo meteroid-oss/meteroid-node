@@ -1,6 +1,14 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeInteger,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import {
   type AppliedCouponDetailed,
   AppliedCouponDetailedSerializer,
@@ -90,7 +98,8 @@ export interface SubscriptionDetails {
 
 /** Converts `SubscriptionDetails` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionDetailsSerializer = {
-  parse(json: any): SubscriptionDetails {
+  parse(json: any, path = "$"): SubscriptionDetails {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "activated_at",
@@ -131,55 +140,133 @@ export const SubscriptionDetailsSerializer = {
       ]),
       activatedAt:
         json["activated_at"] != null
-          ? parseDateTime(json["activated_at"])
+          ? decodeDateTime(json["activated_at"], path, "activated_at")
           : json["activated_at"],
-      addOns: json["add_ons"].map((item: any) => SubscriptionAddOnSerializer.parse(item)),
-      appliedCoupons: json["applied_coupons"].map((item: any) =>
-        AppliedCouponDetailedSerializer.parse(item)
+      addOns: decodeList(
+        json["add_ons"],
+        path,
+        "add_ons",
+        (item: any, p: string, i: number) =>
+          SubscriptionAddOnSerializer.parse(item, decodePath(p, i))
       ),
-      autoAdvanceInvoices: json["auto_advance_invoices"],
-      billingDayAnchor: json["billing_day_anchor"],
-      billingStartDate: json["billing_start_date"],
-      chargeAutomatically: json["charge_automatically"],
-      checkoutUrl: json["checkout_url"],
-      components: json["components"].map((item: any) =>
-        SubscriptionComponentSerializer.parse(item)
+      appliedCoupons: decodeList(
+        json["applied_coupons"],
+        path,
+        "applied_coupons",
+        (item: any, p: string, i: number) =>
+          AppliedCouponDetailedSerializer.parse(item, decodePath(p, i))
       ),
-      createdAt: parseDateTime(json["created_at"]),
-      currency: CurrencySerializer.parse(json["currency"]),
-      currentPeriodEnd: json["current_period_end"],
-      currentPeriodStart: json["current_period_start"],
+      autoAdvanceInvoices: decodeBoolean(
+        json["auto_advance_invoices"],
+        path,
+        "auto_advance_invoices"
+      ),
+      billingDayAnchor: decodeInteger(
+        json["billing_day_anchor"],
+        path,
+        "billing_day_anchor"
+      ),
+      billingStartDate:
+        json["billing_start_date"] != null
+          ? decodeString(json["billing_start_date"], path, "billing_start_date")
+          : json["billing_start_date"],
+      chargeAutomatically: decodeBoolean(
+        json["charge_automatically"],
+        path,
+        "charge_automatically"
+      ),
+      checkoutUrl:
+        json["checkout_url"] != null
+          ? decodeString(json["checkout_url"], path, "checkout_url")
+          : json["checkout_url"],
+      components: decodeList(
+        json["components"],
+        path,
+        "components",
+        (item: any, p: string, i: number) =>
+          SubscriptionComponentSerializer.parse(item, decodePath(p, i))
+      ),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      currency: CurrencySerializer.parse(json["currency"], decodePath(path, "currency")),
+      currentPeriodEnd:
+        json["current_period_end"] != null
+          ? decodeString(json["current_period_end"], path, "current_period_end")
+          : json["current_period_end"],
+      currentPeriodStart: decodeString(
+        json["current_period_start"],
+        path,
+        "current_period_start"
+      ),
       customProperties: json["custom_properties"],
-      customerAlias: json["customer_alias"],
-      customerId: CustomerIdSerializer.parse(json["customer_id"]),
-      customerName: json["customer_name"],
-      endDate: json["end_date"],
+      customerAlias:
+        json["customer_alias"] != null
+          ? decodeString(json["customer_alias"], path, "customer_alias")
+          : json["customer_alias"],
+      customerId: CustomerIdSerializer.parse(
+        json["customer_id"],
+        decodePath(path, "customer_id")
+      ),
+      customerName: decodeString(json["customer_name"], path, "customer_name"),
+      endDate:
+        json["end_date"] != null
+          ? decodeString(json["end_date"], path, "end_date")
+          : json["end_date"],
       entitlements:
         json["entitlements"] != null
-          ? json["entitlements"].map((item: any) => EntitlementSerializer.parse(item))
+          ? decodeList(
+              json["entitlements"],
+              path,
+              "entitlements",
+              (item: any, p: string, i: number) =>
+                EntitlementSerializer.parse(item, decodePath(p, i))
+            )
           : undefined,
-      id: SubscriptionIdSerializer.parse(json["id"]),
-      invoiceMemo: json["invoice_memo"],
+      id: SubscriptionIdSerializer.parse(json["id"], decodePath(path, "id")),
+      invoiceMemo:
+        json["invoice_memo"] != null
+          ? decodeString(json["invoice_memo"], path, "invoice_memo")
+          : json["invoice_memo"],
       minimumCommitment:
         json["minimum_commitment"] != null
-          ? MinimumCommitmentSerializer.parse(json["minimum_commitment"])
+          ? MinimumCommitmentSerializer.parse(
+              json["minimum_commitment"],
+              decodePath(path, "minimum_commitment")
+            )
           : json["minimum_commitment"],
-      mrrCents: json["mrr_cents"],
-      netTerms: json["net_terms"],
+      mrrCents: decodeInteger(json["mrr_cents"], path, "mrr_cents"),
+      netTerms: decodeInteger(json["net_terms"], path, "net_terms"),
       paymentMethodsConfig:
         json["payment_methods_config"] != null
-          ? PaymentMethodsConfigSerializer.parse(json["payment_methods_config"])
+          ? PaymentMethodsConfigSerializer.parse(
+              json["payment_methods_config"],
+              decodePath(path, "payment_methods_config")
+            )
           : json["payment_methods_config"],
-      period: BillingPeriodEnumSerializer.parse(json["period"]),
-      planId: PlanIdSerializer.parse(json["plan_id"]),
-      planName: json["plan_name"],
-      planVersion: json["plan_version"],
-      planVersionId: PlanVersionIdSerializer.parse(json["plan_version_id"]),
-      purchaseOrder: json["purchase_order"],
-      startDate: json["start_date"],
-      status: SubscriptionStatusEnumSerializer.parse(json["status"]),
-      taxInclusive: json["tax_inclusive"],
-      trialDuration: json["trial_duration"],
+      period: BillingPeriodEnumSerializer.parse(
+        json["period"],
+        decodePath(path, "period")
+      ),
+      planId: PlanIdSerializer.parse(json["plan_id"], decodePath(path, "plan_id")),
+      planName: decodeString(json["plan_name"], path, "plan_name"),
+      planVersion: decodeInteger(json["plan_version"], path, "plan_version"),
+      planVersionId: PlanVersionIdSerializer.parse(
+        json["plan_version_id"],
+        decodePath(path, "plan_version_id")
+      ),
+      purchaseOrder:
+        json["purchase_order"] != null
+          ? decodeString(json["purchase_order"], path, "purchase_order")
+          : json["purchase_order"],
+      startDate: decodeString(json["start_date"], path, "start_date"),
+      status: SubscriptionStatusEnumSerializer.parse(
+        json["status"],
+        decodePath(path, "status")
+      ),
+      taxInclusive: decodeBoolean(json["tax_inclusive"], path, "tax_inclusive"),
+      trialDuration:
+        json["trial_duration"] != null
+          ? decodeInteger(json["trial_duration"], path, "trial_duration")
+          : json["trial_duration"],
     };
   },
 

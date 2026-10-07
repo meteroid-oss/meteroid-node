@@ -1,5 +1,12 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type BillingConfig, BillingConfigSerializer } from "./billingConfig.js";
 import {
   type EntitlementSpecRequest,
@@ -44,7 +51,8 @@ export interface ReplacePlanRequest {
 
 /** Converts `ReplacePlanRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ReplacePlanRequestSerializer = {
-  parse(json: any): ReplacePlanRequest {
+  parse(json: any, path = "$"): ReplacePlanRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "add_ons",
@@ -61,36 +69,59 @@ export const ReplacePlanRequestSerializer = {
       ]),
       addOns:
         json["add_ons"] != null
-          ? json["add_ons"].map((item: any) => PlanAddOnInputSerializer.parse(item))
+          ? decodeList(
+              json["add_ons"],
+              path,
+              "add_ons",
+              (item: any, p: string, i: number) =>
+                PlanAddOnInputSerializer.parse(item, decodePath(p, i))
+            )
           : undefined,
       billing:
         json["billing"] != null
-          ? BillingConfigSerializer.parse(json["billing"])
+          ? BillingConfigSerializer.parse(json["billing"], decodePath(path, "billing"))
           : json["billing"],
-      components: json["components"].map((item: any) =>
-        PriceComponentInputSerializer.parse(item)
+      components: decodeList(
+        json["components"],
+        path,
+        "components",
+        (item: any, p: string, i: number) =>
+          PriceComponentInputSerializer.parse(item, decodePath(p, i))
       ),
-      currency: json["currency"],
-      description: json["description"],
+      currency: decodeString(json["currency"], path, "currency"),
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
       entitlements:
         json["entitlements"] != null
-          ? json["entitlements"].map((item: any) =>
-              EntitlementSpecRequestSerializer.parse(item)
+          ? decodeList(
+              json["entitlements"],
+              path,
+              "entitlements",
+              (item: any, p: string, i: number) =>
+                EntitlementSpecRequestSerializer.parse(item, decodePath(p, i))
             )
           : undefined,
       minimumCommitment:
         json["minimum_commitment"] != null
-          ? MinimumCommitmentInputSerializer.parse(json["minimum_commitment"])
+          ? MinimumCommitmentInputSerializer.parse(
+              json["minimum_commitment"],
+              decodePath(path, "minimum_commitment")
+            )
           : json["minimum_commitment"],
-      name: json["name"],
+      name: decodeString(json["name"], path, "name"),
       status:
         json["status"] != null
-          ? PlanStatusEnumSerializer.parse(json["status"])
+          ? PlanStatusEnumSerializer.parse(json["status"], decodePath(path, "status"))
           : json["status"],
-      taxInclusive: json["tax_inclusive"],
+      taxInclusive:
+        json["tax_inclusive"] != null
+          ? decodeBoolean(json["tax_inclusive"], path, "tax_inclusive")
+          : undefined,
       trial:
         json["trial"] != null
-          ? TrialConfigSerializer.parse(json["trial"])
+          ? TrialConfigSerializer.parse(json["trial"], decodePath(path, "trial"))
           : json["trial"],
     };
   },

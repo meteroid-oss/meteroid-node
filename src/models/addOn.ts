@@ -1,6 +1,14 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeInteger,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type AddOnId, AddOnIdSerializer } from "./addOnId.js";
 import { type Entitlement, EntitlementSerializer } from "./entitlement.js";
 import { type PriceId, PriceIdSerializer } from "./priceId.js";
@@ -26,7 +34,8 @@ export interface AddOn {
 
 /** Converts `AddOn` values from (`parse`) and to (`serialize`) their JSON form. */
 export const AddOnSerializer = {
-  parse(json: any): AddOn {
+  parse(json: any, path = "$"): AddOn {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "archived_at",
@@ -43,24 +52,46 @@ export const AddOnSerializer = {
       ]),
       archivedAt:
         json["archived_at"] != null
-          ? parseDateTime(json["archived_at"])
+          ? decodeDateTime(json["archived_at"], path, "archived_at")
           : json["archived_at"],
-      createdAt: parseDateTime(json["created_at"]),
-      description: json["description"],
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
       entitlements:
         json["entitlements"] != null
-          ? json["entitlements"].map((item: any) => EntitlementSerializer.parse(item))
+          ? decodeList(
+              json["entitlements"],
+              path,
+              "entitlements",
+              (item: any, p: string, i: number) =>
+                EntitlementSerializer.parse(item, decodePath(p, i))
+            )
           : undefined,
       feeType:
         json["fee_type"] != null
-          ? ProductFeeTypeEnumSerializer.parse(json["fee_type"])
+          ? ProductFeeTypeEnumSerializer.parse(
+              json["fee_type"],
+              decodePath(path, "fee_type")
+            )
           : json["fee_type"],
-      id: AddOnIdSerializer.parse(json["id"]),
-      maxInstancesPerSubscription: json["max_instances_per_subscription"],
-      name: json["name"],
-      priceId: PriceIdSerializer.parse(json["price_id"]),
-      productId: ProductIdSerializer.parse(json["product_id"]),
-      selfServiceable: json["self_serviceable"],
+      id: AddOnIdSerializer.parse(json["id"], decodePath(path, "id")),
+      maxInstancesPerSubscription:
+        json["max_instances_per_subscription"] != null
+          ? decodeInteger(
+              json["max_instances_per_subscription"],
+              path,
+              "max_instances_per_subscription"
+            )
+          : json["max_instances_per_subscription"],
+      name: decodeString(json["name"], path, "name"),
+      priceId: PriceIdSerializer.parse(json["price_id"], decodePath(path, "price_id")),
+      productId: ProductIdSerializer.parse(
+        json["product_id"],
+        decodePath(path, "product_id")
+      ),
+      selfServiceable: decodeBoolean(json["self_serviceable"], path, "self_serviceable"),
     };
   },
 

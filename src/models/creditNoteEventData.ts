@@ -1,6 +1,13 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeDateTime,
+  decodeInteger,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type CreditNoteId, CreditNoteIdSerializer } from "./creditNoteId.js";
 import { type CreditNoteStatus, CreditNoteStatusSerializer } from "./creditNoteStatus.js";
 import { type CustomerId, CustomerIdSerializer } from "./customerId.js";
@@ -36,7 +43,8 @@ export interface CreditNoteEventData {
 
 /** Converts `CreditNoteEventData` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CreditNoteEventDataSerializer = {
-  parse(json: any): CreditNoteEventData {
+  parse(json: any, path = "$"): CreditNoteEventData {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "created_at",
@@ -58,28 +66,66 @@ export const CreditNoteEventDataSerializer = {
         "tax_breakdown",
         "total",
       ]),
-      createdAt: parseDateTime(json["created_at"]),
-      creditNoteId: CreditNoteIdSerializer.parse(json["credit_note_id"]),
-      creditNoteNumber: json["credit_note_number"],
-      creditedAmountCents: json["credited_amount_cents"],
-      currency: json["currency"],
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      creditNoteId: CreditNoteIdSerializer.parse(
+        json["credit_note_id"],
+        decodePath(path, "credit_note_id")
+      ),
+      creditNoteNumber:
+        json["credit_note_number"] != null
+          ? decodeString(json["credit_note_number"], path, "credit_note_number")
+          : json["credit_note_number"],
+      creditedAmountCents: decodeInteger(
+        json["credited_amount_cents"],
+        path,
+        "credited_amount_cents"
+      ),
+      currency: decodeString(json["currency"], path, "currency"),
       customProperties: json["custom_properties"],
-      customerId: CustomerIdSerializer.parse(json["customer_id"]),
-      invoiceId: InvoiceIdSerializer.parse(json["invoice_id"]),
-      invoiceNumber: json["invoice_number"],
-      lineItems: json["line_items"].map((item: any) =>
-        InvoiceLineItemSerializer.parse(item)
+      customerId: CustomerIdSerializer.parse(
+        json["customer_id"],
+        decodePath(path, "customer_id")
       ),
-      memo: json["memo"],
-      reason: json["reason"],
-      refundedAmountCents: json["refunded_amount_cents"],
-      status: CreditNoteStatusSerializer.parse(json["status"]),
-      subtotal: json["subtotal"],
-      taxAmount: json["tax_amount"],
-      taxBreakdown: json["tax_breakdown"].map((item: any) =>
-        TaxBreakdownItemSerializer.parse(item)
+      invoiceId: InvoiceIdSerializer.parse(
+        json["invoice_id"],
+        decodePath(path, "invoice_id")
       ),
-      total: json["total"],
+      invoiceNumber:
+        json["invoice_number"] != null
+          ? decodeString(json["invoice_number"], path, "invoice_number")
+          : json["invoice_number"],
+      lineItems: decodeList(
+        json["line_items"],
+        path,
+        "line_items",
+        (item: any, p: string, i: number) =>
+          InvoiceLineItemSerializer.parse(item, decodePath(p, i))
+      ),
+      memo:
+        json["memo"] != null ? decodeString(json["memo"], path, "memo") : json["memo"],
+      reason:
+        json["reason"] != null
+          ? decodeString(json["reason"], path, "reason")
+          : json["reason"],
+      refundedAmountCents: decodeInteger(
+        json["refunded_amount_cents"],
+        path,
+        "refunded_amount_cents"
+      ),
+      status: CreditNoteStatusSerializer.parse(
+        json["status"],
+        decodePath(path, "status")
+      ),
+      subtotal: decodeInteger(json["subtotal"], path, "subtotal"),
+      taxAmount: decodeInteger(json["tax_amount"], path, "tax_amount"),
+      taxBreakdown: decodeList(
+        json["tax_breakdown"],
+        path,
+        "tax_breakdown",
+        (item: any, p: string, i: number) =>
+          TaxBreakdownItemSerializer.parse(item, decodePath(p, i))
+      ),
+      total: decodeInteger(json["total"], path, "total"),
     };
   },
 

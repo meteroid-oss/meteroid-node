@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import {
   type ComponentOverride,
   ComponentOverrideSerializer,
@@ -20,7 +21,8 @@ export interface CreateSubscriptionComponents {
 
 /** Converts `CreateSubscriptionComponents` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CreateSubscriptionComponentsSerializer = {
-  parse(json: any): CreateSubscriptionComponents {
+  parse(json: any, path = "$"): CreateSubscriptionComponents {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "extra_components",
@@ -30,26 +32,42 @@ export const CreateSubscriptionComponentsSerializer = {
       ]),
       extraComponents:
         json["extra_components"] != null
-          ? json["extra_components"].map((item: any) =>
-              ExtraComponentSerializer.parse(item)
+          ? decodeList(
+              json["extra_components"],
+              path,
+              "extra_components",
+              (item: any, p: string, i: number) =>
+                ExtraComponentSerializer.parse(item, decodePath(p, i))
             )
           : json["extra_components"],
       overriddenComponents:
         json["overridden_components"] != null
-          ? json["overridden_components"].map((item: any) =>
-              ComponentOverrideSerializer.parse(item)
+          ? decodeList(
+              json["overridden_components"],
+              path,
+              "overridden_components",
+              (item: any, p: string, i: number) =>
+                ComponentOverrideSerializer.parse(item, decodePath(p, i))
             )
           : json["overridden_components"],
       parameterizedComponents:
         json["parameterized_components"] != null
-          ? json["parameterized_components"].map((item: any) =>
-              ComponentParameterizationSerializer.parse(item)
+          ? decodeList(
+              json["parameterized_components"],
+              path,
+              "parameterized_components",
+              (item: any, p: string, i: number) =>
+                ComponentParameterizationSerializer.parse(item, decodePath(p, i))
             )
           : json["parameterized_components"],
       removeComponents:
         json["remove_components"] != null
-          ? json["remove_components"].map((item: any) =>
-              PriceComponentIdSerializer.parse(item)
+          ? decodeList(
+              json["remove_components"],
+              path,
+              "remove_components",
+              (item: any, p: string, i: number) =>
+                PriceComponentIdSerializer.parse(item, decodePath(p, i))
             )
           : json["remove_components"],
     };

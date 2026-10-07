@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodeString } from "../decode.js";
 /** Result of creating an onboarding link */
 export interface OnboardingLinkResponse {
   expiresAt: Date;
@@ -9,11 +9,12 @@ export interface OnboardingLinkResponse {
 
 /** Converts `OnboardingLinkResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const OnboardingLinkResponseSerializer = {
-  parse(json: any): OnboardingLinkResponse {
+  parse(json: any, path = "$"): OnboardingLinkResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["expires_at", "url"]),
-      expiresAt: parseDateTime(json["expires_at"]),
-      url: json["url"],
+      expiresAt: decodeDateTime(json["expires_at"], path, "expires_at"),
+      url: decodeString(json["url"], path, "url"),
     };
   },
 

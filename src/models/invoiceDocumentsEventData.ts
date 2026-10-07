@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type CustomerId, CustomerIdSerializer } from "./customerId.js";
 import {
   type EInvoicingFinding,
@@ -28,7 +29,8 @@ export interface InvoiceDocumentsEventData {
 
 /** Converts `InvoiceDocumentsEventData` values from (`parse`) and to (`serialize`) their JSON form. */
 export const InvoiceDocumentsEventDataSerializer = {
-  parse(json: any): InvoiceDocumentsEventData {
+  parse(json: any, path = "$"): InvoiceDocumentsEventData {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "customer_id",
@@ -40,19 +42,41 @@ export const InvoiceDocumentsEventDataSerializer = {
         "pdf_document_id",
         "xml_document_id",
       ]),
-      customerId: CustomerIdSerializer.parse(json["customer_id"]),
-      einvoicingError: json["einvoicing_error"],
-      einvoicingFindings: json["einvoicing_findings"].map((item: any) =>
-        EInvoicingFindingSerializer.parse(item)
+      customerId: CustomerIdSerializer.parse(
+        json["customer_id"],
+        decodePath(path, "customer_id")
       ),
-      einvoicingProfile: json["einvoicing_profile"],
+      einvoicingError:
+        json["einvoicing_error"] != null
+          ? decodeString(json["einvoicing_error"], path, "einvoicing_error")
+          : json["einvoicing_error"],
+      einvoicingFindings: decodeList(
+        json["einvoicing_findings"],
+        path,
+        "einvoicing_findings",
+        (item: any, p: string, i: number) =>
+          EInvoicingFindingSerializer.parse(item, decodePath(p, i))
+      ),
+      einvoicingProfile:
+        json["einvoicing_profile"] != null
+          ? decodeString(json["einvoicing_profile"], path, "einvoicing_profile")
+          : json["einvoicing_profile"],
       einvoicingStatus:
         json["einvoicing_status"] != null
-          ? EInvoicingStatusSerializer.parse(json["einvoicing_status"])
+          ? EInvoicingStatusSerializer.parse(
+              json["einvoicing_status"],
+              decodePath(path, "einvoicing_status")
+            )
           : json["einvoicing_status"],
-      invoiceId: InvoiceIdSerializer.parse(json["invoice_id"]),
-      pdfDocumentId: json["pdf_document_id"],
-      xmlDocumentId: json["xml_document_id"],
+      invoiceId: InvoiceIdSerializer.parse(
+        json["invoice_id"],
+        decodePath(path, "invoice_id")
+      ),
+      pdfDocumentId: decodeString(json["pdf_document_id"], path, "pdf_document_id"),
+      xmlDocumentId:
+        json["xml_document_id"] != null
+          ? decodeString(json["xml_document_id"], path, "xml_document_id")
+          : json["xml_document_id"],
     };
   },
 

@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const SubscriptionFeeBillingPeriodEnum = {
   OneTime: "ONE_TIME",
@@ -13,8 +14,8 @@ export type SubscriptionFeeBillingPeriodEnum =
 
 /** Converts `SubscriptionFeeBillingPeriodEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionFeeBillingPeriodEnumSerializer = {
-  parse(json: any): SubscriptionFeeBillingPeriodEnum {
-    return json;
+  parse(json: any, path = "$"): SubscriptionFeeBillingPeriodEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: SubscriptionFeeBillingPeriodEnum): any {

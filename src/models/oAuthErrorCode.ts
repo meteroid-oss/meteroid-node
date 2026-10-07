@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 /** OAuth 2.0 error codes as per RFC 6749 */
 export const OAuthErrorCode = {
   InvalidRequest: "invalid_request",
@@ -18,8 +19,8 @@ export type OAuthErrorCode =
 
 /** Converts `OAuthErrorCode` values from (`parse`) and to (`serialize`) their JSON form. */
 export const OAuthErrorCodeSerializer = {
-  parse(json: any): OAuthErrorCode {
-    return json;
+  parse(json: any, path = "$"): OAuthErrorCode {
+    return decodeString(json, path);
   },
 
   serialize(value: OAuthErrorCode): any {

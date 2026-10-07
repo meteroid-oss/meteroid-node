@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties, pickProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath } from "../decode.js";
 import { type CouponEventData, CouponEventDataSerializer } from "./couponEventData.js";
 import { type EventId, EventIdSerializer } from "./eventId.js";
 import { type EventType, EventTypeSerializer } from "./eventType.js";
@@ -13,7 +13,8 @@ export interface CouponEvent extends CouponEventData {
 
 /** Converts `CouponEvent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CouponEventSerializer = {
-  parse(json: any): CouponEvent {
+  parse(json: any, path = "$"): CouponEvent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "id",
@@ -30,7 +31,7 @@ export const CouponEventSerializer = {
         "redemption_limit",
         "reusable",
       ]),
-      ...pickProperties(CouponEventDataSerializer.parse(json), [
+      ...pickProperties(CouponEventDataSerializer.parse(json, path), [
         "code",
         "couponId",
         "createdAt",
@@ -42,9 +43,9 @@ export const CouponEventSerializer = {
         "redemptionLimit",
         "reusable",
       ]),
-      id: EventIdSerializer.parse(json["id"]),
-      timestamp: parseDateTime(json["timestamp"]),
-      type: EventTypeSerializer.parse(json["type"]),
+      id: EventIdSerializer.parse(json["id"], decodePath(path, "id")),
+      timestamp: decodeDateTime(json["timestamp"], path, "timestamp"),
+      type: EventTypeSerializer.parse(json["type"], decodePath(path, "type")),
     };
   },
 

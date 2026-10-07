@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import {
   type ComponentParameters,
   ComponentParametersSerializer,
@@ -13,11 +14,18 @@ export interface ComponentParameterization {
 
 /** Converts `ComponentParameterization` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ComponentParameterizationSerializer = {
-  parse(json: any): ComponentParameterization {
+  parse(json: any, path = "$"): ComponentParameterization {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["component_id", "parameters"]),
-      componentId: PriceComponentIdSerializer.parse(json["component_id"]),
-      parameters: ComponentParametersSerializer.parse(json["parameters"]),
+      componentId: PriceComponentIdSerializer.parse(
+        json["component_id"],
+        decodePath(path, "component_id")
+      ),
+      parameters: ComponentParametersSerializer.parse(
+        json["parameters"],
+        decodePath(path, "parameters")
+      ),
     };
   },
 

@@ -1,5 +1,12 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type PropertyConfig, PropertyConfigSerializer } from "./propertyConfig.js";
 /**
  * Update of a definition. `key`, `entity_type` and `property_type` are immutable and cannot be
@@ -16,7 +23,8 @@ export interface CustomPropertyDefinitionUpdateRequest {
 
 /** Converts `CustomPropertyDefinitionUpdateRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomPropertyDefinitionUpdateRequestSerializer = {
-  parse(json: any): CustomPropertyDefinitionUpdateRequest {
+  parse(json: any, path = "$"): CustomPropertyDefinitionUpdateRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "config",
@@ -28,13 +36,23 @@ export const CustomPropertyDefinitionUpdateRequestSerializer = {
       ]),
       config:
         json["config"] != null
-          ? PropertyConfigSerializer.parse(json["config"])
+          ? PropertyConfigSerializer.parse(json["config"], decodePath(path, "config"))
           : json["config"],
       defaultValue: json["default_value"],
-      description: json["description"],
-      displayOrder: json["display_order"],
-      name: json["name"],
-      required: json["required"],
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
+      displayOrder:
+        json["display_order"] != null
+          ? decodeInteger(json["display_order"], path, "display_order")
+          : json["display_order"],
+      name:
+        json["name"] != null ? decodeString(json["name"], path, "name") : json["name"],
+      required:
+        json["required"] != null
+          ? decodeBoolean(json["required"], path, "required")
+          : json["required"],
     };
   },
 

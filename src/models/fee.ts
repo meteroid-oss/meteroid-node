@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import { type CapacityPlanFee, CapacityPlanFeeSerializer } from "./capacityPlanFee.js";
 import {
   type ExtraRecurringPlanFee,
@@ -38,36 +39,37 @@ export type Fee =
 
 /** Converts `Fee` values from (`parse`) and to (`serialize`) their JSON form. */
 export const FeeSerializer = {
-  parse(json: any): Fee {
+  parse(json: any, path = "$"): Fee {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "RATE":
         return {
-          ...RatePlanFeeSerializer.parse(json),
+          ...RatePlanFeeSerializer.parse(json, path),
           type: "RATE",
         };
       case "SLOT":
         return {
-          ...SlotPlanFeeSerializer.parse(json),
+          ...SlotPlanFeeSerializer.parse(json, path),
           type: "SLOT",
         };
       case "CAPACITY":
         return {
-          ...CapacityPlanFeeSerializer.parse(json),
+          ...CapacityPlanFeeSerializer.parse(json, path),
           type: "CAPACITY",
         };
       case "USAGE":
         return {
-          ...UsagePlanFeeSerializer.parse(json),
+          ...UsagePlanFeeSerializer.parse(json, path),
           type: "USAGE",
         };
       case "EXTRA_RECURRING":
         return {
-          ...ExtraRecurringPlanFeeSerializer.parse(json),
+          ...ExtraRecurringPlanFeeSerializer.parse(json, path),
           type: "EXTRA_RECURRING",
         };
       case "ONE_TIME":
         return {
-          ...OneTimePlanFeeSerializer.parse(json),
+          ...OneTimePlanFeeSerializer.parse(json, path),
           type: "ONE_TIME",
         };
       default:

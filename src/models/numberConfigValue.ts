@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 /** A number config value (decimal, encoded as a string). */
 export interface NumberConfigValue {
   value: string;
@@ -7,10 +8,11 @@ export interface NumberConfigValue {
 
 /** Converts `NumberConfigValue` values from (`parse`) and to (`serialize`) their JSON form. */
 export const NumberConfigValueSerializer = {
-  parse(json: any): NumberConfigValue {
+  parse(json: any, path = "$"): NumberConfigValue {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["value"]),
-      value: json["value"],
+      value: decodeString(json["value"], path, "value"),
     };
   },
 

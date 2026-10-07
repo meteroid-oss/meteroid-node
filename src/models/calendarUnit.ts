@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const CalendarUnit = {
   Hour: "HOUR",
@@ -13,8 +14,8 @@ export type CalendarUnit =
 
 /** Converts `CalendarUnit` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CalendarUnitSerializer = {
-  parse(json: any): CalendarUnit {
-    return json;
+  parse(json: any, path = "$"): CalendarUnit {
+    return decodeString(json, path);
   },
 
   serialize(value: CalendarUnit): any {

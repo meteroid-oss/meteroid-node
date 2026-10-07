@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type BillableMetricId, BillableMetricIdSerializer } from "./billableMetricId.js";
 import {
   type BillingMetricAggregateEnum,
@@ -20,7 +20,8 @@ export interface MetricSummary {
 
 /** Converts `MetricSummary` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MetricSummarySerializer = {
-  parse(json: any): MetricSummary {
+  parse(json: any, path = "$"): MetricSummary {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "aggregation_key",
@@ -32,19 +33,26 @@ export const MetricSummarySerializer = {
         "id",
         "name",
       ]),
-      aggregationKey: json["aggregation_key"],
+      aggregationKey:
+        json["aggregation_key"] != null
+          ? decodeString(json["aggregation_key"], path, "aggregation_key")
+          : json["aggregation_key"],
       aggregationType: BillingMetricAggregateEnumSerializer.parse(
-        json["aggregation_type"]
+        json["aggregation_type"],
+        decodePath(path, "aggregation_type")
       ),
       archivedAt:
         json["archived_at"] != null
-          ? parseDateTime(json["archived_at"])
+          ? decodeDateTime(json["archived_at"], path, "archived_at")
           : json["archived_at"],
-      code: json["code"],
-      createdAt: parseDateTime(json["created_at"]),
-      description: json["description"],
-      id: BillableMetricIdSerializer.parse(json["id"]),
-      name: json["name"],
+      code: decodeString(json["code"], path, "code"),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
+      id: BillableMetricIdSerializer.parse(json["id"], decodePath(path, "id")),
+      name: decodeString(json["name"], path, "name"),
     };
   },
 

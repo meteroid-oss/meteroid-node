@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodeString } from "../decode.js";
 
 export interface PackagePlanPricing {
   blockSize: number;
@@ -8,11 +9,12 @@ export interface PackagePlanPricing {
 
 /** Converts `PackagePlanPricing` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PackagePlanPricingSerializer = {
-  parse(json: any): PackagePlanPricing {
+  parse(json: any, path = "$"): PackagePlanPricing {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["block_size", "rate"]),
-      blockSize: json["block_size"],
-      rate: json["rate"],
+      blockSize: decodeInteger(json["block_size"], path, "block_size"),
+      rate: decodeString(json["rate"], path, "rate"),
     };
   },
 
