@@ -1,6 +1,14 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeInteger,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type CouponDiscount, CouponDiscountSerializer } from "./couponDiscount.js";
 import { type CouponId, CouponIdSerializer } from "./couponId.js";
 import { type PlanId, PlanIdSerializer } from "./planId.js";
@@ -23,7 +31,8 @@ export interface Coupon {
 
 /** Converts `Coupon` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CouponSerializer = {
-  parse(json: any): Coupon {
+  parse(json: any, path = "$"): Coupon {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "archived_at",
@@ -42,23 +51,41 @@ export const CouponSerializer = {
       ]),
       archivedAt:
         json["archived_at"] != null
-          ? parseDateTime(json["archived_at"])
+          ? decodeDateTime(json["archived_at"], path, "archived_at")
           : json["archived_at"],
-      code: json["code"],
-      createdAt: parseDateTime(json["created_at"]),
-      description: json["description"],
-      disabled: json["disabled"],
-      discount: CouponDiscountSerializer.parse(json["discount"]),
+      code: decodeString(json["code"], path, "code"),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
+      disabled: decodeBoolean(json["disabled"], path, "disabled"),
+      discount: CouponDiscountSerializer.parse(
+        json["discount"],
+        decodePath(path, "discount")
+      ),
       expiresAt:
         json["expires_at"] != null
-          ? parseDateTime(json["expires_at"])
+          ? decodeDateTime(json["expires_at"], path, "expires_at")
           : json["expires_at"],
-      id: CouponIdSerializer.parse(json["id"]),
-      planIds: json["plan_ids"].map((item: any) => PlanIdSerializer.parse(item)),
-      recurringValue: json["recurring_value"],
-      redemptionCount: json["redemption_count"],
-      redemptionLimit: json["redemption_limit"],
-      reusable: json["reusable"],
+      id: CouponIdSerializer.parse(json["id"], decodePath(path, "id")),
+      planIds: decodeList(
+        json["plan_ids"],
+        path,
+        "plan_ids",
+        (item: any, p: string, i: number) =>
+          PlanIdSerializer.parse(item, decodePath(p, i))
+      ),
+      recurringValue:
+        json["recurring_value"] != null
+          ? decodeInteger(json["recurring_value"], path, "recurring_value")
+          : json["recurring_value"],
+      redemptionCount: decodeInteger(json["redemption_count"], path, "redemption_count"),
+      redemptionLimit:
+        json["redemption_limit"] != null
+          ? decodeInteger(json["redemption_limit"], path, "redemption_limit")
+          : json["redemption_limit"],
+      reusable: decodeBoolean(json["reusable"], path, "reusable"),
     };
   },
 

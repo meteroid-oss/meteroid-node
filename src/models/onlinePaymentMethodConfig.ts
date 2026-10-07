@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import {
   type OnlineMethodsConfig,
   OnlineMethodsConfigSerializer,
@@ -11,12 +12,16 @@ export interface OnlinePaymentMethodConfig {
 
 /** Converts `OnlinePaymentMethodConfig` values from (`parse`) and to (`serialize`) their JSON form. */
 export const OnlinePaymentMethodConfigSerializer = {
-  parse(json: any): OnlinePaymentMethodConfig {
+  parse(json: any, path = "$"): OnlinePaymentMethodConfig {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["config"]),
       config:
         json["config"] != null
-          ? OnlineMethodsConfigSerializer.parse(json["config"])
+          ? OnlineMethodsConfigSerializer.parse(
+              json["config"],
+              decodePath(path, "config")
+            )
           : json["config"],
     };
   },

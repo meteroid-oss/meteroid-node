@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath, decodeString } from "../decode.js";
 import {
   type BillingPeriodEnum,
   BillingPeriodEnumSerializer,
@@ -14,12 +15,16 @@ export interface PriceInput {
 
 /** Converts `PriceInput` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PriceInputSerializer = {
-  parse(json: any): PriceInput {
+  parse(json: any, path = "$"): PriceInput {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["cadence", "currency", "pricing"]),
-      cadence: BillingPeriodEnumSerializer.parse(json["cadence"]),
-      currency: json["currency"],
-      pricing: PricingSerializer.parse(json["pricing"]),
+      cadence: BillingPeriodEnumSerializer.parse(
+        json["cadence"],
+        decodePath(path, "cadence")
+      ),
+      currency: decodeString(json["currency"], path, "currency"),
+      pricing: PricingSerializer.parse(json["pricing"], decodePath(path, "pricing")),
     };
   },
 

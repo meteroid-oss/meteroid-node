@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import { type CheckoutSession, CheckoutSessionSerializer } from "./checkoutSession.js";
 
 export interface ListCheckoutSessionsResponse {
@@ -8,11 +9,16 @@ export interface ListCheckoutSessionsResponse {
 
 /** Converts `ListCheckoutSessionsResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ListCheckoutSessionsResponseSerializer = {
-  parse(json: any): ListCheckoutSessionsResponse {
+  parse(json: any, path = "$"): ListCheckoutSessionsResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["sessions"]),
-      sessions: json["sessions"].map((item: any) =>
-        CheckoutSessionSerializer.parse(item)
+      sessions: decodeList(
+        json["sessions"],
+        path,
+        "sessions",
+        (item: any, p: string, i: number) =>
+          CheckoutSessionSerializer.parse(item, decodePath(p, i))
       ),
     };
   },

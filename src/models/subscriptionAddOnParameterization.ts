@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodePath } from "../decode.js";
 import {
   type BillingPeriodEnum,
   BillingPeriodEnumSerializer,
@@ -13,7 +14,8 @@ export interface SubscriptionAddOnParameterization {
 
 /** Converts `SubscriptionAddOnParameterization` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionAddOnParameterizationSerializer = {
-  parse(json: any): SubscriptionAddOnParameterization {
+  parse(json: any, path = "$"): SubscriptionAddOnParameterization {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "billing_period",
@@ -22,10 +24,19 @@ export const SubscriptionAddOnParameterizationSerializer = {
       ]),
       billingPeriod:
         json["billing_period"] != null
-          ? BillingPeriodEnumSerializer.parse(json["billing_period"])
+          ? BillingPeriodEnumSerializer.parse(
+              json["billing_period"],
+              decodePath(path, "billing_period")
+            )
           : json["billing_period"],
-      committedCapacity: json["committed_capacity"],
-      initialSlotCount: json["initial_slot_count"],
+      committedCapacity:
+        json["committed_capacity"] != null
+          ? decodeInteger(json["committed_capacity"], path, "committed_capacity")
+          : json["committed_capacity"],
+      initialSlotCount:
+        json["initial_slot_count"] != null
+          ? decodeInteger(json["initial_slot_count"], path, "initial_slot_count")
+          : json["initial_slot_count"],
     };
   },
 

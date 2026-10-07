@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import { type Coupon, CouponSerializer } from "./coupon.js";
 import {
   type PaginationResponse,
@@ -13,11 +14,17 @@ export interface CouponListResponse {
 
 /** Converts `CouponListResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CouponListResponseSerializer = {
-  parse(json: any): CouponListResponse {
+  parse(json: any, path = "$"): CouponListResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["data", "pagination_meta"]),
-      data: json["data"].map((item: any) => CouponSerializer.parse(item)),
-      paginationMeta: PaginationResponseSerializer.parse(json["pagination_meta"]),
+      data: decodeList(json["data"], path, "data", (item: any, p: string, i: number) =>
+        CouponSerializer.parse(item, decodePath(p, i))
+      ),
+      paginationMeta: PaginationResponseSerializer.parse(
+        json["pagination_meta"],
+        decodePath(path, "pagination_meta")
+      ),
     };
   },
 

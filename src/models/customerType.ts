@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 /** Company vs. individual (B2C). Defaults to `COMPANY`. */
 export const CustomerType = {
   Company: "COMPANY",
@@ -10,8 +11,8 @@ export type CustomerType =
 
 /** Converts `CustomerType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomerTypeSerializer = {
-  parse(json: any): CustomerType {
-    return json;
+  parse(json: any, path = "$"): CustomerType {
+    return decodeString(json, path);
   },
 
   serialize(value: CustomerType): any {

@@ -1,6 +1,14 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
 import {
+  decodeInteger,
+  decodeList,
+  decodeMap,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
+import {
   type BillingPeriodEnum,
   BillingPeriodEnumSerializer,
 } from "./billingPeriodEnum.js";
@@ -16,7 +24,8 @@ export interface AvailableParameters {
 
 /** Converts `AvailableParameters` values from (`parse`) and to (`serialize`) their JSON form. */
 export const AvailableParametersSerializer = {
-  parse(json: any): AvailableParameters {
+  parse(json: any, path = "$"): AvailableParameters {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "billing_periods",
@@ -25,17 +34,37 @@ export const AvailableParametersSerializer = {
       ]),
       billingPeriods:
         json["billing_periods"] != null
-          ? Object.fromEntries(
-              Object.entries(json["billing_periods"]).map(
-                ([key, entry]: [string, any]) => [
-                  key,
-                  entry.map((item: any) => BillingPeriodEnumSerializer.parse(item)),
-                ]
-              )
+          ? decodeMap(
+              json["billing_periods"],
+              path,
+              "billing_periods",
+              (entry: any, p: string, key: string) =>
+                decodeList(entry, p, key, (item: any, p: string, i: number) =>
+                  BillingPeriodEnumSerializer.parse(item, decodePath(p, i))
+                )
             )
           : undefined,
-      capacityThresholds: json["capacity_thresholds"],
-      slotComponents: json["slot_components"],
+      capacityThresholds:
+        json["capacity_thresholds"] != null
+          ? decodeMap(
+              json["capacity_thresholds"],
+              path,
+              "capacity_thresholds",
+              (entry: any, p: string, key: string) =>
+                decodeList(entry, p, key, (item: any, p: string, i: number) =>
+                  decodeInteger(item, p, i)
+                )
+            )
+          : undefined,
+      slotComponents:
+        json["slot_components"] != null
+          ? decodeList(
+              json["slot_components"],
+              path,
+              "slot_components",
+              (item: any, p: string, i: number) => decodeString(item, p, i)
+            )
+          : undefined,
     };
   },
 

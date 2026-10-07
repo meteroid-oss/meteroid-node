@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type MetricUsage, MetricUsageSerializer } from "./metricUsage.js";
 
 export interface UsageResponse {
@@ -10,12 +11,15 @@ export interface UsageResponse {
 
 /** Converts `UsageResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const UsageResponseSerializer = {
-  parse(json: any): UsageResponse {
+  parse(json: any, path = "$"): UsageResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["period_end", "period_start", "usage"]),
-      periodEnd: json["period_end"],
-      periodStart: json["period_start"],
-      usage: json["usage"].map((item: any) => MetricUsageSerializer.parse(item)),
+      periodEnd: decodeString(json["period_end"], path, "period_end"),
+      periodStart: decodeString(json["period_start"], path, "period_start"),
+      usage: decodeList(json["usage"], path, "usage", (item: any, p: string, i: number) =>
+        MetricUsageSerializer.parse(item, decodePath(p, i))
+      ),
     };
   },
 

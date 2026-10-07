@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath, decodeString } from "../decode.js";
 import { type PriceEntry, PriceEntrySerializer } from "./priceEntry.js";
 import { type ProductRef, ProductRefSerializer } from "./productRef.js";
 
@@ -11,12 +12,19 @@ export interface ExtraComponent {
 
 /** Converts `ExtraComponent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ExtraComponentSerializer = {
-  parse(json: any): ExtraComponent {
+  parse(json: any, path = "$"): ExtraComponent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["name", "price_entry", "product_ref"]),
-      name: json["name"],
-      priceEntry: PriceEntrySerializer.parse(json["price_entry"]),
-      productRef: ProductRefSerializer.parse(json["product_ref"]),
+      name: decodeString(json["name"], path, "name"),
+      priceEntry: PriceEntrySerializer.parse(
+        json["price_entry"],
+        decodePath(path, "price_entry")
+      ),
+      productRef: ProductRefSerializer.parse(
+        json["product_ref"],
+        decodePath(path, "product_ref")
+      ),
     };
   },
 

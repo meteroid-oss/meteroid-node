@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import { type FeatureRef, FeatureRefSerializer } from "./featureRef.js";
 import {
   type ResolvedEntitlementValue,
@@ -13,11 +14,15 @@ export interface ResolvedEntitlement {
 
 /** Converts `ResolvedEntitlement` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ResolvedEntitlementSerializer = {
-  parse(json: any): ResolvedEntitlement {
+  parse(json: any, path = "$"): ResolvedEntitlement {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["feature", "value"]),
-      feature: FeatureRefSerializer.parse(json["feature"]),
-      value: ResolvedEntitlementValueSerializer.parse(json["value"]),
+      feature: FeatureRefSerializer.parse(json["feature"], decodePath(path, "feature")),
+      value: ResolvedEntitlementValueSerializer.parse(
+        json["value"],
+        decodePath(path, "value")
+      ),
     };
   },
 

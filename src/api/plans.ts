@@ -31,6 +31,7 @@ import {
   type PlanVersionListResponse,
   PlanVersionListResponseSerializer,
 } from "../models/planVersionListResponse.js";
+import type { PlanVersionSummary } from "../models/planVersionSummary.js";
 import type { ProductFamilyId } from "../models/productFamilyId.js";
 import {
   type ReplacePlanRequest,
@@ -41,6 +42,7 @@ import {
   ResolvedEntitlementListResponseSerializer,
 } from "../models/resolvedEntitlementListResponse.js";
 import type { APIPromise } from "../apiPromise.js";
+import { PagePromise } from "../pagination.js";
 import {
   MeteroidRequest,
   type MeteroidRequestContext,
@@ -127,8 +129,30 @@ export class Plans {
     );
   }
 
-  /** List plans */
+  /**
+   * List plans
+   *
+   * Await it for the first page: the response body, its properties read on the page, with
+   * `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`. Or iterate it with `for await`
+   * over every item of every page, fetched on demand.
+   */
   public list(
+    options?: PlansListOptions,
+    requestOptions?: RequestOptions
+  ): PagePromise<PlanListResponse, Plan> {
+    return new PagePromise<PlanListResponse, Plan>(
+      {
+        style: "page",
+        items: (page) => page.data,
+        totalPages: (page) => page.paginationMeta?.totalPages,
+        firstPage: 0,
+        fetch: (page) => this.#list({ ...options, page: page }, requestOptions),
+      },
+      options?.page
+    );
+  }
+
+  #list(
     options?: PlansListOptions,
     requestOptions?: RequestOptions
   ): APIPromise<PlanListResponse> {
@@ -281,8 +305,32 @@ export class Plans {
     return request.sendNoResponseBody(this.requestCtx, requestOptions);
   }
 
-  /** List plan versions */
+  /**
+   * List plan versions
+   *
+   * Await it for the first page: the response body, its properties read on the page, with
+   * `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`. Or iterate it with `for await`
+   * over every item of every page, fetched on demand.
+   */
   public listVersions(
+    planId: string,
+    options?: PlansListVersionsOptions,
+    requestOptions?: RequestOptions
+  ): PagePromise<PlanVersionListResponse, PlanVersionSummary> {
+    return new PagePromise<PlanVersionListResponse, PlanVersionSummary>(
+      {
+        style: "page",
+        items: (page) => page.data,
+        totalPages: (page) => page.paginationMeta?.totalPages,
+        firstPage: 0,
+        fetch: (page) =>
+          this.#listVersions(planId, { ...options, page: page }, requestOptions),
+      },
+      options?.page
+    );
+  }
+
+  #listVersions(
     planId: string,
     options?: PlansListVersionsOptions,
     requestOptions?: RequestOptions

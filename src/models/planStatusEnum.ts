@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const PlanStatusEnum = {
   Draft: "DRAFT",
@@ -12,8 +13,8 @@ export type PlanStatusEnum =
 
 /** Converts `PlanStatusEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PlanStatusEnumSerializer = {
-  parse(json: any): PlanStatusEnum {
-    return json;
+  parse(json: any, path = "$"): PlanStatusEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: PlanStatusEnum): any {

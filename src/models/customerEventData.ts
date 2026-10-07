@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type CustomerId, CustomerIdSerializer } from "./customerId.js";
 
 export interface CustomerEventData {
@@ -16,7 +17,8 @@ export interface CustomerEventData {
 
 /** Converts `CustomerEventData` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomerEventDataSerializer = {
-  parse(json: any): CustomerEventData {
+  parse(json: any, path = "$"): CustomerEventData {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "alias",
@@ -28,14 +30,31 @@ export const CustomerEventDataSerializer = {
         "name",
         "phone",
       ]),
-      alias: json["alias"],
-      billingEmail: json["billing_email"],
-      currency: json["currency"],
+      alias:
+        json["alias"] != null
+          ? decodeString(json["alias"], path, "alias")
+          : json["alias"],
+      billingEmail:
+        json["billing_email"] != null
+          ? decodeString(json["billing_email"], path, "billing_email")
+          : json["billing_email"],
+      currency: decodeString(json["currency"], path, "currency"),
       customProperties: json["custom_properties"],
-      customerId: CustomerIdSerializer.parse(json["customer_id"]),
-      invoicingEmails: json["invoicing_emails"],
-      name: json["name"],
-      phone: json["phone"],
+      customerId: CustomerIdSerializer.parse(
+        json["customer_id"],
+        decodePath(path, "customer_id")
+      ),
+      invoicingEmails: decodeList(
+        json["invoicing_emails"],
+        path,
+        "invoicing_emails",
+        (item: any, p: string, i: number) => decodeString(item, p, i)
+      ),
+      name: decodeString(json["name"], path, "name"),
+      phone:
+        json["phone"] != null
+          ? decodeString(json["phone"], path, "phone")
+          : json["phone"],
     };
   },
 

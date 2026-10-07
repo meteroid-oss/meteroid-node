@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const UnitConversionRoundingEnum = {
   Up: "UP",
@@ -14,8 +15,8 @@ export type UnitConversionRoundingEnum =
 
 /** Converts `UnitConversionRoundingEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const UnitConversionRoundingEnumSerializer = {
-  parse(json: any): UnitConversionRoundingEnum {
-    return json;
+  parse(json: any, path = "$"): UnitConversionRoundingEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: UnitConversionRoundingEnum): any {

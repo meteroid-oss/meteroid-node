@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeBoolean, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type ProductFamilyId, ProductFamilyIdSerializer } from "./productFamilyId.js";
 import {
   type ProductFeeStructure,
@@ -16,7 +17,8 @@ export interface CreateProductRequest {
 
 /** Converts `CreateProductRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CreateProductRequestSerializer = {
-  parse(json: any): CreateProductRequest {
+  parse(json: any, path = "$"): CreateProductRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "catalog",
@@ -25,11 +27,23 @@ export const CreateProductRequestSerializer = {
         "name",
         "product_family_id",
       ]),
-      catalog: json["catalog"],
-      description: json["description"],
-      feeStructure: ProductFeeStructureSerializer.parse(json["fee_structure"]),
-      name: json["name"],
-      productFamilyId: ProductFamilyIdSerializer.parse(json["product_family_id"]),
+      catalog:
+        json["catalog"] != null
+          ? decodeBoolean(json["catalog"], path, "catalog")
+          : undefined,
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
+      feeStructure: ProductFeeStructureSerializer.parse(
+        json["fee_structure"],
+        decodePath(path, "fee_structure")
+      ),
+      name: decodeString(json["name"], path, "name"),
+      productFamilyId: ProductFamilyIdSerializer.parse(
+        json["product_family_id"],
+        decodePath(path, "product_family_id")
+      ),
     };
   },
 

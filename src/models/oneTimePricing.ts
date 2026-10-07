@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodeString } from "../decode.js";
 
 export interface OneTimePricing {
   quantity: number;
@@ -8,11 +9,12 @@ export interface OneTimePricing {
 
 /** Converts `OneTimePricing` values from (`parse`) and to (`serialize`) their JSON form. */
 export const OneTimePricingSerializer = {
-  parse(json: any): OneTimePricing {
+  parse(json: any, path = "$"): OneTimePricing {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["quantity", "unit_price"]),
-      quantity: json["quantity"],
-      unitPrice: json["unit_price"],
+      quantity: decodeInteger(json["quantity"], path, "quantity"),
+      unitPrice: decodeString(json["unit_price"], path, "unit_price"),
     };
   },
 

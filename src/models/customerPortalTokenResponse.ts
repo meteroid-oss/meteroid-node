@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodeString } from "../decode.js";
 
 export interface CustomerPortalTokenResponse {
   /** Base URL of the public REST API */
@@ -17,7 +17,8 @@ export interface CustomerPortalTokenResponse {
 
 /** Converts `CustomerPortalTokenResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomerPortalTokenResponseSerializer = {
-  parse(json: any): CustomerPortalTokenResponse {
+  parse(json: any, path = "$"): CustomerPortalTokenResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "api_url",
@@ -26,11 +27,11 @@ export const CustomerPortalTokenResponseSerializer = {
         "portal_url",
         "token",
       ]),
-      apiUrl: json["api_url"],
-      expiresAt: parseDateTime(json["expires_at"]),
-      portalLink: json["portal_link"],
-      portalUrl: json["portal_url"],
-      token: json["token"],
+      apiUrl: decodeString(json["api_url"], path, "api_url"),
+      expiresAt: decodeDateTime(json["expires_at"], path, "expires_at"),
+      portalLink: decodeString(json["portal_link"], path, "portal_link"),
+      portalUrl: decodeString(json["portal_url"], path, "portal_url"),
+      token: decodeString(json["token"], path, "token"),
     };
   },
 

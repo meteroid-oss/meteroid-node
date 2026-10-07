@@ -1,6 +1,12 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type CreditNoteId, CreditNoteIdSerializer } from "./creditNoteId.js";
 import { type DeclineKind, DeclineKindSerializer } from "./declineKind.js";
 import { type InvoiceId, InvoiceIdSerializer } from "./invoiceId.js";
@@ -41,7 +47,8 @@ export interface RefundEventData {
 
 /** Converts `RefundEventData` values from (`parse`) and to (`serialize`) their JSON form. */
 export const RefundEventDataSerializer = {
-  parse(json: any): RefundEventData {
+  parse(json: any, path = "$"): RefundEventData {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "amount",
@@ -61,43 +68,73 @@ export const RefundEventDataSerializer = {
         "status",
         "transaction_id",
       ]),
-      amount: json["amount"],
-      amountRefunded: json["amount_refunded"],
-      amountReversed: json["amount_reversed"],
+      amount: decodeInteger(json["amount"], path, "amount"),
+      amountRefunded: decodeInteger(json["amount_refunded"], path, "amount_refunded"),
+      amountReversed: decodeInteger(json["amount_reversed"], path, "amount_reversed"),
       creditNoteId:
         json["credit_note_id"] != null
-          ? CreditNoteIdSerializer.parse(json["credit_note_id"])
+          ? CreditNoteIdSerializer.parse(
+              json["credit_note_id"],
+              decodePath(path, "credit_note_id")
+            )
           : json["credit_note_id"],
-      currency: json["currency"],
+      currency: decodeString(json["currency"], path, "currency"),
       declineKind:
         json["decline_kind"] != null
-          ? DeclineKindSerializer.parse(json["decline_kind"])
+          ? DeclineKindSerializer.parse(
+              json["decline_kind"],
+              decodePath(path, "decline_kind")
+            )
           : json["decline_kind"],
-      error: json["error"],
+      error:
+        json["error"] != null
+          ? decodeString(json["error"], path, "error")
+          : json["error"],
       invoiceId:
         json["invoice_id"] != null
-          ? InvoiceIdSerializer.parse(json["invoice_id"])
+          ? InvoiceIdSerializer.parse(json["invoice_id"], decodePath(path, "invoice_id"))
           : json["invoice_id"],
       parentTransactionId:
         json["parent_transaction_id"] != null
-          ? PaymentTransactionIdSerializer.parse(json["parent_transaction_id"])
+          ? PaymentTransactionIdSerializer.parse(
+              json["parent_transaction_id"],
+              decodePath(path, "parent_transaction_id")
+            )
           : json["parent_transaction_id"],
-      paymentType: PaymentTypeEnumSerializer.parse(json["payment_type"]),
+      paymentType: PaymentTypeEnumSerializer.parse(
+        json["payment_type"],
+        decodePath(path, "payment_type")
+      ),
       processedAt:
         json["processed_at"] != null
-          ? parseDateTime(json["processed_at"])
+          ? decodeDateTime(json["processed_at"], path, "processed_at")
           : json["processed_at"],
-      providerTransactionId: json["provider_transaction_id"],
+      providerTransactionId:
+        json["provider_transaction_id"] != null
+          ? decodeString(json["provider_transaction_id"], path, "provider_transaction_id")
+          : json["provider_transaction_id"],
       refundMode:
         json["refund_mode"] != null
-          ? RefundModeSerializer.parse(json["refund_mode"])
+          ? RefundModeSerializer.parse(
+              json["refund_mode"],
+              decodePath(path, "refund_mode")
+            )
           : json["refund_mode"],
       reversalKind:
         json["reversal_kind"] != null
-          ? ReversalKindSerializer.parse(json["reversal_kind"])
+          ? ReversalKindSerializer.parse(
+              json["reversal_kind"],
+              decodePath(path, "reversal_kind")
+            )
           : json["reversal_kind"],
-      status: PaymentStatusEnumSerializer.parse(json["status"]),
-      transactionId: PaymentTransactionIdSerializer.parse(json["transaction_id"]),
+      status: PaymentStatusEnumSerializer.parse(
+        json["status"],
+        decodePath(path, "status")
+      ),
+      transactionId: PaymentTransactionIdSerializer.parse(
+        json["transaction_id"],
+        decodePath(path, "transaction_id")
+      ),
     };
   },
 

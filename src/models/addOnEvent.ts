@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties, pickProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath } from "../decode.js";
 import { type AddOnEventData, AddOnEventDataSerializer } from "./addOnEventData.js";
 import { type EventId, EventIdSerializer } from "./eventId.js";
 import { type EventType, EventTypeSerializer } from "./eventType.js";
@@ -13,7 +13,8 @@ export interface AddOnEvent extends AddOnEventData {
 
 /** Converts `AddOnEvent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const AddOnEventSerializer = {
-  parse(json: any): AddOnEvent {
+  parse(json: any, path = "$"): AddOnEvent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "id",
@@ -29,7 +30,7 @@ export const AddOnEventSerializer = {
         "product_id",
         "self_serviceable",
       ]),
-      ...pickProperties(AddOnEventDataSerializer.parse(json), [
+      ...pickProperties(AddOnEventDataSerializer.parse(json, path), [
         "addOnId",
         "createdAt",
         "description",
@@ -40,9 +41,9 @@ export const AddOnEventSerializer = {
         "productId",
         "selfServiceable",
       ]),
-      id: EventIdSerializer.parse(json["id"]),
-      timestamp: parseDateTime(json["timestamp"]),
-      type: EventTypeSerializer.parse(json["type"]),
+      id: EventIdSerializer.parse(json["id"], decodePath(path, "id")),
+      timestamp: decodeDateTime(json["timestamp"], path, "timestamp"),
+      type: EventTypeSerializer.parse(json["type"], decodePath(path, "type")),
     };
   },
 

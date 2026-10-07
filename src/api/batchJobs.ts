@@ -9,13 +9,16 @@ import {
   type BatchJobFailuresResponse,
   BatchJobFailuresResponseSerializer,
 } from "../models/batchJobFailuresResponse.js";
+import type { BatchJobItemFailureResponse } from "../models/batchJobItemFailureResponse.js";
 import {
   type BatchJobListResponse,
   BatchJobListResponseSerializer,
 } from "../models/batchJobListResponse.js";
+import type { BatchJobResponse } from "../models/batchJobResponse.js";
 import type { BatchJobStatus } from "../models/batchJobStatus.js";
 import type { BatchJobType } from "../models/batchJobType.js";
 import type { APIPromise } from "../apiPromise.js";
+import { PagePromise } from "../pagination.js";
 import {
   MeteroidRequest,
   type MeteroidRequestContext,
@@ -44,8 +47,30 @@ export class BatchJobs {
   /** @internal */
   public constructor(private readonly requestCtx: MeteroidRequestContext) {}
 
-  /** List batch jobs with optional filtering by type and status. */
+  /**
+   * List batch jobs with optional filtering by type and status.
+   *
+   * Await it for the first page: the response body, its properties read on the page, with
+   * `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`. Or iterate it with `for await`
+   * over every item of every page, fetched on demand.
+   */
   public list(
+    options?: BatchJobsListOptions,
+    requestOptions?: RequestOptions
+  ): PagePromise<BatchJobListResponse, BatchJobResponse> {
+    return new PagePromise<BatchJobListResponse, BatchJobResponse>(
+      {
+        style: "page",
+        items: (page) => page.data,
+        totalPages: (page) => page.paginationMeta?.totalPages,
+        firstPage: 0,
+        fetch: (page) => this.#list({ ...options, page: page }, requestOptions),
+      },
+      options?.page
+    );
+  }
+
+  #list(
     options?: BatchJobsListOptions,
     requestOptions?: RequestOptions
   ): APIPromise<BatchJobListResponse> {
@@ -85,8 +110,29 @@ export class BatchJobs {
    * List batch job failures
    *
    * Retrieve paginated failures for a batch job.
+   *
+   * Await it for the first page: the response body, its properties read on the page, with
+   * `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`. Or iterate it with `for await`
+   * over every item of every page, fetched on demand.
    */
   public listFailures(
+    batchJobId: string,
+    options?: BatchJobsListFailuresOptions,
+    requestOptions?: RequestOptions
+  ): PagePromise<BatchJobFailuresResponse, BatchJobItemFailureResponse> {
+    return new PagePromise<BatchJobFailuresResponse, BatchJobItemFailureResponse>(
+      {
+        style: "offset",
+        items: (page) => page.data,
+        total: (page) => page.totalCount,
+        fetch: (offset) =>
+          this.#listFailures(batchJobId, { ...options, offset: offset }, requestOptions),
+      },
+      options?.offset
+    );
+  }
+
+  #listFailures(
     batchJobId: string,
     options?: BatchJobsListFailuresOptions,
     requestOptions?: RequestOptions

@@ -9,12 +9,14 @@ import {
   type MetricListResponse,
   MetricListResponseSerializer,
 } from "../models/metricListResponse.js";
+import type { MetricSummary } from "../models/metricSummary.js";
 import type { ProductFamilyId } from "../models/productFamilyId.js";
 import {
   type UpdateMetricRequest,
   UpdateMetricRequestSerializer,
 } from "../models/updateMetricRequest.js";
 import type { APIPromise } from "../apiPromise.js";
+import { PagePromise } from "../pagination.js";
 import {
   MeteroidRequest,
   type MeteroidRequestContext,
@@ -39,8 +41,30 @@ export class Metrics {
   /** @internal */
   public constructor(private readonly requestCtx: MeteroidRequestContext) {}
 
-  /** List billable metrics */
+  /**
+   * List billable metrics
+   *
+   * Await it for the first page: the response body, its properties read on the page, with
+   * `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`. Or iterate it with `for await`
+   * over every item of every page, fetched on demand.
+   */
   public list(
+    options?: MetricsListOptions,
+    requestOptions?: RequestOptions
+  ): PagePromise<MetricListResponse, MetricSummary> {
+    return new PagePromise<MetricListResponse, MetricSummary>(
+      {
+        style: "page",
+        items: (page) => page.data,
+        totalPages: (page) => page.paginationMeta?.totalPages,
+        firstPage: 0,
+        fetch: (page) => this.#list({ ...options, page: page }, requestOptions),
+      },
+      options?.page
+    );
+  }
+
+  #list(
     options?: MetricsListOptions,
     requestOptions?: RequestOptions
   ): APIPromise<MetricListResponse> {

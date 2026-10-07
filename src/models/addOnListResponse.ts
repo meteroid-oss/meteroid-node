@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import { type AddOn, AddOnSerializer } from "./addOn.js";
 import {
   type PaginationResponse,
@@ -13,11 +14,17 @@ export interface AddOnListResponse {
 
 /** Converts `AddOnListResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const AddOnListResponseSerializer = {
-  parse(json: any): AddOnListResponse {
+  parse(json: any, path = "$"): AddOnListResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["data", "pagination_meta"]),
-      data: json["data"].map((item: any) => AddOnSerializer.parse(item)),
-      paginationMeta: PaginationResponseSerializer.parse(json["pagination_meta"]),
+      data: decodeList(json["data"], path, "data", (item: any, p: string, i: number) =>
+        AddOnSerializer.parse(item, decodePath(p, i))
+      ),
+      paginationMeta: PaginationResponseSerializer.parse(
+        json["pagination_meta"],
+        decodePath(path, "pagination_meta")
+      ),
     };
   },
 

@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties, pickProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath } from "../decode.js";
 import {
   type CustomerEventData,
   CustomerEventDataSerializer,
@@ -16,7 +16,8 @@ export interface CustomerEvent extends CustomerEventData {
 
 /** Converts `CustomerEvent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomerEventSerializer = {
-  parse(json: any): CustomerEvent {
+  parse(json: any, path = "$"): CustomerEvent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "id",
@@ -31,7 +32,7 @@ export const CustomerEventSerializer = {
         "name",
         "phone",
       ]),
-      ...pickProperties(CustomerEventDataSerializer.parse(json), [
+      ...pickProperties(CustomerEventDataSerializer.parse(json, path), [
         "alias",
         "billingEmail",
         "currency",
@@ -41,9 +42,9 @@ export const CustomerEventSerializer = {
         "name",
         "phone",
       ]),
-      id: EventIdSerializer.parse(json["id"]),
-      timestamp: parseDateTime(json["timestamp"]),
-      type: EventTypeSerializer.parse(json["type"]),
+      id: EventIdSerializer.parse(json["id"], decodePath(path, "id")),
+      timestamp: decodeDateTime(json["timestamp"], path, "timestamp"),
+      type: EventTypeSerializer.parse(json["type"], decodePath(path, "type")),
     };
   },
 

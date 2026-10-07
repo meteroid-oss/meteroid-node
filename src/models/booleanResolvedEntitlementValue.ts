@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeBoolean, decodeObject } from "../decode.js";
 
 export interface BooleanResolvedEntitlementValue {
   enabled: boolean;
@@ -7,10 +8,11 @@ export interface BooleanResolvedEntitlementValue {
 
 /** Converts `BooleanResolvedEntitlementValue` values from (`parse`) and to (`serialize`) their JSON form. */
 export const BooleanResolvedEntitlementValueSerializer = {
-  parse(json: any): BooleanResolvedEntitlementValue {
+  parse(json: any, path = "$"): BooleanResolvedEntitlementValue {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["enabled"]),
-      enabled: json["enabled"],
+      enabled: decodeBoolean(json["enabled"], path, "enabled"),
     };
   },
 

@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 
 export interface PercentageDiscount {
   percentage: string;
@@ -7,10 +8,11 @@ export interface PercentageDiscount {
 
 /** Converts `PercentageDiscount` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PercentageDiscountSerializer = {
-  parse(json: any): PercentageDiscount {
+  parse(json: any, path = "$"): PercentageDiscount {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["percentage"]),
-      percentage: json["percentage"],
+      percentage: decodeString(json["percentage"], path, "percentage"),
     };
   },
 

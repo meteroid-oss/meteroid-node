@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath, decodeString } from "../decode.js";
 import { type OAuthApp, OAuthAppSerializer } from "./oAuthApp.js";
 /** Result of creating an OAuth app (includes the plain-text secret) */
 export interface OAuthAppWithSecret {
@@ -9,11 +10,12 @@ export interface OAuthAppWithSecret {
 
 /** Converts `OAuthAppWithSecret` values from (`parse`) and to (`serialize`) their JSON form. */
 export const OAuthAppWithSecretSerializer = {
-  parse(json: any): OAuthAppWithSecret {
+  parse(json: any, path = "$"): OAuthAppWithSecret {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["app", "client_secret"]),
-      app: OAuthAppSerializer.parse(json["app"]),
-      clientSecret: json["client_secret"],
+      app: OAuthAppSerializer.parse(json["app"], decodePath(path, "app")),
+      clientSecret: decodeString(json["client_secret"], path, "client_secret"),
     };
   },
 

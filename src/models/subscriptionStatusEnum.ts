@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const SubscriptionStatusEnum = {
   PendingActivation: "PENDING_ACTIVATION",
@@ -20,8 +21,8 @@ export type SubscriptionStatusEnum =
 
 /** Converts `SubscriptionStatusEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionStatusEnumSerializer = {
-  parse(json: any): SubscriptionStatusEnum {
-    return json;
+  parse(json: any, path = "$"): SubscriptionStatusEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: SubscriptionStatusEnum): any {

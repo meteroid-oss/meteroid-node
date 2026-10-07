@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const InvoiceStatus = {
   Draft: "DRAFT",
@@ -13,8 +14,8 @@ export type InvoiceStatus =
 
 /** Converts `InvoiceStatus` values from (`parse`) and to (`serialize`) their JSON form. */
 export const InvoiceStatusSerializer = {
-  parse(json: any): InvoiceStatus {
-    return json;
+  parse(json: any, path = "$"): InvoiceStatus {
+    return decodeString(json, path);
   },
 
   serialize(value: InvoiceStatus): any {

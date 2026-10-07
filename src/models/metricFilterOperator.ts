@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 /**
  * Operator of a pre-aggregation [`MetricFilter`]. `EQUAL`/`NOT_EQUAL` are the single-value
  * forms of `IN`/`NOT_IN`. Negation (`NOT_EQUAL`/`NOT_IN`) is presence-required: an event
@@ -16,8 +17,8 @@ export type MetricFilterOperator =
 
 /** Converts `MetricFilterOperator` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MetricFilterOperatorSerializer = {
-  parse(json: any): MetricFilterOperator {
-    return json;
+  parse(json: any, path = "$"): MetricFilterOperator {
+    return decodeString(json, path);
   },
 
   serialize(value: MetricFilterOperator): any {

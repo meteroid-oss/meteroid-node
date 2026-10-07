@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type Address, AddressSerializer } from "./address.js";
 import { type CustomerId, CustomerIdSerializer } from "./customerId.js";
 
@@ -16,7 +16,8 @@ export interface CustomerDetails {
 
 /** Converts `CustomerDetails` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomerDetailsSerializer = {
-  parse(json: any): CustomerDetails {
+  parse(json: any, path = "$"): CustomerDetails {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "alias",
@@ -27,16 +28,28 @@ export const CustomerDetailsSerializer = {
         "snapshot_at",
         "vat_number",
       ]),
-      alias: json["alias"],
+      alias:
+        json["alias"] != null
+          ? decodeString(json["alias"], path, "alias")
+          : json["alias"],
       billingAddress:
         json["billing_address"] != null
-          ? AddressSerializer.parse(json["billing_address"])
+          ? AddressSerializer.parse(
+              json["billing_address"],
+              decodePath(path, "billing_address")
+            )
           : json["billing_address"],
-      email: json["email"],
-      id: CustomerIdSerializer.parse(json["id"]),
-      name: json["name"],
-      snapshotAt: parseDateTime(json["snapshot_at"]),
-      vatNumber: json["vat_number"],
+      email:
+        json["email"] != null
+          ? decodeString(json["email"], path, "email")
+          : json["email"],
+      id: CustomerIdSerializer.parse(json["id"], decodePath(path, "id")),
+      name: decodeString(json["name"], path, "name"),
+      snapshotAt: decodeDateTime(json["snapshot_at"], path, "snapshot_at"),
+      vatNumber:
+        json["vat_number"] != null
+          ? decodeString(json["vat_number"], path, "vat_number")
+          : json["vat_number"],
     };
   },
 

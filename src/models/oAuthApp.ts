@@ -1,6 +1,13 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type OAuthAppId, OAuthAppIdSerializer } from "./oAuthAppId.js";
 import { type OrganizationId, OrganizationIdSerializer } from "./organizationId.js";
 /** An OAuth application registered by a platform */
@@ -19,7 +26,8 @@ export interface OAuthApp {
 
 /** Converts `OAuthApp` values from (`parse`) and to (`serialize`) their JSON form. */
 export const OAuthAppSerializer = {
-  parse(json: any): OAuthApp {
+  parse(json: any, path = "$"): OAuthApp {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "client_id",
@@ -33,18 +41,35 @@ export const OAuthAppSerializer = {
         "scopes",
         "updated_at",
       ]),
-      clientId: json["client_id"],
-      clientSecretHint: json["client_secret_hint"],
-      createdAt: parseDateTime(json["created_at"]),
-      id: OAuthAppIdSerializer.parse(json["id"]),
-      isActive: json["is_active"],
-      name: json["name"],
-      organizationId: OrganizationIdSerializer.parse(json["organization_id"]),
-      redirectUris: json["redirect_uris"],
-      scopes: json["scopes"],
+      clientId: decodeString(json["client_id"], path, "client_id"),
+      clientSecretHint: decodeString(
+        json["client_secret_hint"],
+        path,
+        "client_secret_hint"
+      ),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      id: OAuthAppIdSerializer.parse(json["id"], decodePath(path, "id")),
+      isActive: decodeBoolean(json["is_active"], path, "is_active"),
+      name: decodeString(json["name"], path, "name"),
+      organizationId: OrganizationIdSerializer.parse(
+        json["organization_id"],
+        decodePath(path, "organization_id")
+      ),
+      redirectUris: decodeList(
+        json["redirect_uris"],
+        path,
+        "redirect_uris",
+        (item: any, p: string, i: number) => decodeString(item, p, i)
+      ),
+      scopes: decodeList(
+        json["scopes"],
+        path,
+        "scopes",
+        (item: any, p: string, i: number) => decodeString(item, p, i)
+      ),
       updatedAt:
         json["updated_at"] != null
-          ? parseDateTime(json["updated_at"])
+          ? decodeDateTime(json["updated_at"], path, "updated_at")
           : json["updated_at"],
     };
   },

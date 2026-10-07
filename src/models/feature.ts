@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type Entitlement, EntitlementSerializer } from "./entitlement.js";
 import {
   type EntitlementProductRef,
@@ -25,7 +25,8 @@ export interface Feature {
 
 /** Converts `Feature` values from (`parse`) and to (`serialize`) their JSON form. */
 export const FeatureSerializer = {
-  parse(json: any): Feature {
+  parse(json: any, path = "$"): Feature {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "code",
@@ -38,21 +39,33 @@ export const FeatureSerializer = {
         "product",
         "status",
       ]),
-      code: json["code"],
-      createdAt: parseDateTime(json["created_at"]),
-      description: json["description"],
+      code: decodeString(json["code"], path, "code"),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
       entitlement:
         json["entitlement"] != null
-          ? EntitlementSerializer.parse(json["entitlement"])
+          ? EntitlementSerializer.parse(
+              json["entitlement"],
+              decodePath(path, "entitlement")
+            )
           : json["entitlement"],
-      featureType: FeatureTypeSerializer.parse(json["feature_type"]),
-      id: FeatureIdSerializer.parse(json["id"]),
-      name: json["name"],
+      featureType: FeatureTypeSerializer.parse(
+        json["feature_type"],
+        decodePath(path, "feature_type")
+      ),
+      id: FeatureIdSerializer.parse(json["id"], decodePath(path, "id")),
+      name: decodeString(json["name"], path, "name"),
       product:
         json["product"] != null
-          ? EntitlementProductRefSerializer.parse(json["product"])
+          ? EntitlementProductRefSerializer.parse(
+              json["product"],
+              decodePath(path, "product")
+            )
           : json["product"],
-      status: FeatureStatusSerializer.parse(json["status"]),
+      status: FeatureStatusSerializer.parse(json["status"], decodePath(path, "status")),
     };
   },
 

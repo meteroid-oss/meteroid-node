@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const BatchJobStatus = {
   Pending: "PENDING",
@@ -15,8 +16,8 @@ export type BatchJobStatus =
 
 /** Converts `BatchJobStatus` values from (`parse`) and to (`serialize`) their JSON form. */
 export const BatchJobStatusSerializer = {
-  parse(json: any): BatchJobStatus {
-    return json;
+  parse(json: any, path = "$"): BatchJobStatus {
+    return decodeString(json, path);
   },
 
   serialize(value: BatchJobStatus): any {

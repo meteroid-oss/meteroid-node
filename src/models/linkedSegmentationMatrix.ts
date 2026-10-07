@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeMap, decodeObject, decodeString } from "../decode.js";
 
 export interface LinkedSegmentationMatrix {
   dimension1Key: string;
@@ -9,12 +10,21 @@ export interface LinkedSegmentationMatrix {
 
 /** Converts `LinkedSegmentationMatrix` values from (`parse`) and to (`serialize`) their JSON form. */
 export const LinkedSegmentationMatrixSerializer = {
-  parse(json: any): LinkedSegmentationMatrix {
+  parse(json: any, path = "$"): LinkedSegmentationMatrix {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["dimension1_key", "dimension2_key", "values"]),
-      dimension1Key: json["dimension1_key"],
-      dimension2Key: json["dimension2_key"],
-      values: json["values"],
+      dimension1Key: decodeString(json["dimension1_key"], path, "dimension1_key"),
+      dimension2Key: decodeString(json["dimension2_key"], path, "dimension2_key"),
+      values: decodeMap(
+        json["values"],
+        path,
+        "values",
+        (entry: any, p: string, key: string) =>
+          decodeList(entry, p, key, (item: any, p: string, i: number) =>
+            decodeString(item, p, i)
+          )
+      ),
     };
   },
 

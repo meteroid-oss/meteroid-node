@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 
 export interface IngestFailure {
   eventId: string;
@@ -8,11 +9,12 @@ export interface IngestFailure {
 
 /** Converts `IngestFailure` values from (`parse`) and to (`serialize`) their JSON form. */
 export const IngestFailureSerializer = {
-  parse(json: any): IngestFailure {
+  parse(json: any, path = "$"): IngestFailure {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["event_id", "reason"]),
-      eventId: json["event_id"],
-      reason: json["reason"],
+      eventId: decodeString(json["event_id"], path, "event_id"),
+      reason: decodeString(json["reason"], path, "reason"),
     };
   },
 

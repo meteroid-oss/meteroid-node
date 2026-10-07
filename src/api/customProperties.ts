@@ -18,6 +18,7 @@ import {
 } from "../models/customPropertyDefinitionUpdateRequest.js";
 import type { CustomPropertyEntityType } from "../models/customPropertyEntityType.js";
 import type { APIPromise } from "../apiPromise.js";
+import { PagePromise } from "../pagination.js";
 import {
   MeteroidRequest,
   type MeteroidRequestContext,
@@ -41,8 +42,34 @@ export class CustomProperties {
   /** @internal */
   public constructor(private readonly requestCtx: MeteroidRequestContext) {}
 
-  /** List custom property definitions */
+  /**
+   * List custom property definitions
+   *
+   * Await it for the first page: the response body, its properties read on the page, with
+   * `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`. Or iterate it with `for await`
+   * over every item of every page, fetched on demand.
+   */
   public listCustomPropertyDefinitions(
+    options?: CustomPropertiesListCustomPropertyDefinitionsOptions,
+    requestOptions?: RequestOptions
+  ): PagePromise<CustomPropertyDefinitionListResponse, CustomPropertyDefinition> {
+    return new PagePromise<
+      CustomPropertyDefinitionListResponse,
+      CustomPropertyDefinition
+    >(
+      {
+        style: "page",
+        items: (page) => page.data,
+        totalPages: (page) => page.paginationMeta?.totalPages,
+        firstPage: 0,
+        fetch: (page) =>
+          this.#listCustomPropertyDefinitions({ ...options, page: page }, requestOptions),
+      },
+      options?.page
+    );
+  }
+
+  #listCustomPropertyDefinitions(
     options?: CustomPropertiesListCustomPropertyDefinitionsOptions,
     requestOptions?: RequestOptions
   ): APIPromise<CustomPropertyDefinitionListResponse> {

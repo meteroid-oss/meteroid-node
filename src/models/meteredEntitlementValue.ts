@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeBoolean, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type ResetPeriod, ResetPeriodSerializer } from "./resetPeriod.js";
 
 export interface MeteredEntitlementValue {
@@ -12,14 +13,24 @@ export interface MeteredEntitlementValue {
 
 /** Converts `MeteredEntitlementValue` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MeteredEntitlementValueSerializer = {
-  parse(json: any): MeteredEntitlementValue {
+  parse(json: any, path = "$"): MeteredEntitlementValue {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["enabled", "limit", "reset_period"]),
-      enabled: json["enabled"],
-      limit: json["limit"],
+      enabled:
+        json["enabled"] != null
+          ? decodeBoolean(json["enabled"], path, "enabled")
+          : undefined,
+      limit:
+        json["limit"] != null
+          ? decodeString(json["limit"], path, "limit")
+          : json["limit"],
       resetPeriod:
         json["reset_period"] != null
-          ? ResetPeriodSerializer.parse(json["reset_period"])
+          ? ResetPeriodSerializer.parse(
+              json["reset_period"],
+              decodePath(path, "reset_period")
+            )
           : undefined,
     };
   },

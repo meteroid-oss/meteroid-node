@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeBoolean, decodeObject } from "../decode.js";
 
 export interface OnlineMethodConfig {
   enabled: boolean;
@@ -7,10 +8,11 @@ export interface OnlineMethodConfig {
 
 /** Converts `OnlineMethodConfig` values from (`parse`) and to (`serialize`) their JSON form. */
 export const OnlineMethodConfigSerializer = {
-  parse(json: any): OnlineMethodConfig {
+  parse(json: any, path = "$"): OnlineMethodConfig {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["enabled"]),
-      enabled: json["enabled"],
+      enabled: decodeBoolean(json["enabled"], path, "enabled"),
     };
   },
 

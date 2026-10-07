@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodePath } from "../decode.js";
 import { type CalendarUnit, CalendarUnitSerializer } from "./calendarUnit.js";
 /** Resets on calendar boundaries (e.g. the 1st of every month) — not tied to subscription start date. */
 export interface CalendarResetPeriod {
@@ -9,11 +10,12 @@ export interface CalendarResetPeriod {
 
 /** Converts `CalendarResetPeriod` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CalendarResetPeriodSerializer = {
-  parse(json: any): CalendarResetPeriod {
+  parse(json: any, path = "$"): CalendarResetPeriod {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["interval", "unit"]),
-      interval: json["interval"],
-      unit: CalendarUnitSerializer.parse(json["unit"]),
+      interval: decodeInteger(json["interval"], path, "interval"),
+      unit: CalendarUnitSerializer.parse(json["unit"], decodePath(path, "unit")),
     };
   },
 

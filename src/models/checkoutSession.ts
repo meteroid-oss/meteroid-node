@@ -1,6 +1,12 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import {
   type CheckoutSessionId,
   CheckoutSessionIdSerializer,
@@ -42,7 +48,8 @@ export interface CheckoutSession {
 
 /** Converts `CheckoutSession` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CheckoutSessionSerializer = {
-  parse(json: any): CheckoutSession {
+  parse(json: any, path = "$"): CheckoutSession {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "billing_day_anchor",
@@ -64,36 +71,78 @@ export const CheckoutSessionSerializer = {
         "success_url",
         "trial_duration_days",
       ]),
-      billingDayAnchor: json["billing_day_anchor"],
-      billingStartDate: json["billing_start_date"],
-      cancelUrl: json["cancel_url"],
-      checkoutType: CheckoutTypeSerializer.parse(json["checkout_type"]),
-      checkoutUrl: json["checkout_url"],
+      billingDayAnchor:
+        json["billing_day_anchor"] != null
+          ? decodeInteger(json["billing_day_anchor"], path, "billing_day_anchor")
+          : json["billing_day_anchor"],
+      billingStartDate:
+        json["billing_start_date"] != null
+          ? decodeString(json["billing_start_date"], path, "billing_start_date")
+          : json["billing_start_date"],
+      cancelUrl:
+        json["cancel_url"] != null
+          ? decodeString(json["cancel_url"], path, "cancel_url")
+          : json["cancel_url"],
+      checkoutType: CheckoutTypeSerializer.parse(
+        json["checkout_type"],
+        decodePath(path, "checkout_type")
+      ),
+      checkoutUrl:
+        json["checkout_url"] != null
+          ? decodeString(json["checkout_url"], path, "checkout_url")
+          : json["checkout_url"],
       completedAt:
         json["completed_at"] != null
-          ? parseDateTime(json["completed_at"])
+          ? decodeDateTime(json["completed_at"], path, "completed_at")
           : json["completed_at"],
-      couponCode: json["coupon_code"],
-      createdAt: parseDateTime(json["created_at"]),
-      customerId: CustomerIdSerializer.parse(json["customer_id"]),
+      couponCode:
+        json["coupon_code"] != null
+          ? decodeString(json["coupon_code"], path, "coupon_code")
+          : json["coupon_code"],
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      customerId: CustomerIdSerializer.parse(
+        json["customer_id"],
+        decodePath(path, "customer_id")
+      ),
       expiresAt:
         json["expires_at"] != null
-          ? parseDateTime(json["expires_at"])
+          ? decodeDateTime(json["expires_at"], path, "expires_at")
           : json["expires_at"],
-      id: CheckoutSessionIdSerializer.parse(json["id"]),
-      netTerms: json["net_terms"],
+      id: CheckoutSessionIdSerializer.parse(json["id"], decodePath(path, "id")),
+      netTerms:
+        json["net_terms"] != null
+          ? decodeInteger(json["net_terms"], path, "net_terms")
+          : json["net_terms"],
       paymentMethodsConfig:
         json["payment_methods_config"] != null
-          ? PaymentMethodsConfigSerializer.parse(json["payment_methods_config"])
+          ? PaymentMethodsConfigSerializer.parse(
+              json["payment_methods_config"],
+              decodePath(path, "payment_methods_config")
+            )
           : json["payment_methods_config"],
-      planVersionId: PlanVersionIdSerializer.parse(json["plan_version_id"]),
-      status: CheckoutSessionStatusSerializer.parse(json["status"]),
+      planVersionId: PlanVersionIdSerializer.parse(
+        json["plan_version_id"],
+        decodePath(path, "plan_version_id")
+      ),
+      status: CheckoutSessionStatusSerializer.parse(
+        json["status"],
+        decodePath(path, "status")
+      ),
       subscriptionId:
         json["subscription_id"] != null
-          ? SubscriptionIdSerializer.parse(json["subscription_id"])
+          ? SubscriptionIdSerializer.parse(
+              json["subscription_id"],
+              decodePath(path, "subscription_id")
+            )
           : json["subscription_id"],
-      successUrl: json["success_url"],
-      trialDurationDays: json["trial_duration_days"],
+      successUrl:
+        json["success_url"] != null
+          ? decodeString(json["success_url"], path, "success_url")
+          : json["success_url"],
+      trialDurationDays:
+        json["trial_duration_days"] != null
+          ? decodeInteger(json["trial_duration_days"], path, "trial_duration_days")
+          : json["trial_duration_days"],
     };
   },
 

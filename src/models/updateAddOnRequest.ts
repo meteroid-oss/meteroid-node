@@ -1,5 +1,12 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type PriceId, PriceIdSerializer } from "./priceId.js";
 
 export interface UpdateAddOnRequest {
@@ -12,7 +19,8 @@ export interface UpdateAddOnRequest {
 
 /** Converts `UpdateAddOnRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const UpdateAddOnRequestSerializer = {
-  parse(json: any): UpdateAddOnRequest {
+  parse(json: any, path = "$"): UpdateAddOnRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "description",
@@ -21,14 +29,28 @@ export const UpdateAddOnRequestSerializer = {
         "price_id",
         "self_serviceable",
       ]),
-      description: json["description"],
-      maxInstancesPerSubscription: json["max_instances_per_subscription"],
-      name: json["name"],
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
+      maxInstancesPerSubscription:
+        json["max_instances_per_subscription"] != null
+          ? decodeInteger(
+              json["max_instances_per_subscription"],
+              path,
+              "max_instances_per_subscription"
+            )
+          : json["max_instances_per_subscription"],
+      name:
+        json["name"] != null ? decodeString(json["name"], path, "name") : json["name"],
       priceId:
         json["price_id"] != null
-          ? PriceIdSerializer.parse(json["price_id"])
+          ? PriceIdSerializer.parse(json["price_id"], decodePath(path, "price_id"))
           : json["price_id"],
-      selfServiceable: json["self_serviceable"],
+      selfServiceable:
+        json["self_serviceable"] != null
+          ? decodeBoolean(json["self_serviceable"], path, "self_serviceable")
+          : json["self_serviceable"],
     };
   },
 

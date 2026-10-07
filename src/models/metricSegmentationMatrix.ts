@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import {
   type DoubleSegmentationMatrix,
   DoubleSegmentationMatrixSerializer,
@@ -26,21 +27,22 @@ export type MetricSegmentationMatrix =
 
 /** Converts `MetricSegmentationMatrix` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MetricSegmentationMatrixSerializer = {
-  parse(json: any): MetricSegmentationMatrix {
+  parse(json: any, path = "$"): MetricSegmentationMatrix {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "SINGLE":
         return {
-          ...MetricDimensionSerializer.parse(json),
+          ...MetricDimensionSerializer.parse(json, path),
           type: "SINGLE",
         };
       case "DOUBLE":
         return {
-          ...DoubleSegmentationMatrixSerializer.parse(json),
+          ...DoubleSegmentationMatrixSerializer.parse(json, path),
           type: "DOUBLE",
         };
       case "LINKED":
         return {
-          ...LinkedSegmentationMatrixSerializer.parse(json),
+          ...LinkedSegmentationMatrixSerializer.parse(json, path),
           type: "LINKED",
         };
       default:

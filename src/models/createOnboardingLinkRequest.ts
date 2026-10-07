@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 
 export interface CreateOnboardingLinkRequest {
   redirectUrl: string;
@@ -7,10 +8,11 @@ export interface CreateOnboardingLinkRequest {
 
 /** Converts `CreateOnboardingLinkRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CreateOnboardingLinkRequestSerializer = {
-  parse(json: any): CreateOnboardingLinkRequest {
+  parse(json: any, path = "$"): CreateOnboardingLinkRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["redirect_url"]),
-      redirectUrl: json["redirect_url"],
+      redirectUrl: decodeString(json["redirect_url"], path, "redirect_url"),
     };
   },
 

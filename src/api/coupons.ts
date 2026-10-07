@@ -15,6 +15,7 @@ import {
   UpdateCouponRequestSerializer,
 } from "../models/updateCouponRequest.js";
 import type { APIPromise } from "../apiPromise.js";
+import { PagePromise } from "../pagination.js";
 import {
   MeteroidRequest,
   type MeteroidRequestContext,
@@ -38,8 +39,30 @@ export class Coupons {
   /** @internal */
   public constructor(private readonly requestCtx: MeteroidRequestContext) {}
 
-  /** List coupons */
+  /**
+   * List coupons
+   *
+   * Await it for the first page: the response body, its properties read on the page, with
+   * `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`. Or iterate it with `for await`
+   * over every item of every page, fetched on demand.
+   */
   public list(
+    options?: CouponsListOptions,
+    requestOptions?: RequestOptions
+  ): PagePromise<CouponListResponse, Coupon> {
+    return new PagePromise<CouponListResponse, Coupon>(
+      {
+        style: "page",
+        items: (page) => page.data,
+        totalPages: (page) => page.paginationMeta?.totalPages,
+        firstPage: 0,
+        fetch: (page) => this.#list({ ...options, page: page }, requestOptions),
+      },
+      options?.page
+    );
+  }
+
+  #list(
     options?: CouponsListOptions,
     requestOptions?: RequestOptions
   ): APIPromise<CouponListResponse> {

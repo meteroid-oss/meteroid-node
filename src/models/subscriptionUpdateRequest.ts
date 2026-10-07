@@ -1,6 +1,13 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
 import {
+  decodeBoolean,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
+import {
   type PaymentMethodsConfig,
   PaymentMethodsConfigSerializer,
 } from "./paymentMethodsConfig.js";
@@ -26,7 +33,8 @@ export interface SubscriptionUpdateRequest {
 
 /** Converts `SubscriptionUpdateRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionUpdateRequestSerializer = {
-  parse(json: any): SubscriptionUpdateRequest {
+  parse(json: any, path = "$"): SubscriptionUpdateRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "auto_advance_invoices",
@@ -37,16 +45,34 @@ export const SubscriptionUpdateRequestSerializer = {
         "payment_methods_config",
         "purchase_order",
       ]),
-      autoAdvanceInvoices: json["auto_advance_invoices"],
-      chargeAutomatically: json["charge_automatically"],
+      autoAdvanceInvoices:
+        json["auto_advance_invoices"] != null
+          ? decodeBoolean(json["auto_advance_invoices"], path, "auto_advance_invoices")
+          : json["auto_advance_invoices"],
+      chargeAutomatically:
+        json["charge_automatically"] != null
+          ? decodeBoolean(json["charge_automatically"], path, "charge_automatically")
+          : json["charge_automatically"],
       customProperties: json["custom_properties"],
-      invoiceMemo: json["invoice_memo"],
-      netTerms: json["net_terms"],
+      invoiceMemo:
+        json["invoice_memo"] != null
+          ? decodeString(json["invoice_memo"], path, "invoice_memo")
+          : json["invoice_memo"],
+      netTerms:
+        json["net_terms"] != null
+          ? decodeInteger(json["net_terms"], path, "net_terms")
+          : json["net_terms"],
       paymentMethodsConfig:
         json["payment_methods_config"] != null
-          ? PaymentMethodsConfigSerializer.parse(json["payment_methods_config"])
+          ? PaymentMethodsConfigSerializer.parse(
+              json["payment_methods_config"],
+              decodePath(path, "payment_methods_config")
+            )
           : json["payment_methods_config"],
-      purchaseOrder: json["purchase_order"],
+      purchaseOrder:
+        json["purchase_order"] != null
+          ? decodeString(json["purchase_order"], path, "purchase_order")
+          : json["purchase_order"],
     };
   },
 

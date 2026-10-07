@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 /** Type of connection between platform and connected account */
 export const ConnectionType = {
   Standard: "standard",
@@ -10,8 +11,8 @@ export type ConnectionType =
 
 /** Converts `ConnectionType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ConnectionTypeSerializer = {
-  parse(json: any): ConnectionType {
-    return json;
+  parse(json: any, path = "$"): ConnectionType {
+    return decodeString(json, path);
   },
 
   serialize(value: ConnectionType): any {

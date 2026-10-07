@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import { type CapacityPricing, CapacityPricingSerializer } from "./capacityPricing.js";
 import {
   type ExtraRecurringPricing,
@@ -38,36 +39,37 @@ export type Pricing =
 
 /** Converts `Pricing` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PricingSerializer = {
-  parse(json: any): Pricing {
+  parse(json: any, path = "$"): Pricing {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "RATE":
         return {
-          ...RatePricingSerializer.parse(json),
+          ...RatePricingSerializer.parse(json, path),
           type: "RATE",
         };
       case "SLOT":
         return {
-          ...SlotPricingSerializer.parse(json),
+          ...SlotPricingSerializer.parse(json, path),
           type: "SLOT",
         };
       case "CAPACITY":
         return {
-          ...CapacityPricingSerializer.parse(json),
+          ...CapacityPricingSerializer.parse(json, path),
           type: "CAPACITY",
         };
       case "USAGE":
         return {
-          ...UsagePricingSerializer.parse(json),
+          ...UsagePricingSerializer.parse(json, path),
           type: "USAGE",
         };
       case "EXTRA_RECURRING":
         return {
-          ...ExtraRecurringPricingSerializer.parse(json),
+          ...ExtraRecurringPricingSerializer.parse(json, path),
           type: "EXTRA_RECURRING",
         };
       case "ONE_TIME":
         return {
-          ...OneTimePricingSerializer.parse(json),
+          ...OneTimePricingSerializer.parse(json, path),
           type: "ONE_TIME",
         };
       default:

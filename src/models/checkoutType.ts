@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const CheckoutType = {
   SelfServe: "SELF_SERVE",
@@ -12,8 +13,8 @@ export type CheckoutType =
 
 /** Converts `CheckoutType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CheckoutTypeSerializer = {
-  parse(json: any): CheckoutType {
-    return json;
+  parse(json: any, path = "$"): CheckoutType {
+    return decodeString(json, path);
   },
 
   serialize(value: CheckoutType): any {

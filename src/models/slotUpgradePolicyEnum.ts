@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const SlotUpgradePolicyEnum = {
   Prorated: "PRORATED",
@@ -9,8 +10,8 @@ export type SlotUpgradePolicyEnum =
 
 /** Converts `SlotUpgradePolicyEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SlotUpgradePolicyEnumSerializer = {
-  parse(json: any): SlotUpgradePolicyEnum {
-    return json;
+  parse(json: any, path = "$"): SlotUpgradePolicyEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: SlotUpgradePolicyEnum): any {

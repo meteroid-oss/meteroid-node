@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeBoolean, decodeList, decodeObject, decodePath } from "../decode.js";
 import { type Event, EventSerializer } from "./event.js";
 
 export interface IngestEventsRequest {
@@ -17,12 +18,24 @@ export interface IngestEventsRequest {
 
 /** Converts `IngestEventsRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const IngestEventsRequestSerializer = {
-  parse(json: any): IngestEventsRequest {
+  parse(json: any, path = "$"): IngestEventsRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["allow_backfilling", "allow_partial_failures", "events"]),
-      allowBackfilling: json["allow_backfilling"],
-      allowPartialFailures: json["allow_partial_failures"],
-      events: json["events"].map((item: any) => EventSerializer.parse(item)),
+      allowBackfilling:
+        json["allow_backfilling"] != null
+          ? decodeBoolean(json["allow_backfilling"], path, "allow_backfilling")
+          : json["allow_backfilling"],
+      allowPartialFailures:
+        json["allow_partial_failures"] != null
+          ? decodeBoolean(json["allow_partial_failures"], path, "allow_partial_failures")
+          : json["allow_partial_failures"],
+      events: decodeList(
+        json["events"],
+        path,
+        "events",
+        (item: any, p: string, i: number) => EventSerializer.parse(item, decodePath(p, i))
+      ),
     };
   },
 

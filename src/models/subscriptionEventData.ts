@@ -1,6 +1,13 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import {
   type BillingPeriodEnum,
   BillingPeriodEnumSerializer,
@@ -49,7 +56,8 @@ export interface SubscriptionEventData {
 
 /** Converts `SubscriptionEventData` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionEventDataSerializer = {
-  parse(json: any): SubscriptionEventData {
+  parse(json: any, path = "$"): SubscriptionEventData {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "activated_at",
@@ -81,36 +89,87 @@ export const SubscriptionEventDataSerializer = {
       ]),
       activatedAt:
         json["activated_at"] != null
-          ? parseDateTime(json["activated_at"])
+          ? decodeDateTime(json["activated_at"], path, "activated_at")
           : json["activated_at"],
-      autoAdvanceInvoices: json["auto_advance_invoices"],
-      billingDayAnchor: json["billing_day_anchor"],
-      billingStartDate: json["billing_start_date"],
-      cancellationReason: json["cancellation_reason"],
+      autoAdvanceInvoices: decodeBoolean(
+        json["auto_advance_invoices"],
+        path,
+        "auto_advance_invoices"
+      ),
+      billingDayAnchor: decodeInteger(
+        json["billing_day_anchor"],
+        path,
+        "billing_day_anchor"
+      ),
+      billingStartDate:
+        json["billing_start_date"] != null
+          ? decodeString(json["billing_start_date"], path, "billing_start_date")
+          : json["billing_start_date"],
+      cancellationReason:
+        json["cancellation_reason"] != null
+          ? decodeString(json["cancellation_reason"], path, "cancellation_reason")
+          : json["cancellation_reason"],
       changeType:
         json["change_type"] != null
-          ? SubscriptionUpdateTypeSerializer.parse(json["change_type"])
+          ? SubscriptionUpdateTypeSerializer.parse(
+              json["change_type"],
+              decodePath(path, "change_type")
+            )
           : json["change_type"],
-      chargeAutomatically: json["charge_automatically"],
-      createdAt: parseDateTime(json["created_at"]),
-      currency: json["currency"],
+      chargeAutomatically: decodeBoolean(
+        json["charge_automatically"],
+        path,
+        "charge_automatically"
+      ),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      currency: decodeString(json["currency"], path, "currency"),
       customProperties: json["custom_properties"],
-      customerAlias: json["customer_alias"],
-      customerId: CustomerIdSerializer.parse(json["customer_id"]),
-      customerName: json["customer_name"],
-      endDate: json["end_date"],
-      invoiceMemo: json["invoice_memo"],
-      invoiceThreshold: json["invoice_threshold"],
-      mrrCents: json["mrr_cents"],
-      netTerms: json["net_terms"],
-      period: BillingPeriodEnumSerializer.parse(json["period"]),
-      planName: json["plan_name"],
-      purchaseOrder: json["purchase_order"],
-      startDate: json["start_date"],
-      status: SubscriptionStatusEnumSerializer.parse(json["status"]),
-      subscriptionId: SubscriptionIdSerializer.parse(json["subscription_id"]),
-      trialDuration: json["trial_duration"],
-      version: json["version"],
+      customerAlias:
+        json["customer_alias"] != null
+          ? decodeString(json["customer_alias"], path, "customer_alias")
+          : json["customer_alias"],
+      customerId: CustomerIdSerializer.parse(
+        json["customer_id"],
+        decodePath(path, "customer_id")
+      ),
+      customerName: decodeString(json["customer_name"], path, "customer_name"),
+      endDate:
+        json["end_date"] != null
+          ? decodeString(json["end_date"], path, "end_date")
+          : json["end_date"],
+      invoiceMemo:
+        json["invoice_memo"] != null
+          ? decodeString(json["invoice_memo"], path, "invoice_memo")
+          : json["invoice_memo"],
+      invoiceThreshold:
+        json["invoice_threshold"] != null
+          ? decodeString(json["invoice_threshold"], path, "invoice_threshold")
+          : json["invoice_threshold"],
+      mrrCents: decodeInteger(json["mrr_cents"], path, "mrr_cents"),
+      netTerms: decodeInteger(json["net_terms"], path, "net_terms"),
+      period: BillingPeriodEnumSerializer.parse(
+        json["period"],
+        decodePath(path, "period")
+      ),
+      planName: decodeString(json["plan_name"], path, "plan_name"),
+      purchaseOrder:
+        json["purchase_order"] != null
+          ? decodeString(json["purchase_order"], path, "purchase_order")
+          : json["purchase_order"],
+      startDate: decodeString(json["start_date"], path, "start_date"),
+      status: SubscriptionStatusEnumSerializer.parse(
+        json["status"],
+        decodePath(path, "status")
+      ),
+      subscriptionId: SubscriptionIdSerializer.parse(
+        json["subscription_id"],
+        decodePath(path, "subscription_id")
+      ),
+      trialDuration:
+        json["trial_duration"] != null
+          ? decodeInteger(json["trial_duration"], path, "trial_duration")
+          : json["trial_duration"],
+      version: decodeInteger(json["version"], path, "version"),
     };
   },
 

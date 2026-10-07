@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodePath, decodeString } from "../decode.js";
 import {
   type BillingPeriodEnum,
   BillingPeriodEnumSerializer,
@@ -15,13 +16,20 @@ export interface ExtraRecurringPlanFee {
 
 /** Converts `ExtraRecurringPlanFee` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ExtraRecurringPlanFeeSerializer = {
-  parse(json: any): ExtraRecurringPlanFee {
+  parse(json: any, path = "$"): ExtraRecurringPlanFee {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["billing_type", "cadence", "quantity", "unit_price"]),
-      billingType: BillingTypeSerializer.parse(json["billing_type"]),
-      cadence: BillingPeriodEnumSerializer.parse(json["cadence"]),
-      quantity: json["quantity"],
-      unitPrice: json["unit_price"],
+      billingType: BillingTypeSerializer.parse(
+        json["billing_type"],
+        decodePath(path, "billing_type")
+      ),
+      cadence: BillingPeriodEnumSerializer.parse(
+        json["cadence"],
+        decodePath(path, "cadence")
+      ),
+      quantity: decodeInteger(json["quantity"], path, "quantity"),
+      unitPrice: decodeString(json["unit_price"], path, "unit_price"),
     };
   },
 

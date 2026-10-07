@@ -1,5 +1,13 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeInteger,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type CouponId, CouponIdSerializer } from "./couponId.js";
 import {
   type CreateSubscriptionAddOn,
@@ -51,7 +59,8 @@ export interface CreateCheckoutSessionRequest {
 
 /** Converts `CreateCheckoutSessionRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CreateCheckoutSessionRequestSerializer = {
-  parse(json: any): CreateCheckoutSessionRequest {
+  parse(json: any, path = "$"): CreateCheckoutSessionRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "add_ons",
@@ -78,39 +87,100 @@ export const CreateCheckoutSessionRequestSerializer = {
       ]),
       addOns:
         json["add_ons"] != null
-          ? json["add_ons"].map((item: any) =>
-              CreateSubscriptionAddOnSerializer.parse(item)
+          ? decodeList(
+              json["add_ons"],
+              path,
+              "add_ons",
+              (item: any, p: string, i: number) =>
+                CreateSubscriptionAddOnSerializer.parse(item, decodePath(p, i))
             )
           : json["add_ons"],
-      autoAdvanceInvoices: json["auto_advance_invoices"],
-      billingDayAnchor: json["billing_day_anchor"],
-      billingStartDate: json["billing_start_date"],
-      cancelUrl: json["cancel_url"],
-      chargeAutomatically: json["charge_automatically"],
+      autoAdvanceInvoices:
+        json["auto_advance_invoices"] != null
+          ? decodeBoolean(json["auto_advance_invoices"], path, "auto_advance_invoices")
+          : json["auto_advance_invoices"],
+      billingDayAnchor:
+        json["billing_day_anchor"] != null
+          ? decodeInteger(json["billing_day_anchor"], path, "billing_day_anchor")
+          : json["billing_day_anchor"],
+      billingStartDate:
+        json["billing_start_date"] != null
+          ? decodeString(json["billing_start_date"], path, "billing_start_date")
+          : json["billing_start_date"],
+      cancelUrl:
+        json["cancel_url"] != null
+          ? decodeString(json["cancel_url"], path, "cancel_url")
+          : json["cancel_url"],
+      chargeAutomatically:
+        json["charge_automatically"] != null
+          ? decodeBoolean(json["charge_automatically"], path, "charge_automatically")
+          : json["charge_automatically"],
       components:
         json["components"] != null
-          ? CreateSubscriptionComponentsSerializer.parse(json["components"])
+          ? CreateSubscriptionComponentsSerializer.parse(
+              json["components"],
+              decodePath(path, "components")
+            )
           : json["components"],
-      couponCode: json["coupon_code"],
+      couponCode:
+        json["coupon_code"] != null
+          ? decodeString(json["coupon_code"], path, "coupon_code")
+          : json["coupon_code"],
       couponIds:
         json["coupon_ids"] != null
-          ? json["coupon_ids"].map((item: any) => CouponIdSerializer.parse(item))
+          ? decodeList(
+              json["coupon_ids"],
+              path,
+              "coupon_ids",
+              (item: any, p: string, i: number) =>
+                CouponIdSerializer.parse(item, decodePath(p, i))
+            )
           : undefined,
-      customerId: json["customer_id"],
-      endDate: json["end_date"],
-      expiresInHours: json["expires_in_hours"],
-      invoiceMemo: json["invoice_memo"],
-      invoiceThreshold: json["invoice_threshold"],
+      customerId: decodeString(json["customer_id"], path, "customer_id"),
+      endDate:
+        json["end_date"] != null
+          ? decodeString(json["end_date"], path, "end_date")
+          : json["end_date"],
+      expiresInHours:
+        json["expires_in_hours"] != null
+          ? decodeInteger(json["expires_in_hours"], path, "expires_in_hours")
+          : json["expires_in_hours"],
+      invoiceMemo:
+        json["invoice_memo"] != null
+          ? decodeString(json["invoice_memo"], path, "invoice_memo")
+          : json["invoice_memo"],
+      invoiceThreshold:
+        json["invoice_threshold"] != null
+          ? decodeString(json["invoice_threshold"], path, "invoice_threshold")
+          : json["invoice_threshold"],
       metadata: json["metadata"],
-      netTerms: json["net_terms"],
+      netTerms:
+        json["net_terms"] != null
+          ? decodeInteger(json["net_terms"], path, "net_terms")
+          : json["net_terms"],
       paymentMethodsConfig:
         json["payment_methods_config"] != null
-          ? PaymentMethodsConfigSerializer.parse(json["payment_methods_config"])
+          ? PaymentMethodsConfigSerializer.parse(
+              json["payment_methods_config"],
+              decodePath(path, "payment_methods_config")
+            )
           : json["payment_methods_config"],
-      planVersionId: PlanVersionIdSerializer.parse(json["plan_version_id"]),
-      purchaseOrder: json["purchase_order"],
-      successUrl: json["success_url"],
-      trialDurationDays: json["trial_duration_days"],
+      planVersionId: PlanVersionIdSerializer.parse(
+        json["plan_version_id"],
+        decodePath(path, "plan_version_id")
+      ),
+      purchaseOrder:
+        json["purchase_order"] != null
+          ? decodeString(json["purchase_order"], path, "purchase_order")
+          : json["purchase_order"],
+      successUrl:
+        json["success_url"] != null
+          ? decodeString(json["success_url"], path, "success_url")
+          : json["success_url"],
+      trialDurationDays:
+        json["trial_duration_days"] != null
+          ? decodeInteger(json["trial_duration_days"], path, "trial_duration_days")
+          : json["trial_duration_days"],
     };
   },
 

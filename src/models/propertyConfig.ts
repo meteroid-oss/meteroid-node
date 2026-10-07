@@ -1,5 +1,12 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import {
+  decodeInteger,
+  decodeList,
+  decodeNumber,
+  decodeObject,
+  decodePath,
+} from "../decode.js";
 import { type SelectOption, SelectOptionSerializer } from "./selectOption.js";
 /** Type-specific configuration. Only the fields relevant to `property_type` are interpreted. */
 export interface PropertyConfig {
@@ -14,15 +21,25 @@ export interface PropertyConfig {
 
 /** Converts `PropertyConfig` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PropertyConfigSerializer = {
-  parse(json: any): PropertyConfig {
+  parse(json: any, path = "$"): PropertyConfig {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["max", "max_length", "min", "options"]),
-      max: json["max"],
-      maxLength: json["max_length"],
-      min: json["min"],
+      max: json["max"] != null ? decodeNumber(json["max"], path, "max") : json["max"],
+      maxLength:
+        json["max_length"] != null
+          ? decodeInteger(json["max_length"], path, "max_length")
+          : json["max_length"],
+      min: json["min"] != null ? decodeNumber(json["min"], path, "min") : json["min"],
       options:
         json["options"] != null
-          ? json["options"].map((item: any) => SelectOptionSerializer.parse(item))
+          ? decodeList(
+              json["options"],
+              path,
+              "options",
+              (item: any, p: string, i: number) =>
+                SelectOptionSerializer.parse(item, decodePath(p, i))
+            )
           : json["options"],
     };
   },

@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import {
   type MeteredEntitlementSpec,
   MeteredEntitlementSpecSerializer,
@@ -16,11 +17,18 @@ export interface MeteredEffectiveEntitlementValue {
 
 /** Converts `MeteredEffectiveEntitlementValue` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MeteredEffectiveEntitlementValueSerializer = {
-  parse(json: any): MeteredEffectiveEntitlementValue {
+  parse(json: any, path = "$"): MeteredEffectiveEntitlementValue {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["spec", "usage"]),
-      spec: MeteredEntitlementSpecSerializer.parse(json["spec"]),
-      usage: MeteredEntitlementUsageSerializer.parse(json["usage"]),
+      spec: MeteredEntitlementSpecSerializer.parse(
+        json["spec"],
+        decodePath(path, "spec")
+      ),
+      usage: MeteredEntitlementUsageSerializer.parse(
+        json["usage"],
+        decodePath(path, "usage")
+      ),
     };
   },
 

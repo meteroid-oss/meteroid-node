@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 /** Token revocation request */
 export interface RevocationRequest {
   /** The token to revoke */
@@ -10,11 +11,15 @@ export interface RevocationRequest {
 
 /** Converts `RevocationRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const RevocationRequestSerializer = {
-  parse(json: any): RevocationRequest {
+  parse(json: any, path = "$"): RevocationRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["token", "token_type_hint"]),
-      token: json["token"],
-      tokenTypeHint: json["token_type_hint"],
+      token: decodeString(json["token"], path, "token"),
+      tokenTypeHint:
+        json["token_type_hint"] != null
+          ? decodeString(json["token_type_hint"], path, "token_type_hint")
+          : json["token_type_hint"],
     };
   },
 

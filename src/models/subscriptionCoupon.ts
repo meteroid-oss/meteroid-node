@@ -1,6 +1,13 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type CouponDiscount, CouponDiscountSerializer } from "./couponDiscount.js";
 import { type CouponId, CouponIdSerializer } from "./couponId.js";
 /**
@@ -21,7 +28,8 @@ export interface SubscriptionCoupon {
 
 /** Converts `SubscriptionCoupon` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionCouponSerializer = {
-  parse(json: any): SubscriptionCoupon {
+  parse(json: any, path = "$"): SubscriptionCoupon {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "code",
@@ -34,18 +42,27 @@ export const SubscriptionCouponSerializer = {
         "redemption_limit",
         "reusable",
       ]),
-      code: json["code"],
-      description: json["description"],
-      disabled: json["disabled"],
-      discount: CouponDiscountSerializer.parse(json["discount"]),
+      code: decodeString(json["code"], path, "code"),
+      description: decodeString(json["description"], path, "description"),
+      disabled: decodeBoolean(json["disabled"], path, "disabled"),
+      discount: CouponDiscountSerializer.parse(
+        json["discount"],
+        decodePath(path, "discount")
+      ),
       expiresAt:
         json["expires_at"] != null
-          ? parseDateTime(json["expires_at"])
+          ? decodeDateTime(json["expires_at"], path, "expires_at")
           : json["expires_at"],
-      id: CouponIdSerializer.parse(json["id"]),
-      recurringValue: json["recurring_value"],
-      redemptionLimit: json["redemption_limit"],
-      reusable: json["reusable"],
+      id: CouponIdSerializer.parse(json["id"], decodePath(path, "id")),
+      recurringValue:
+        json["recurring_value"] != null
+          ? decodeInteger(json["recurring_value"], path, "recurring_value")
+          : json["recurring_value"],
+      redemptionLimit:
+        json["redemption_limit"] != null
+          ? decodeInteger(json["redemption_limit"], path, "redemption_limit")
+          : json["redemption_limit"],
+      reusable: decodeBoolean(json["reusable"], path, "reusable"),
     };
   },
 

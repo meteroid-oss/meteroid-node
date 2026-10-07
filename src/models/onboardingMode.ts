@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 /** Onboarding mode for connected accounts */
 export const OnboardingMode = {
   Express: "express",
@@ -10,8 +11,8 @@ export type OnboardingMode =
 
 /** Converts `OnboardingMode` values from (`parse`) and to (`serialize`) their JSON form. */
 export const OnboardingModeSerializer = {
-  parse(json: any): OnboardingMode {
-    return json;
+  parse(json: any, path = "$"): OnboardingMode {
+    return decodeString(json, path);
   },
 
   serialize(value: OnboardingMode): any {

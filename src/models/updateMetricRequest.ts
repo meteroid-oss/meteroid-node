@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type MetricFilter, MetricFilterSerializer } from "./metricFilter.js";
 import {
   type MetricSegmentationMatrix,
@@ -18,7 +19,8 @@ export interface UpdateMetricRequest {
 
 /** Converts `UpdateMetricRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const UpdateMetricRequestSerializer = {
-  parse(json: any): UpdateMetricRequest {
+  parse(json: any, path = "$"): UpdateMetricRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "description",
@@ -27,19 +29,35 @@ export const UpdateMetricRequestSerializer = {
         "segmentation_matrix",
         "unit_conversion",
       ]),
-      description: json["description"],
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
       filters:
         json["filters"] != null
-          ? json["filters"].map((item: any) => MetricFilterSerializer.parse(item))
+          ? decodeList(
+              json["filters"],
+              path,
+              "filters",
+              (item: any, p: string, i: number) =>
+                MetricFilterSerializer.parse(item, decodePath(p, i))
+            )
           : json["filters"],
-      name: json["name"],
+      name:
+        json["name"] != null ? decodeString(json["name"], path, "name") : json["name"],
       segmentationMatrix:
         json["segmentation_matrix"] != null
-          ? MetricSegmentationMatrixSerializer.parse(json["segmentation_matrix"])
+          ? MetricSegmentationMatrixSerializer.parse(
+              json["segmentation_matrix"],
+              decodePath(path, "segmentation_matrix")
+            )
           : json["segmentation_matrix"],
       unitConversion:
         json["unit_conversion"] != null
-          ? UnitConversionSerializer.parse(json["unit_conversion"])
+          ? UnitConversionSerializer.parse(
+              json["unit_conversion"],
+              decodePath(path, "unit_conversion")
+            )
           : json["unit_conversion"],
     };
   },

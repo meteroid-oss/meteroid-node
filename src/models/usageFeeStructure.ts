@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath } from "../decode.js";
 import { type BillableMetricId, BillableMetricIdSerializer } from "./billableMetricId.js";
 import { type UsageModelEnum, UsageModelEnumSerializer } from "./usageModelEnum.js";
 
@@ -10,11 +11,15 @@ export interface UsageFeeStructure {
 
 /** Converts `UsageFeeStructure` values from (`parse`) and to (`serialize`) their JSON form. */
 export const UsageFeeStructureSerializer = {
-  parse(json: any): UsageFeeStructure {
+  parse(json: any, path = "$"): UsageFeeStructure {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["metric_id", "model"]),
-      metricId: BillableMetricIdSerializer.parse(json["metric_id"]),
-      model: UsageModelEnumSerializer.parse(json["model"]),
+      metricId: BillableMetricIdSerializer.parse(
+        json["metric_id"],
+        decodePath(path, "metric_id")
+      ),
+      model: UsageModelEnumSerializer.parse(json["model"], decodePath(path, "model")),
     };
   },
 

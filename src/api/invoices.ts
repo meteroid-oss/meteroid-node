@@ -13,6 +13,7 @@ import {
 import type { InvoiceStatus } from "../models/invoiceStatus.js";
 import type { SubscriptionId } from "../models/subscriptionId.js";
 import type { APIPromise } from "../apiPromise.js";
+import { PagePromise } from "../pagination.js";
 import {
   MeteroidRequest,
   type MeteroidRequestContext,
@@ -43,8 +44,30 @@ export class Invoices {
   /** @internal */
   public constructor(private readonly requestCtx: MeteroidRequestContext) {}
 
-  /** List invoices with optional filtering by customer, subscription, or status. */
+  /**
+   * List invoices with optional filtering by customer, subscription, or status.
+   *
+   * Await it for the first page: the response body, its properties read on the page, with
+   * `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`. Or iterate it with `for await`
+   * over every item of every page, fetched on demand.
+   */
   public list(
+    options?: InvoicesListOptions,
+    requestOptions?: RequestOptions
+  ): PagePromise<InvoiceListResponse, Invoice> {
+    return new PagePromise<InvoiceListResponse, Invoice>(
+      {
+        style: "page",
+        items: (page) => page.data,
+        totalPages: (page) => page.paginationMeta?.totalPages,
+        firstPage: 0,
+        fetch: (page) => this.#list({ ...options, page: page }, requestOptions),
+      },
+      options?.page
+    );
+  }
+
+  #list(
     options?: InvoicesListOptions,
     requestOptions?: RequestOptions
   ): APIPromise<InvoiceListResponse> {

@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import {
   type EffectiveEntitlement,
   EffectiveEntitlementSerializer,
@@ -11,10 +12,13 @@ export interface EffectiveEntitlementListResponse {
 
 /** Converts `EffectiveEntitlementListResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const EffectiveEntitlementListResponseSerializer = {
-  parse(json: any): EffectiveEntitlementListResponse {
+  parse(json: any, path = "$"): EffectiveEntitlementListResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["data"]),
-      data: json["data"].map((item: any) => EffectiveEntitlementSerializer.parse(item)),
+      data: decodeList(json["data"], path, "data", (item: any, p: string, i: number) =>
+        EffectiveEntitlementSerializer.parse(item, decodePath(p, i))
+      ),
     };
   },
 

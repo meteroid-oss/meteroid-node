@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeList, decodeObject, decodePath } from "../decode.js";
 import { type TierRow, TierRowSerializer } from "./tierRow.js";
 
 export interface TieredPricing {
@@ -9,11 +10,17 @@ export interface TieredPricing {
 
 /** Converts `TieredPricing` values from (`parse`) and to (`serialize`) their JSON form. */
 export const TieredPricingSerializer = {
-  parse(json: any): TieredPricing {
+  parse(json: any, path = "$"): TieredPricing {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["block_size", "tiers"]),
-      blockSize: json["block_size"],
-      tiers: json["tiers"].map((item: any) => TierRowSerializer.parse(item)),
+      blockSize:
+        json["block_size"] != null
+          ? decodeInteger(json["block_size"], path, "block_size")
+          : json["block_size"],
+      tiers: decodeList(json["tiers"], path, "tiers", (item: any, p: string, i: number) =>
+        TierRowSerializer.parse(item, decodePath(p, i))
+      ),
     };
   },
 

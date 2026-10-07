@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const BillingMetricAggregateEnum = {
   Count: "COUNT",
@@ -15,8 +16,8 @@ export type BillingMetricAggregateEnum =
 
 /** Converts `BillingMetricAggregateEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const BillingMetricAggregateEnumSerializer = {
-  parse(json: any): BillingMetricAggregateEnum {
-    return json;
+  parse(json: any, path = "$"): BillingMetricAggregateEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: BillingMetricAggregateEnum): any {

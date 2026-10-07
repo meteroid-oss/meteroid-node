@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 /** Identifies which mutation triggered a `subscription.updated` webhook. */
 export const SubscriptionUpdateType = {
   Activated: "activated",
@@ -16,8 +17,8 @@ export type SubscriptionUpdateType =
 
 /** Converts `SubscriptionUpdateType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionUpdateTypeSerializer = {
-  parse(json: any): SubscriptionUpdateType {
-    return json;
+  parse(json: any, path = "$"): SubscriptionUpdateType {
+    return decodeString(json, path);
   },
 
   serialize(value: SubscriptionUpdateType): any {

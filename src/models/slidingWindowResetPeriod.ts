@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodePath } from "../decode.js";
 import { type CalendarUnit, CalendarUnitSerializer } from "./calendarUnit.js";
 /** Always ends at now — e.g. 30 days means the last 30 days, old usage drops off automatically. */
 export interface SlidingWindowResetPeriod {
@@ -9,11 +10,12 @@ export interface SlidingWindowResetPeriod {
 
 /** Converts `SlidingWindowResetPeriod` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SlidingWindowResetPeriodSerializer = {
-  parse(json: any): SlidingWindowResetPeriod {
+  parse(json: any, path = "$"): SlidingWindowResetPeriod {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["interval", "unit"]),
-      interval: json["interval"],
-      unit: CalendarUnitSerializer.parse(json["unit"]),
+      interval: decodeInteger(json["interval"], path, "interval"),
+      unit: CalendarUnitSerializer.parse(json["unit"], decodePath(path, "unit")),
     };
   },
 

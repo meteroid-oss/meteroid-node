@@ -1,6 +1,13 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type BatchJobId, BatchJobIdSerializer } from "./batchJobId.js";
 import { type BatchJobStatus, BatchJobStatusSerializer } from "./batchJobStatus.js";
 import { type BatchJobType, BatchJobTypeSerializer } from "./batchJobType.js";
@@ -26,7 +33,8 @@ export interface BatchJobDetailResponse {
 
 /** Converts `BatchJobDetailResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const BatchJobDetailResponseSerializer = {
-  parse(json: any): BatchJobDetailResponse {
+  parse(json: any, path = "$"): BatchJobDetailResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "completed_at",
@@ -48,23 +56,41 @@ export const BatchJobDetailResponseSerializer = {
       ]),
       completedAt:
         json["completed_at"] != null
-          ? parseDateTime(json["completed_at"])
+          ? decodeDateTime(json["completed_at"], path, "completed_at")
           : json["completed_at"],
-      createdAt: parseDateTime(json["created_at"]),
-      createdBy: json["created_by"],
-      errorCsvUrl: json["error_csv_url"],
-      failedItems: json["failed_items"],
-      failureCount: json["failure_count"],
-      hasErrorCsv: json["has_error_csv"],
-      hasOutput: json["has_output"],
-      id: BatchJobIdSerializer.parse(json["id"]),
-      inputFileName: json["input_file_name"],
-      inputFileUrl: json["input_file_url"],
-      jobType: BatchJobTypeSerializer.parse(json["job_type"]),
-      outputUrl: json["output_url"],
-      processedItems: json["processed_items"],
-      status: BatchJobStatusSerializer.parse(json["status"]),
-      totalItems: json["total_items"],
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      createdBy: decodeString(json["created_by"], path, "created_by"),
+      errorCsvUrl:
+        json["error_csv_url"] != null
+          ? decodeString(json["error_csv_url"], path, "error_csv_url")
+          : json["error_csv_url"],
+      failedItems: decodeInteger(json["failed_items"], path, "failed_items"),
+      failureCount: decodeInteger(json["failure_count"], path, "failure_count"),
+      hasErrorCsv: decodeBoolean(json["has_error_csv"], path, "has_error_csv"),
+      hasOutput: decodeBoolean(json["has_output"], path, "has_output"),
+      id: BatchJobIdSerializer.parse(json["id"], decodePath(path, "id")),
+      inputFileName:
+        json["input_file_name"] != null
+          ? decodeString(json["input_file_name"], path, "input_file_name")
+          : json["input_file_name"],
+      inputFileUrl:
+        json["input_file_url"] != null
+          ? decodeString(json["input_file_url"], path, "input_file_url")
+          : json["input_file_url"],
+      jobType: BatchJobTypeSerializer.parse(
+        json["job_type"],
+        decodePath(path, "job_type")
+      ),
+      outputUrl:
+        json["output_url"] != null
+          ? decodeString(json["output_url"], path, "output_url")
+          : json["output_url"],
+      processedItems: decodeInteger(json["processed_items"], path, "processed_items"),
+      status: BatchJobStatusSerializer.parse(json["status"], decodePath(path, "status")),
+      totalItems:
+        json["total_items"] != null
+          ? decodeInteger(json["total_items"], path, "total_items")
+          : json["total_items"],
     };
   },
 

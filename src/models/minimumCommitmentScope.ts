@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import {
   type AllComponentsScope,
   AllComponentsScopeSerializer,
@@ -18,16 +19,17 @@ export type MinimumCommitmentScope =
 
 /** Converts `MinimumCommitmentScope` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MinimumCommitmentScopeSerializer = {
-  parse(json: any): MinimumCommitmentScope {
+  parse(json: any, path = "$"): MinimumCommitmentScope {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "all_components":
         return {
-          ...AllComponentsScopeSerializer.parse(json),
+          ...AllComponentsScopeSerializer.parse(json, path),
           type: "all_components",
         };
       case "products":
         return {
-          ...ProductsScopeSerializer.parse(json),
+          ...ProductsScopeSerializer.parse(json, path),
           type: "products",
         };
       default:

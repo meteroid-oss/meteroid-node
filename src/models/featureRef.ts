@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath, decodeString } from "../decode.js";
 import {
   type EntitlementProductRef,
   EntitlementProductRefSerializer,
@@ -16,15 +17,19 @@ export interface FeatureRef {
 
 /** Converts `FeatureRef` values from (`parse`) and to (`serialize`) their JSON form. */
 export const FeatureRefSerializer = {
-  parse(json: any): FeatureRef {
+  parse(json: any, path = "$"): FeatureRef {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["code", "id", "name", "product"]),
-      code: json["code"],
-      id: FeatureIdSerializer.parse(json["id"]),
-      name: json["name"],
+      code: decodeString(json["code"], path, "code"),
+      id: FeatureIdSerializer.parse(json["id"], decodePath(path, "id")),
+      name: decodeString(json["name"], path, "name"),
       product:
         json["product"] != null
-          ? EntitlementProductRefSerializer.parse(json["product"])
+          ? EntitlementProductRefSerializer.parse(
+              json["product"],
+              decodePath(path, "product")
+            )
           : json["product"],
     };
   },

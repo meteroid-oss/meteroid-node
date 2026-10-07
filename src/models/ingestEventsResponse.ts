@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import { type IngestFailure, IngestFailureSerializer } from "./ingestFailure.js";
 
 export interface IngestEventsResponse {
@@ -9,12 +10,19 @@ export interface IngestEventsResponse {
 
 /** Converts `IngestEventsResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const IngestEventsResponseSerializer = {
-  parse(json: any): IngestEventsResponse {
+  parse(json: any, path = "$"): IngestEventsResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["failures"]),
       failures:
         json["failures"] != null
-          ? json["failures"].map((item: any) => IngestFailureSerializer.parse(item))
+          ? decodeList(
+              json["failures"],
+              path,
+              "failures",
+              (item: any, p: string, i: number) =>
+                IngestFailureSerializer.parse(item, decodePath(p, i))
+            )
           : undefined,
     };
   },

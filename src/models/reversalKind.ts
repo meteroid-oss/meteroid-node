@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 /** Why a payment was involuntarily clawed back. */
 export const ReversalKind = {
   Refund: "REFUND",
@@ -16,8 +17,8 @@ export type ReversalKind =
 
 /** Converts `ReversalKind` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ReversalKindSerializer = {
-  parse(json: any): ReversalKind {
-    return json;
+  parse(json: any, path = "$"): ReversalKind {
+    return decodeString(json, path);
   },
 
   serialize(value: ReversalKind): any {

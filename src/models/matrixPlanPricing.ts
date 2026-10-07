@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import { type MatrixRow, MatrixRowSerializer } from "./matrixRow.js";
 
 export interface MatrixPlanPricing {
@@ -8,10 +9,13 @@ export interface MatrixPlanPricing {
 
 /** Converts `MatrixPlanPricing` values from (`parse`) and to (`serialize`) their JSON form. */
 export const MatrixPlanPricingSerializer = {
-  parse(json: any): MatrixPlanPricing {
+  parse(json: any, path = "$"): MatrixPlanPricing {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["rates"]),
-      rates: json["rates"].map((item: any) => MatrixRowSerializer.parse(item)),
+      rates: decodeList(json["rates"], path, "rates", (item: any, p: string, i: number) =>
+        MatrixRowSerializer.parse(item, decodePath(p, i))
+      ),
     };
   },
 

@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties, pickProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath } from "../decode.js";
 import { type EventId, EventIdSerializer } from "./eventId.js";
 import { type EventType, EventTypeSerializer } from "./eventType.js";
 import { type ProductEventData, ProductEventDataSerializer } from "./productEventData.js";
@@ -13,7 +13,8 @@ export interface ProductEvent extends ProductEventData {
 
 /** Converts `ProductEvent` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ProductEventSerializer = {
-  parse(json: any): ProductEvent {
+  parse(json: any, path = "$"): ProductEvent {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "id",
@@ -26,7 +27,7 @@ export const ProductEventSerializer = {
         "product_family_id",
         "product_id",
       ]),
-      ...pickProperties(ProductEventDataSerializer.parse(json), [
+      ...pickProperties(ProductEventDataSerializer.parse(json, path), [
         "createdAt",
         "description",
         "feeType",
@@ -34,9 +35,9 @@ export const ProductEventSerializer = {
         "productFamilyId",
         "productId",
       ]),
-      id: EventIdSerializer.parse(json["id"]),
-      timestamp: parseDateTime(json["timestamp"]),
-      type: EventTypeSerializer.parse(json["type"]),
+      id: EventIdSerializer.parse(json["id"], decodePath(path, "id")),
+      timestamp: decodeDateTime(json["timestamp"], path, "timestamp"),
+      type: EventTypeSerializer.parse(json["type"], decodePath(path, "type")),
     };
   },
 

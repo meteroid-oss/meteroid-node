@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const InvoiceType = {
   Recurring: "RECURRING",
@@ -10,8 +11,8 @@ export type InvoiceType = (typeof InvoiceType)[keyof typeof InvoiceType] | (stri
 
 /** Converts `InvoiceType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const InvoiceTypeSerializer = {
-  parse(json: any): InvoiceType {
-    return json;
+  parse(json: any, path = "$"): InvoiceType {
+    return decodeString(json, path);
   },
 
   serialize(value: InvoiceType): any {

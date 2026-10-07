@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath } from "../decode.js";
 import {
   type CustomPropertyDefinition,
   CustomPropertyDefinitionSerializer,
@@ -16,13 +17,17 @@ export interface CustomPropertyDefinitionListResponse {
 
 /** Converts `CustomPropertyDefinitionListResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomPropertyDefinitionListResponseSerializer = {
-  parse(json: any): CustomPropertyDefinitionListResponse {
+  parse(json: any, path = "$"): CustomPropertyDefinitionListResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["data", "pagination_meta"]),
-      data: json["data"].map((item: any) =>
-        CustomPropertyDefinitionSerializer.parse(item)
+      data: decodeList(json["data"], path, "data", (item: any, p: string, i: number) =>
+        CustomPropertyDefinitionSerializer.parse(item, decodePath(p, i))
       ),
-      paginationMeta: PaginationResponseSerializer.parse(json["pagination_meta"]),
+      paginationMeta: PaginationResponseSerializer.parse(
+        json["pagination_meta"],
+        decodePath(path, "pagination_meta")
+      ),
     };
   },
 

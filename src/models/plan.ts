@@ -1,6 +1,14 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeInteger,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import {
   type AvailableParameters,
   AvailableParametersSerializer,
@@ -49,7 +57,8 @@ export interface Plan {
 
 /** Converts `Plan` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PlanSerializer = {
-  parse(json: any): Plan {
+  parse(json: any, path = "$"): Plan {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "available_parameters",
@@ -74,38 +83,73 @@ export const PlanSerializer = {
         "version_id",
       ]),
       availableParameters: AvailableParametersSerializer.parse(
-        json["available_parameters"]
+        json["available_parameters"],
+        decodePath(path, "available_parameters")
       ),
-      billingCycles: json["billing_cycles"],
-      createdAt: parseDateTime(json["created_at"]),
-      currency: json["currency"],
-      description: json["description"],
+      billingCycles:
+        json["billing_cycles"] != null
+          ? decodeInteger(json["billing_cycles"], path, "billing_cycles")
+          : json["billing_cycles"],
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      currency: decodeString(json["currency"], path, "currency"),
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
       entitlements:
         json["entitlements"] != null
-          ? json["entitlements"].map((item: any) => EntitlementSerializer.parse(item))
+          ? decodeList(
+              json["entitlements"],
+              path,
+              "entitlements",
+              (item: any, p: string, i: number) =>
+                EntitlementSerializer.parse(item, decodePath(p, i))
+            )
           : undefined,
-      id: PlanIdSerializer.parse(json["id"]),
+      id: PlanIdSerializer.parse(json["id"], decodePath(path, "id")),
       minimumCommitment:
         json["minimum_commitment"] != null
-          ? MinimumCommitmentSerializer.parse(json["minimum_commitment"])
+          ? MinimumCommitmentSerializer.parse(
+              json["minimum_commitment"],
+              decodePath(path, "minimum_commitment")
+            )
           : json["minimum_commitment"],
-      name: json["name"],
-      netTerms: json["net_terms"],
-      periodStartDay: json["period_start_day"],
-      planType: PlanTypeEnumSerializer.parse(json["plan_type"]),
-      priceComponents: json["price_components"].map((item: any) =>
-        PriceComponentSerializer.parse(item)
+      name: decodeString(json["name"], path, "name"),
+      netTerms: decodeInteger(json["net_terms"], path, "net_terms"),
+      periodStartDay:
+        json["period_start_day"] != null
+          ? decodeInteger(json["period_start_day"], path, "period_start_day")
+          : json["period_start_day"],
+      planType: PlanTypeEnumSerializer.parse(
+        json["plan_type"],
+        decodePath(path, "plan_type")
       ),
-      productFamily: ProductFamilySerializer.parse(json["product_family"]),
-      selfServiceRank: json["self_service_rank"],
-      status: PlanStatusEnumSerializer.parse(json["status"]),
-      taxInclusive: json["tax_inclusive"],
+      priceComponents: decodeList(
+        json["price_components"],
+        path,
+        "price_components",
+        (item: any, p: string, i: number) =>
+          PriceComponentSerializer.parse(item, decodePath(p, i))
+      ),
+      productFamily: ProductFamilySerializer.parse(
+        json["product_family"],
+        decodePath(path, "product_family")
+      ),
+      selfServiceRank:
+        json["self_service_rank"] != null
+          ? decodeInteger(json["self_service_rank"], path, "self_service_rank")
+          : json["self_service_rank"],
+      status: PlanStatusEnumSerializer.parse(json["status"], decodePath(path, "status")),
+      taxInclusive: decodeBoolean(json["tax_inclusive"], path, "tax_inclusive"),
       trial:
         json["trial"] != null
-          ? TrialConfigSerializer.parse(json["trial"])
+          ? TrialConfigSerializer.parse(json["trial"], decodePath(path, "trial"))
           : json["trial"],
-      version: json["version"],
-      versionId: PlanVersionIdSerializer.parse(json["version_id"]),
+      version: decodeInteger(json["version"], path, "version"),
+      versionId: PlanVersionIdSerializer.parse(
+        json["version_id"],
+        decodePath(path, "version_id")
+      ),
     };
   },
 

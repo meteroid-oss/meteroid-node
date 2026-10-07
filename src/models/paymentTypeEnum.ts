@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const PaymentTypeEnum = {
   Payment: "PAYMENT",
@@ -10,8 +11,8 @@ export type PaymentTypeEnum =
 
 /** Converts `PaymentTypeEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PaymentTypeEnumSerializer = {
-  parse(json: any): PaymentTypeEnum {
-    return json;
+  parse(json: any, path = "$"): PaymentTypeEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: PaymentTypeEnum): any {

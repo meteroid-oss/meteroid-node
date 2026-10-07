@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const CouponFilter = {
   All: "ALL",
@@ -12,8 +13,8 @@ export type CouponFilter =
 
 /** Converts `CouponFilter` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CouponFilterSerializer = {
-  parse(json: any): CouponFilter {
-    return json;
+  parse(json: any, path = "$"): CouponFilter {
+    return decodeString(json, path);
   },
 
   serialize(value: CouponFilter): any {

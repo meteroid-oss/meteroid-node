@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodePath, decodeString } from "../decode.js";
 import {
   type ProductFeeStructure,
   ProductFeeStructureSerializer,
@@ -13,15 +14,23 @@ export interface UpdateProductRequest {
 
 /** Converts `UpdateProductRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const UpdateProductRequestSerializer = {
-  parse(json: any): UpdateProductRequest {
+  parse(json: any, path = "$"): UpdateProductRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["description", "fee_structure", "name"]),
-      description: json["description"],
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
       feeStructure:
         json["fee_structure"] != null
-          ? ProductFeeStructureSerializer.parse(json["fee_structure"])
+          ? ProductFeeStructureSerializer.parse(
+              json["fee_structure"],
+              decodePath(path, "fee_structure")
+            )
           : json["fee_structure"],
-      name: json["name"],
+      name:
+        json["name"] != null ? decodeString(json["name"], path, "name") : json["name"],
     };
   },
 

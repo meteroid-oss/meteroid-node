@@ -1,6 +1,13 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type AddOnId, AddOnIdSerializer } from "./addOnId.js";
 import { type PriceId, PriceIdSerializer } from "./priceId.js";
 import {
@@ -23,7 +30,8 @@ export interface AddOnEventData {
 
 /** Converts `AddOnEventData` values from (`parse`) and to (`serialize`) their JSON form. */
 export const AddOnEventDataSerializer = {
-  parse(json: any): AddOnEventData {
+  parse(json: any, path = "$"): AddOnEventData {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "add_on_id",
@@ -36,18 +44,34 @@ export const AddOnEventDataSerializer = {
         "product_id",
         "self_serviceable",
       ]),
-      addOnId: AddOnIdSerializer.parse(json["add_on_id"]),
-      createdAt: parseDateTime(json["created_at"]),
-      description: json["description"],
+      addOnId: AddOnIdSerializer.parse(json["add_on_id"], decodePath(path, "add_on_id")),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
       feeType:
         json["fee_type"] != null
-          ? ProductFeeTypeEnumSerializer.parse(json["fee_type"])
+          ? ProductFeeTypeEnumSerializer.parse(
+              json["fee_type"],
+              decodePath(path, "fee_type")
+            )
           : json["fee_type"],
-      maxInstancesPerSubscription: json["max_instances_per_subscription"],
-      name: json["name"],
-      priceId: PriceIdSerializer.parse(json["price_id"]),
-      productId: ProductIdSerializer.parse(json["product_id"]),
-      selfServiceable: json["self_serviceable"],
+      maxInstancesPerSubscription:
+        json["max_instances_per_subscription"] != null
+          ? decodeInteger(
+              json["max_instances_per_subscription"],
+              path,
+              "max_instances_per_subscription"
+            )
+          : json["max_instances_per_subscription"],
+      name: decodeString(json["name"], path, "name"),
+      priceId: PriceIdSerializer.parse(json["price_id"], decodePath(path, "price_id")),
+      productId: ProductIdSerializer.parse(
+        json["product_id"],
+        decodePath(path, "product_id")
+      ),
+      selfServiceable: decodeBoolean(json["self_serviceable"], path, "self_serviceable"),
     };
   },
 

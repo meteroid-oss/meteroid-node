@@ -1,6 +1,6 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import { decodeDateTime, decodeObject, decodePath, decodeString } from "../decode.js";
 import {
   type ConnectedAccountId,
   ConnectedAccountIdSerializer,
@@ -35,7 +35,8 @@ export interface ConnectedAccount {
 
 /** Converts `ConnectedAccount` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ConnectedAccountSerializer = {
-  parse(json: any): ConnectedAccount {
+  parse(json: any, path = "$"): ConnectedAccount {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "connected_organization_id",
@@ -56,39 +57,75 @@ export const ConnectedAccountSerializer = {
       ]),
       connectedOrganizationId:
         json["connected_organization_id"] != null
-          ? OrganizationIdSerializer.parse(json["connected_organization_id"])
+          ? OrganizationIdSerializer.parse(
+              json["connected_organization_id"],
+              decodePath(path, "connected_organization_id")
+            )
           : json["connected_organization_id"],
       connectedTenantId:
         json["connected_tenant_id"] != null
-          ? TenantIdSerializer.parse(json["connected_tenant_id"])
+          ? TenantIdSerializer.parse(
+              json["connected_tenant_id"],
+              decodePath(path, "connected_tenant_id")
+            )
           : json["connected_tenant_id"],
-      connectionType: ConnectionTypeSerializer.parse(json["connection_type"]),
-      createdAt: parseDateTime(json["created_at"]),
-      id: ConnectedAccountIdSerializer.parse(json["id"]),
+      connectionType: ConnectionTypeSerializer.parse(
+        json["connection_type"],
+        decodePath(path, "connection_type")
+      ),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      id: ConnectedAccountIdSerializer.parse(json["id"], decodePath(path, "id")),
       metadata: json["metadata"],
       onboardingCompletedAt:
         json["onboarding_completed_at"] != null
-          ? parseDateTime(json["onboarding_completed_at"])
+          ? decodeDateTime(
+              json["onboarding_completed_at"],
+              path,
+              "onboarding_completed_at"
+            )
           : json["onboarding_completed_at"],
-      onboardingMode: OnboardingModeSerializer.parse(json["onboarding_mode"]),
+      onboardingMode: OnboardingModeSerializer.parse(
+        json["onboarding_mode"],
+        decodePath(path, "onboarding_mode")
+      ),
       pendingCountry:
         json["pending_country"] != null
-          ? CountryCodeSerializer.parse(json["pending_country"])
+          ? CountryCodeSerializer.parse(
+              json["pending_country"],
+              decodePath(path, "pending_country")
+            )
           : json["pending_country"],
-      pendingEmail: json["pending_email"],
-      pendingOrganizationName: json["pending_organization_name"],
+      pendingEmail:
+        json["pending_email"] != null
+          ? decodeString(json["pending_email"], path, "pending_email")
+          : json["pending_email"],
+      pendingOrganizationName:
+        json["pending_organization_name"] != null
+          ? decodeString(
+              json["pending_organization_name"],
+              path,
+              "pending_organization_name"
+            )
+          : json["pending_organization_name"],
       platformCustomerId:
         json["platform_customer_id"] != null
-          ? CustomerIdSerializer.parse(json["platform_customer_id"])
+          ? CustomerIdSerializer.parse(
+              json["platform_customer_id"],
+              decodePath(path, "platform_customer_id")
+            )
           : json["platform_customer_id"],
       platformOrganizationId: OrganizationIdSerializer.parse(
-        json["platform_organization_id"]
+        json["platform_organization_id"],
+        decodePath(path, "platform_organization_id")
       ),
       revokedAt:
         json["revoked_at"] != null
-          ? parseDateTime(json["revoked_at"])
+          ? decodeDateTime(json["revoked_at"], path, "revoked_at")
           : json["revoked_at"],
-      status: ConnectionStatusSerializer.parse(json["status"]),
+      status: ConnectionStatusSerializer.parse(
+        json["status"],
+        decodePath(path, "status")
+      ),
     };
   },
 

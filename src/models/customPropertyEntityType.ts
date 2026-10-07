@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const CustomPropertyEntityType = {
   Customer: "CUSTOMER",
@@ -13,8 +14,8 @@ export type CustomPropertyEntityType =
 
 /** Converts `CustomPropertyEntityType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomPropertyEntityTypeSerializer = {
-  parse(json: any): CustomPropertyEntityType {
-    return json;
+  parse(json: any, path = "$"): CustomPropertyEntityType {
+    return decodeString(json, path);
   },
 
   serialize(value: CustomPropertyEntityType): any {

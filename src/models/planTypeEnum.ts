@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const PlanTypeEnum = {
   Standard: "STANDARD",
@@ -11,8 +12,8 @@ export type PlanTypeEnum =
 
 /** Converts `PlanTypeEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PlanTypeEnumSerializer = {
-  parse(json: any): PlanTypeEnum {
-    return json;
+  parse(json: any, path = "$"): PlanTypeEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: PlanTypeEnum): any {

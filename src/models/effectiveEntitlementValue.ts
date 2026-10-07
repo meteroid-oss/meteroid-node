@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import {
   type BooleanEffectiveEntitlementValue,
   BooleanEffectiveEntitlementValueSerializer,
@@ -31,21 +32,22 @@ export type EffectiveEntitlementValue =
 
 /** Converts `EffectiveEntitlementValue` values from (`parse`) and to (`serialize`) their JSON form. */
 export const EffectiveEntitlementValueSerializer = {
-  parse(json: any): EffectiveEntitlementValue {
+  parse(json: any, path = "$"): EffectiveEntitlementValue {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "BOOLEAN":
         return {
-          ...BooleanEffectiveEntitlementValueSerializer.parse(json),
+          ...BooleanEffectiveEntitlementValueSerializer.parse(json, path),
           type: "BOOLEAN",
         };
       case "METERED":
         return {
-          ...MeteredEffectiveEntitlementValueSerializer.parse(json),
+          ...MeteredEffectiveEntitlementValueSerializer.parse(json, path),
           type: "METERED",
         };
       case "CONFIG":
         return {
-          ...ConfigEffectiveEntitlementValueSerializer.parse(json),
+          ...ConfigEffectiveEntitlementValueSerializer.parse(json, path),
           type: "CONFIG",
         };
       default:

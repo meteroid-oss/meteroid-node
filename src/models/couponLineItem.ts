@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeObject, decodeString } from "../decode.js";
 
 export interface CouponLineItem {
   couponId: string;
@@ -9,12 +10,13 @@ export interface CouponLineItem {
 
 /** Converts `CouponLineItem` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CouponLineItemSerializer = {
-  parse(json: any): CouponLineItem {
+  parse(json: any, path = "$"): CouponLineItem {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["coupon_id", "name", "total"]),
-      couponId: json["coupon_id"],
-      name: json["name"],
-      total: json["total"],
+      couponId: decodeString(json["coupon_id"], path, "coupon_id"),
+      name: decodeString(json["name"], path, "name"),
+      total: decodeInteger(json["total"], path, "total"),
     };
   },
 

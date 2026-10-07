@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import { type ExistingPriceRef, ExistingPriceRefSerializer } from "./existingPriceRef.js";
 import { type PriceInput, PriceInputSerializer } from "./priceInput.js";
 
@@ -13,16 +14,17 @@ export type PriceEntry = PriceEntryExisting | PriceEntryNew;
 
 /** Converts `PriceEntry` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PriceEntrySerializer = {
-  parse(json: any): PriceEntry {
+  parse(json: any, path = "$"): PriceEntry {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "EXISTING":
         return {
-          ...ExistingPriceRefSerializer.parse(json),
+          ...ExistingPriceRefSerializer.parse(json, path),
           type: "EXISTING",
         };
       case "NEW":
         return {
-          ...PriceInputSerializer.parse(json),
+          ...PriceInputSerializer.parse(json, path),
           type: "NEW",
         };
       default:

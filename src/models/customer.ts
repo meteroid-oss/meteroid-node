@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeList, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type Address, AddressSerializer } from "./address.js";
 import { type Currency, CurrencySerializer } from "./currency.js";
 import { type CustomTaxRate, CustomTaxRateSerializer } from "./customTaxRate.js";
@@ -52,7 +53,8 @@ export interface Customer {
 
 /** Converts `Customer` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomerSerializer = {
-  parse(json: any): Customer {
+  parse(json: any, path = "$"): Customer {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "alias",
@@ -77,38 +79,94 @@ export const CustomerSerializer = {
         "shipping_address",
         "vat_number",
       ]),
-      alias: json["alias"],
+      alias:
+        json["alias"] != null
+          ? decodeString(json["alias"], path, "alias")
+          : json["alias"],
       billingAddress:
         json["billing_address"] != null
-          ? AddressSerializer.parse(json["billing_address"])
+          ? AddressSerializer.parse(
+              json["billing_address"],
+              decodePath(path, "billing_address")
+            )
           : json["billing_address"],
-      billingEmail: json["billing_email"],
-      buyerReference: json["buyer_reference"],
-      connectedAccountId: json["connected_account_id"],
-      currency: CurrencySerializer.parse(json["currency"]),
+      billingEmail:
+        json["billing_email"] != null
+          ? decodeString(json["billing_email"], path, "billing_email")
+          : json["billing_email"],
+      buyerReference:
+        json["buyer_reference"] != null
+          ? decodeString(json["buyer_reference"], path, "buyer_reference")
+          : json["buyer_reference"],
+      connectedAccountId:
+        json["connected_account_id"] != null
+          ? decodeString(json["connected_account_id"], path, "connected_account_id")
+          : json["connected_account_id"],
+      currency: CurrencySerializer.parse(json["currency"], decodePath(path, "currency")),
       customProperties: json["custom_properties"],
-      customTaxes: json["custom_taxes"].map((item: any) =>
-        CustomTaxRateSerializer.parse(item)
+      customTaxes: decodeList(
+        json["custom_taxes"],
+        path,
+        "custom_taxes",
+        (item: any, p: string, i: number) =>
+          CustomTaxRateSerializer.parse(item, decodePath(p, i))
       ),
       customerType:
         json["customer_type"] != null
-          ? CustomerTypeSerializer.parse(json["customer_type"])
+          ? CustomerTypeSerializer.parse(
+              json["customer_type"],
+              decodePath(path, "customer_type")
+            )
           : undefined,
-      firstName: json["first_name"],
-      id: CustomerIdSerializer.parse(json["id"]),
-      invoicingEmails: json["invoicing_emails"],
-      invoicingEntityId: InvoicingEntityIdSerializer.parse(json["invoicing_entity_id"]),
-      invoicingLanguage: json["invoicing_language"],
-      lastName: json["last_name"],
-      legalNumber: json["legal_number"],
-      name: json["name"],
-      phone: json["phone"],
-      preferredLocales: json["preferred_locales"],
+      firstName:
+        json["first_name"] != null
+          ? decodeString(json["first_name"], path, "first_name")
+          : json["first_name"],
+      id: CustomerIdSerializer.parse(json["id"], decodePath(path, "id")),
+      invoicingEmails: decodeList(
+        json["invoicing_emails"],
+        path,
+        "invoicing_emails",
+        (item: any, p: string, i: number) => decodeString(item, p, i)
+      ),
+      invoicingEntityId: InvoicingEntityIdSerializer.parse(
+        json["invoicing_entity_id"],
+        decodePath(path, "invoicing_entity_id")
+      ),
+      invoicingLanguage:
+        json["invoicing_language"] != null
+          ? decodeString(json["invoicing_language"], path, "invoicing_language")
+          : json["invoicing_language"],
+      lastName:
+        json["last_name"] != null
+          ? decodeString(json["last_name"], path, "last_name")
+          : json["last_name"],
+      legalNumber:
+        json["legal_number"] != null
+          ? decodeString(json["legal_number"], path, "legal_number")
+          : json["legal_number"],
+      name: decodeString(json["name"], path, "name"),
+      phone:
+        json["phone"] != null
+          ? decodeString(json["phone"], path, "phone")
+          : json["phone"],
+      preferredLocales: decodeList(
+        json["preferred_locales"],
+        path,
+        "preferred_locales",
+        (item: any, p: string, i: number) => decodeString(item, p, i)
+      ),
       shippingAddress:
         json["shipping_address"] != null
-          ? ShippingAddressSerializer.parse(json["shipping_address"])
+          ? ShippingAddressSerializer.parse(
+              json["shipping_address"],
+              decodePath(path, "shipping_address")
+            )
           : json["shipping_address"],
-      vatNumber: json["vat_number"],
+      vatNumber:
+        json["vat_number"] != null
+          ? decodeString(json["vat_number"], path, "vat_number")
+          : json["vat_number"],
     };
   },
 

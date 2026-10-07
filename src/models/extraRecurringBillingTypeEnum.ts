@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const ExtraRecurringBillingTypeEnum = {
   Advance: "ADVANCE",
@@ -10,8 +11,8 @@ export type ExtraRecurringBillingTypeEnum =
 
 /** Converts `ExtraRecurringBillingTypeEnum` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ExtraRecurringBillingTypeEnumSerializer = {
-  parse(json: any): ExtraRecurringBillingTypeEnum {
-    return json;
+  parse(json: any, path = "$"): ExtraRecurringBillingTypeEnum {
+    return decodeString(json, path);
   },
 
   serialize(value: ExtraRecurringBillingTypeEnum): any {

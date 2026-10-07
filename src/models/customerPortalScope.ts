@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 /** What a customer portal token may do. */
 export const CustomerPortalScope = {
   Read: "read",
@@ -10,8 +11,8 @@ export type CustomerPortalScope =
 
 /** Converts `CustomerPortalScope` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomerPortalScopeSerializer = {
-  parse(json: any): CustomerPortalScope {
-    return json;
+  parse(json: any, path = "$"): CustomerPortalScope {
+    return decodeString(json, path);
   },
 
   serialize(value: CustomerPortalScope): any {

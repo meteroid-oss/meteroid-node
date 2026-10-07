@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeObject, decodeString } from "../decode.js";
 /** A text config value. */
 export interface TextConfigValue {
   value: string;
@@ -7,10 +8,11 @@ export interface TextConfigValue {
 
 /** Converts `TextConfigValue` values from (`parse`) and to (`serialize`) their JSON form. */
 export const TextConfigValueSerializer = {
-  parse(json: any): TextConfigValue {
+  parse(json: any, path = "$"): TextConfigValue {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["value"]),
-      value: json["value"],
+      value: decodeString(json["value"], path, "value"),
     };
   },
 

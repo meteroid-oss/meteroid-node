@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeBoolean, decodeInteger, decodeObject, decodePath } from "../decode.js";
 import { type AddOnId, AddOnIdSerializer } from "./addOnId.js";
 import { type PriceId, PriceIdSerializer } from "./priceId.js";
 
@@ -12,7 +13,8 @@ export interface PlanAddOnInput {
 
 /** Converts `PlanAddOnInput` values from (`parse`) and to (`serialize`) their JSON form. */
 export const PlanAddOnInputSerializer = {
-  parse(json: any): PlanAddOnInput {
+  parse(json: any, path = "$"): PlanAddOnInput {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "add_on_id",
@@ -20,13 +22,19 @@ export const PlanAddOnInputSerializer = {
         "price_id",
         "self_serviceable",
       ]),
-      addOnId: AddOnIdSerializer.parse(json["add_on_id"]),
-      maxInstances: json["max_instances"],
+      addOnId: AddOnIdSerializer.parse(json["add_on_id"], decodePath(path, "add_on_id")),
+      maxInstances:
+        json["max_instances"] != null
+          ? decodeInteger(json["max_instances"], path, "max_instances")
+          : json["max_instances"],
       priceId:
         json["price_id"] != null
-          ? PriceIdSerializer.parse(json["price_id"])
+          ? PriceIdSerializer.parse(json["price_id"], decodePath(path, "price_id"))
           : json["price_id"],
-      selfServiceable: json["self_serviceable"],
+      selfServiceable:
+        json["self_serviceable"] != null
+          ? decodeBoolean(json["self_serviceable"], path, "self_serviceable")
+          : json["self_serviceable"],
     };
   },
 

@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const ErrorCode = {
   BadRequest: "BAD_REQUEST",
@@ -14,8 +15,8 @@ export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode] | (string & {
 
 /** Converts `ErrorCode` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ErrorCodeSerializer = {
-  parse(json: any): ErrorCode {
-    return json;
+  parse(json: any, path = "$"): ErrorCode {
+    return decodeString(json, path);
   },
 
   serialize(value: ErrorCode): any {

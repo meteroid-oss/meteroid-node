@@ -1,6 +1,14 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
 import {
+  decodeBoolean,
+  decodeInteger,
+  decodeList,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
+import {
   type CreateSubscriptionAddOn,
   CreateSubscriptionAddOnSerializer,
 } from "./createSubscriptionAddOn.js";
@@ -56,7 +64,8 @@ export interface SubscriptionCreateRequest {
 
 /** Converts `SubscriptionCreateRequest` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionCreateRequestSerializer = {
-  parse(json: any): SubscriptionCreateRequest {
+  parse(json: any, path = "$"): SubscriptionCreateRequest {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "activation_condition",
@@ -81,38 +90,94 @@ export const SubscriptionCreateRequestSerializer = {
         "version",
       ]),
       activationCondition: SubscriptionActivationConditionEnumSerializer.parse(
-        json["activation_condition"]
+        json["activation_condition"],
+        decodePath(path, "activation_condition")
       ),
       addOns:
         json["add_ons"] != null
-          ? json["add_ons"].map((item: any) =>
-              CreateSubscriptionAddOnSerializer.parse(item)
+          ? decodeList(
+              json["add_ons"],
+              path,
+              "add_ons",
+              (item: any, p: string, i: number) =>
+                CreateSubscriptionAddOnSerializer.parse(item, decodePath(p, i))
             )
           : undefined,
-      autoAdvanceInvoices: json["auto_advance_invoices"],
-      backdateInvoices: json["backdate_invoices"],
-      billingDayAnchor: json["billing_day_anchor"],
-      chargeAutomatically: json["charge_automatically"],
-      couponCodes: json["coupon_codes"],
+      autoAdvanceInvoices:
+        json["auto_advance_invoices"] != null
+          ? decodeBoolean(json["auto_advance_invoices"], path, "auto_advance_invoices")
+          : undefined,
+      backdateInvoices:
+        json["backdate_invoices"] != null
+          ? decodeBoolean(json["backdate_invoices"], path, "backdate_invoices")
+          : undefined,
+      billingDayAnchor:
+        json["billing_day_anchor"] != null
+          ? decodeInteger(json["billing_day_anchor"], path, "billing_day_anchor")
+          : json["billing_day_anchor"],
+      chargeAutomatically:
+        json["charge_automatically"] != null
+          ? decodeBoolean(json["charge_automatically"], path, "charge_automatically")
+          : undefined,
+      couponCodes:
+        json["coupon_codes"] != null
+          ? decodeList(
+              json["coupon_codes"],
+              path,
+              "coupon_codes",
+              (item: any, p: string, i: number) => decodeString(item, p, i)
+            )
+          : undefined,
       customProperties: json["custom_properties"],
-      customerIdOrAlias: json["customer_id_or_alias"],
-      endDate: json["end_date"],
-      invoiceMemo: json["invoice_memo"],
-      netTerms: json["net_terms"],
+      customerIdOrAlias: decodeString(
+        json["customer_id_or_alias"],
+        path,
+        "customer_id_or_alias"
+      ),
+      endDate:
+        json["end_date"] != null
+          ? decodeString(json["end_date"], path, "end_date")
+          : undefined,
+      invoiceMemo:
+        json["invoice_memo"] != null
+          ? decodeString(json["invoice_memo"], path, "invoice_memo")
+          : undefined,
+      netTerms:
+        json["net_terms"] != null
+          ? decodeInteger(json["net_terms"], path, "net_terms")
+          : undefined,
       paymentMethodsConfig:
         json["payment_methods_config"] != null
-          ? PaymentMethodsConfigSerializer.parse(json["payment_methods_config"])
+          ? PaymentMethodsConfigSerializer.parse(
+              json["payment_methods_config"],
+              decodePath(path, "payment_methods_config")
+            )
           : undefined,
-      planId: PlanIdSerializer.parse(json["plan_id"]),
+      planId: PlanIdSerializer.parse(json["plan_id"], decodePath(path, "plan_id")),
       priceComponents:
         json["price_components"] != null
-          ? CreateSubscriptionComponentsSerializer.parse(json["price_components"])
+          ? CreateSubscriptionComponentsSerializer.parse(
+              json["price_components"],
+              decodePath(path, "price_components")
+            )
           : undefined,
-      purchaseOrder: json["purchase_order"],
-      skipPastInvoices: json["skip_past_invoices"],
-      startDate: json["start_date"],
-      trialDays: json["trial_days"],
-      version: json["version"],
+      purchaseOrder:
+        json["purchase_order"] != null
+          ? decodeString(json["purchase_order"], path, "purchase_order")
+          : json["purchase_order"],
+      skipPastInvoices:
+        json["skip_past_invoices"] != null
+          ? decodeBoolean(json["skip_past_invoices"], path, "skip_past_invoices")
+          : undefined,
+      startDate: decodeString(json["start_date"], path, "start_date"),
+      trialDays:
+        json["trial_days"] != null
+          ? decodeInteger(json["trial_days"], path, "trial_days")
+          : undefined,
+      version:
+        json["version"] != null
+          ? decodeInteger(json["version"], path, "version")
+          : undefined,
     };
   },
 

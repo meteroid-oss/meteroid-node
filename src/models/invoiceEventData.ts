@@ -1,6 +1,12 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeDateTime,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type CustomerId, CustomerIdSerializer } from "./customerId.js";
 import { type InvoiceId, InvoiceIdSerializer } from "./invoiceId.js";
 import { type InvoiceStatus, InvoiceStatusSerializer } from "./invoiceStatus.js";
@@ -23,7 +29,8 @@ export interface InvoiceEventData {
 
 /** Converts `InvoiceEventData` values from (`parse`) and to (`serialize`) their JSON form. */
 export const InvoiceEventDataSerializer = {
-  parse(json: any): InvoiceEventData {
+  parse(json: any, path = "$"): InvoiceEventData {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "consolidated_into_invoice_id",
@@ -40,21 +47,36 @@ export const InvoiceEventDataSerializer = {
       ]),
       consolidatedIntoInvoiceId:
         json["consolidated_into_invoice_id"] != null
-          ? InvoiceIdSerializer.parse(json["consolidated_into_invoice_id"])
+          ? InvoiceIdSerializer.parse(
+              json["consolidated_into_invoice_id"],
+              decodePath(path, "consolidated_into_invoice_id")
+            )
           : json["consolidated_into_invoice_id"],
-      createdAt: parseDateTime(json["created_at"]),
-      currency: json["currency"],
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      currency: decodeString(json["currency"], path, "currency"),
       customProperties: json["custom_properties"],
-      customerId: CustomerIdSerializer.parse(json["customer_id"]),
-      invoiceId: InvoiceIdSerializer.parse(json["invoice_id"]),
-      invoiceNumber: json["invoice_number"],
+      customerId: CustomerIdSerializer.parse(
+        json["customer_id"],
+        decodePath(path, "customer_id")
+      ),
+      invoiceId: InvoiceIdSerializer.parse(
+        json["invoice_id"],
+        decodePath(path, "invoice_id")
+      ),
+      invoiceNumber:
+        json["invoice_number"] != null
+          ? decodeString(json["invoice_number"], path, "invoice_number")
+          : json["invoice_number"],
       parentInvoiceId:
         json["parent_invoice_id"] != null
-          ? InvoiceIdSerializer.parse(json["parent_invoice_id"])
+          ? InvoiceIdSerializer.parse(
+              json["parent_invoice_id"],
+              decodePath(path, "parent_invoice_id")
+            )
           : json["parent_invoice_id"],
-      status: InvoiceStatusSerializer.parse(json["status"]),
-      taxAmount: json["tax_amount"],
-      total: json["total"],
+      status: InvoiceStatusSerializer.parse(json["status"], decodePath(path, "status")),
+      taxAmount: decodeInteger(json["tax_amount"], path, "tax_amount"),
+      total: decodeInteger(json["total"], path, "total"),
     };
   },
 

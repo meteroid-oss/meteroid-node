@@ -1,6 +1,12 @@
 // this file is @generated
-import { parseDateTime } from "../datetime.js";
 import { extraProperties } from "../json.js";
+import {
+  decodeBoolean,
+  decodeDateTime,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
 import { type ProductFamilyId, ProductFamilyIdSerializer } from "./productFamilyId.js";
 import {
   type ProductFeeStructure,
@@ -26,7 +32,8 @@ export interface Product {
 
 /** Converts `Product` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ProductSerializer = {
-  parse(json: any): Product {
+  parse(json: any, path = "$"): Product {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "archived_at",
@@ -41,16 +48,28 @@ export const ProductSerializer = {
       ]),
       archivedAt:
         json["archived_at"] != null
-          ? parseDateTime(json["archived_at"])
+          ? decodeDateTime(json["archived_at"], path, "archived_at")
           : json["archived_at"],
-      catalog: json["catalog"],
-      createdAt: parseDateTime(json["created_at"]),
-      description: json["description"],
-      feeStructure: ProductFeeStructureSerializer.parse(json["fee_structure"]),
-      feeType: ProductFeeTypeEnumSerializer.parse(json["fee_type"]),
-      id: ProductIdSerializer.parse(json["id"]),
-      name: json["name"],
-      productFamilyId: ProductFamilyIdSerializer.parse(json["product_family_id"]),
+      catalog: decodeBoolean(json["catalog"], path, "catalog"),
+      createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
+      feeStructure: ProductFeeStructureSerializer.parse(
+        json["fee_structure"],
+        decodePath(path, "fee_structure")
+      ),
+      feeType: ProductFeeTypeEnumSerializer.parse(
+        json["fee_type"],
+        decodePath(path, "fee_type")
+      ),
+      id: ProductIdSerializer.parse(json["id"], decodePath(path, "id")),
+      name: decodeString(json["name"], path, "name"),
+      productFamilyId: ProductFamilyIdSerializer.parse(
+        json["product_family_id"],
+        decodePath(path, "product_family_id")
+      ),
     };
   },
 

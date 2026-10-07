@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const EventType = {
   MetricCreated: "metric.created",
@@ -44,8 +45,8 @@ export type EventType = (typeof EventType)[keyof typeof EventType] | (string & {
 
 /** Converts `EventType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const EventTypeSerializer = {
-  parse(json: any): EventType {
-    return json;
+  parse(json: any, path = "$"): EventType {
+    return decodeString(json, path);
   },
 
   serialize(value: EventType): any {

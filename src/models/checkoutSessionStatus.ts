@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeString } from "../decode.js";
 
 export const CheckoutSessionStatus = {
   Created: "CREATED",
@@ -13,8 +14,8 @@ export type CheckoutSessionStatus =
 
 /** Converts `CheckoutSessionStatus` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CheckoutSessionStatusSerializer = {
-  parse(json: any): CheckoutSessionStatus {
-    return json;
+  parse(json: any, path = "$"): CheckoutSessionStatus {
+    return decodeString(json, path);
   },
 
   serialize(value: CheckoutSessionStatus): any {

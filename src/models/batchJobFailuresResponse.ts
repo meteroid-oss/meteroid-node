@@ -1,5 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
+import { decodeInteger, decodeList, decodeObject, decodePath } from "../decode.js";
 import {
   type BatchJobItemFailureResponse,
   BatchJobItemFailureResponseSerializer,
@@ -12,13 +13,14 @@ export interface BatchJobFailuresResponse {
 
 /** Converts `BatchJobFailuresResponse` values from (`parse`) and to (`serialize`) their JSON form. */
 export const BatchJobFailuresResponseSerializer = {
-  parse(json: any): BatchJobFailuresResponse {
+  parse(json: any, path = "$"): BatchJobFailuresResponse {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, ["data", "total_count"]),
-      data: json["data"].map((item: any) =>
-        BatchJobItemFailureResponseSerializer.parse(item)
+      data: decodeList(json["data"], path, "data", (item: any, p: string, i: number) =>
+        BatchJobItemFailureResponseSerializer.parse(item, decodePath(p, i))
       ),
-      totalCount: json["total_count"],
+      totalCount: decodeInteger(json["total_count"], path, "total_count"),
     };
   },
 

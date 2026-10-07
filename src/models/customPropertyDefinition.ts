@@ -1,6 +1,13 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
 import {
+  decodeBoolean,
+  decodeInteger,
+  decodeObject,
+  decodePath,
+  decodeString,
+} from "../decode.js";
+import {
   type CustomPropertyDefinitionId,
   CustomPropertyDefinitionIdSerializer,
 } from "./customPropertyDefinitionId.js";
@@ -30,7 +37,8 @@ export interface CustomPropertyDefinition {
 
 /** Converts `CustomPropertyDefinition` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CustomPropertyDefinitionSerializer = {
-  parse(json: any): CustomPropertyDefinition {
+  parse(json: any, path = "$"): CustomPropertyDefinition {
+    decodeObject(json, path);
     return {
       ...extraProperties(json, [
         "archived",
@@ -45,17 +53,26 @@ export const CustomPropertyDefinitionSerializer = {
         "property_type",
         "required",
       ]),
-      archived: json["archived"],
-      config: PropertyConfigSerializer.parse(json["config"]),
+      archived: decodeBoolean(json["archived"], path, "archived"),
+      config: PropertyConfigSerializer.parse(json["config"], decodePath(path, "config")),
       defaultValue: json["default_value"],
-      description: json["description"],
-      displayOrder: json["display_order"],
-      entityType: CustomPropertyEntityTypeSerializer.parse(json["entity_type"]),
-      id: CustomPropertyDefinitionIdSerializer.parse(json["id"]),
-      key: json["key"],
-      name: json["name"],
-      propertyType: CustomPropertyTypeSerializer.parse(json["property_type"]),
-      required: json["required"],
+      description:
+        json["description"] != null
+          ? decodeString(json["description"], path, "description")
+          : json["description"],
+      displayOrder: decodeInteger(json["display_order"], path, "display_order"),
+      entityType: CustomPropertyEntityTypeSerializer.parse(
+        json["entity_type"],
+        decodePath(path, "entity_type")
+      ),
+      id: CustomPropertyDefinitionIdSerializer.parse(json["id"], decodePath(path, "id")),
+      key: decodeString(json["key"], path, "key"),
+      name: decodeString(json["name"], path, "name"),
+      propertyType: CustomPropertyTypeSerializer.parse(
+        json["property_type"],
+        decodePath(path, "property_type")
+      ),
+      required: decodeBoolean(json["required"], path, "required"),
     };
   },
 

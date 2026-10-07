@@ -1,4 +1,5 @@
 // this file is @generated
+import { decodeObject } from "../decode.js";
 import {
   type ExistingProductRef,
   ExistingProductRefSerializer,
@@ -16,16 +17,17 @@ export type ProductRef = ProductRefExisting | ProductRefNew;
 
 /** Converts `ProductRef` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ProductRefSerializer = {
-  parse(json: any): ProductRef {
+  parse(json: any, path = "$"): ProductRef {
+    decodeObject(json, path);
     switch (json["type"]) {
       case "EXISTING":
         return {
-          ...ExistingProductRefSerializer.parse(json),
+          ...ExistingProductRefSerializer.parse(json, path),
           type: "EXISTING",
         };
       case "NEW":
         return {
-          ...NewProductRefSerializer.parse(json),
+          ...NewProductRefSerializer.parse(json, path),
           type: "NEW",
         };
       default:
