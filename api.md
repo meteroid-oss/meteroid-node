@@ -11,7 +11,7 @@ List methods return a `PagePromise`. Awaited, it gives the first `Page`: the res
 properties read on the page, with `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`.
 Iterated with `for await`, it yields every item of every page.
 
-[Add ons](#add-ons) · [Batch jobs](#batch-jobs) · [Checkout sessions](#checkout-sessions) · [Connect](#connect) · [Coupons](#coupons) · [Credit notes](#credit-notes) · [Custom properties](#custom-properties) · [Customers](#customers) · [Entitlements](#entitlements) · [Events](#events) · [Features](#features) · [Invoices](#invoices) · [Metrics](#metrics) · [Oauth](#oauth) · [Oauth apps](#oauth-apps) · [Plans](#plans) · [Product families](#product-families) · [Products](#products) · [Subscriptions](#subscriptions) · [Usage](#usage)
+[Add ons](#add-ons) · [Add ons entitlements](#add-ons-entitlements) · [Batch jobs](#batch-jobs) · [Checkout sessions](#checkout-sessions) · [Connect](#connect) · [Coupons](#coupons) · [Credit notes](#credit-notes) · [Custom properties](#custom-properties) · [Customers](#customers) · [Entitlements](#entitlements) · [Events](#events) · [Features](#features) · [Invoices](#invoices) · [Metrics](#metrics) · [Oauth](#oauth) · [Oauth apps](#oauth-apps) · [Plans](#plans) · [Plans versions](#plans-versions) · [Product families](#product-families) · [Products](#products) · [Products entitlements](#products-entitlements) · [Subscriptions](#subscriptions) · [Usage](#usage)
 
 ## Add ons
 
@@ -24,9 +24,16 @@ Iterated with `for await`, it yields every item of every page.
 | `client.addOns.retrieve(addonId: string): APIPromise<AddOn>` | `GET /api/v1/addons/{addon_id}` | [`AddOn`](src/models/addOn.ts) |
 | `client.addOns.update(addonId: string, updateAddOnRequest: UpdateAddOnRequest): APIPromise<AddOn>` | `PATCH /api/v1/addons/{addon_id}` | [`AddOn`](src/models/addOn.ts) |
 | `client.addOns.archive(addonId: string): APIPromise<void>` | `POST /api/v1/addons/{addon_id}/archive` | nothing |
-| `client.addOns.listEntitlements(addonId: string): APIPromise<ResolvedEntitlementListResponse>` | `GET /api/v1/addons/{addon_id}/entitlements` | [`ResolvedEntitlementListResponse`](src/models/resolvedEntitlementListResponse.ts) |
-| `client.addOns.createEntitlement(addonId: string, createEntitlementsRequest: CreateEntitlementsRequest): APIPromise<EntitlementListResponse>` | `POST /api/v1/addons/{addon_id}/entitlements` | [`EntitlementListResponse`](src/models/entitlementListResponse.ts) |
 | `client.addOns.unarchive(addonId: string): APIPromise<void>` | `POST /api/v1/addons/{addon_id}/unarchive` | nothing |
+
+### Add ons entitlements
+
+[`client.addOns.entitlements`](src/api/addOnsEntitlements.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.addOns.entitlements.list(addonId: string): APIPromise<ResolvedEntitlementListResponse>` | `GET /api/v1/addons/{addon_id}/entitlements` | [`ResolvedEntitlementListResponse`](src/models/resolvedEntitlementListResponse.ts) |
+| `client.addOns.entitlements.create(addonId: string, createEntitlementsRequest: CreateEntitlementsRequest): APIPromise<EntitlementListResponse>` | `POST /api/v1/addons/{addon_id}/entitlements` | [`EntitlementListResponse`](src/models/entitlementListResponse.ts) |
 
 ## Batch jobs
 
@@ -205,15 +212,22 @@ Iterated with `for await`, it yields every item of every page.
 | `client.plans.createPlanVersionEntitlement(planVersionId: string, createEntitlementsRequest: CreateEntitlementsRequest): APIPromise<EntitlementListResponse>` | `POST /api/v1/plan-versions/{plan_version_id}/entitlements` | [`EntitlementListResponse`](src/models/entitlementListResponse.ts) |
 | `client.plans.list(options?: PlansListOptions): PagePromise<PlanListResponse, Plan>` | `GET /api/v1/plans` | [`PlanListResponse`](src/models/planListResponse.ts) pages of [`Plan`](src/models/plan.ts) |
 | `client.plans.create(createPlanRequest: CreatePlanRequest): APIPromise<Plan>` | `POST /api/v1/plans` | [`Plan`](src/models/plan.ts) |
-| `client.plans.updateVersionMinimum(planVersionId: string, minimumCommitment: MinimumCommitment): APIPromise<MinimumCommitment>` | `PUT /api/v1/plans/versions/{plan_version_id}/minimum` | [`MinimumCommitment`](src/models/minimumCommitment.ts) |
-| `client.plans.deleteVersionMinimum(planVersionId: string): APIPromise<void>` | `DELETE /api/v1/plans/versions/{plan_version_id}/minimum` | nothing |
 | `client.plans.retrieve(planId: string, options?: PlansRetrieveOptions): APIPromise<Plan>` | `GET /api/v1/plans/{plan_id}` | [`Plan`](src/models/plan.ts) |
 | `client.plans.replace(planId: string, replacePlanRequest: ReplacePlanRequest): APIPromise<Plan>` | `PUT /api/v1/plans/{plan_id}` | [`Plan`](src/models/plan.ts) |
 | `client.plans.update(planId: string, patchPlanRequest: PatchPlanRequest): APIPromise<Plan>` | `PATCH /api/v1/plans/{plan_id}` | [`Plan`](src/models/plan.ts) |
 | `client.plans.archive(planId: string): APIPromise<void>` | `POST /api/v1/plans/{plan_id}/archive` | nothing |
 | `client.plans.publish(planId: string): APIPromise<Plan>` | `POST /api/v1/plans/{plan_id}/publish` | [`Plan`](src/models/plan.ts) |
 | `client.plans.unarchive(planId: string): APIPromise<void>` | `POST /api/v1/plans/{plan_id}/unarchive` | nothing |
-| `client.plans.listVersions(planId: string, options?: PlansListVersionsOptions): PagePromise<PlanVersionListResponse, PlanVersionSummary>` | `GET /api/v1/plans/{plan_id}/versions` | [`PlanVersionListResponse`](src/models/planVersionListResponse.ts) pages of [`PlanVersionSummary`](src/models/planVersionSummary.ts) |
+
+### Plans versions
+
+[`client.plans.versions`](src/api/plansVersions.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.plans.versions.updateMinimum(planVersionId: string, minimumCommitment: MinimumCommitment): APIPromise<MinimumCommitment>` | `PUT /api/v1/plans/versions/{plan_version_id}/minimum` | [`MinimumCommitment`](src/models/minimumCommitment.ts) |
+| `client.plans.versions.deleteMinimum(planVersionId: string): APIPromise<void>` | `DELETE /api/v1/plans/versions/{plan_version_id}/minimum` | nothing |
+| `client.plans.versions.list(planId: string, options?: PlansVersionsListOptions): PagePromise<PlanVersionListResponse, PlanVersionSummary>` | `GET /api/v1/plans/{plan_id}/versions` | [`PlanVersionListResponse`](src/models/planVersionListResponse.ts) pages of [`PlanVersionSummary`](src/models/planVersionSummary.ts) |
 
 ## Product families
 
@@ -236,9 +250,16 @@ Iterated with `for await`, it yields every item of every page.
 | `client.products.retrieve(productId: string): APIPromise<Product>` | `GET /api/v1/products/{product_id}` | [`Product`](src/models/product.ts) |
 | `client.products.update(productId: string, updateProductRequest: UpdateProductRequest): APIPromise<Product>` | `PATCH /api/v1/products/{product_id}` | [`Product`](src/models/product.ts) |
 | `client.products.archive(productId: string): APIPromise<void>` | `POST /api/v1/products/{product_id}/archive` | nothing |
-| `client.products.listEntitlements(productId: string): APIPromise<ResolvedEntitlementListResponse>` | `GET /api/v1/products/{product_id}/entitlements` | [`ResolvedEntitlementListResponse`](src/models/resolvedEntitlementListResponse.ts) |
-| `client.products.createEntitlement(productId: string, createEntitlementsRequest: CreateEntitlementsRequest): APIPromise<EntitlementListResponse>` | `POST /api/v1/products/{product_id}/entitlements` | [`EntitlementListResponse`](src/models/entitlementListResponse.ts) |
 | `client.products.unarchive(productId: string): APIPromise<void>` | `POST /api/v1/products/{product_id}/unarchive` | nothing |
+
+### Products entitlements
+
+[`client.products.entitlements`](src/api/productsEntitlements.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.products.entitlements.list(productId: string): APIPromise<ResolvedEntitlementListResponse>` | `GET /api/v1/products/{product_id}/entitlements` | [`ResolvedEntitlementListResponse`](src/models/resolvedEntitlementListResponse.ts) |
+| `client.products.entitlements.create(productId: string, createEntitlementsRequest: CreateEntitlementsRequest): APIPromise<EntitlementListResponse>` | `POST /api/v1/products/{product_id}/entitlements` | [`EntitlementListResponse`](src/models/entitlementListResponse.ts) |
 
 ## Subscriptions
 

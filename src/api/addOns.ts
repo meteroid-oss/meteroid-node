@@ -10,21 +10,10 @@ import {
   CreateAddOnRequestSerializer,
 } from "../models/createAddOnRequest.js";
 import {
-  type CreateEntitlementsRequest,
-  CreateEntitlementsRequestSerializer,
-} from "../models/createEntitlementsRequest.js";
-import {
-  type EntitlementListResponse,
-  EntitlementListResponseSerializer,
-} from "../models/entitlementListResponse.js";
-import {
-  type ResolvedEntitlementListResponse,
-  ResolvedEntitlementListResponseSerializer,
-} from "../models/resolvedEntitlementListResponse.js";
-import {
   type UpdateAddOnRequest,
   UpdateAddOnRequestSerializer,
 } from "../models/updateAddOnRequest.js";
+import { AddOnsEntitlements } from "./addOnsEntitlements.js";
 import type { APIPromise } from "../apiPromise.js";
 import { PagePromise } from "../pagination.js";
 import {
@@ -49,8 +38,15 @@ export interface AddOnsListOptions {
 
 /** The add ons operations, reached through the client's `addOns`. */
 export class AddOns {
+  private _entitlements?: AddOnsEntitlements;
   /** @internal */
   public constructor(private readonly requestCtx: MeteroidRequestContext) {}
+
+  /** The entitlements operations. */
+  public get entitlements(): AddOnsEntitlements {
+    this._entitlements ??= new AddOnsEntitlements(this.requestCtx);
+    return this._entitlements;
+  }
 
   /**
    * List add-ons
@@ -132,44 +128,6 @@ export class AddOns {
 
     request.setPathParam("addon_id", addonId);
     return request.sendNoResponseBody(this.requestCtx, requestOptions);
-  }
-
-  /** List add-on entitlements */
-  public listEntitlements(
-    addonId: string,
-    requestOptions?: RequestOptions
-  ): APIPromise<ResolvedEntitlementListResponse> {
-    const request = new MeteroidRequest("GET", "/api/v1/addons/{addon_id}/entitlements");
-
-    request.setPathParam("addon_id", addonId);
-    return request.send(
-      this.requestCtx,
-      ResolvedEntitlementListResponseSerializer.parse,
-      requestOptions
-    );
-  }
-
-  /**
-   * Create add-on entitlements
-   *
-   * Entitlements already present on this add-on are skipped.
-   */
-  public createEntitlement(
-    addonId: string,
-    createEntitlementsRequest: CreateEntitlementsRequest,
-    requestOptions?: RequestOptions
-  ): APIPromise<EntitlementListResponse> {
-    const request = new MeteroidRequest("POST", "/api/v1/addons/{addon_id}/entitlements");
-
-    request.setPathParam("addon_id", addonId);
-    request.setBody(
-      CreateEntitlementsRequestSerializer.serialize(createEntitlementsRequest)
-    );
-    return request.send(
-      this.requestCtx,
-      EntitlementListResponseSerializer.parse,
-      requestOptions
-    );
   }
 
   /** Unarchive an add-on */
