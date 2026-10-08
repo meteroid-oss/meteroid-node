@@ -22,7 +22,7 @@ import { parseJson, stringifyJson } from "./json.js";
 import { type Middleware, withMiddleware } from "./middleware.js";
 import { EventStream, type MultipartBody, Stream, type UploadBody } from "./streaming.js";
 
-export const LIB_VERSION = "0.28.0"; // x-release-please-version
+export const LIB_VERSION = "0.29.0"; // x-release-please-version
 const USER_AGENT = `meteroid-typescript/${LIB_VERSION}`;
 
 const DEFAULT_RETRIES = 2;
