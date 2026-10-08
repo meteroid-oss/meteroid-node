@@ -5,7 +5,6 @@ import {
   parseJson,
   CreateEntitlementsRequestSerializer,
   CreatePlanRequestSerializer,
-  MinimumCommitmentSerializer,
   ReplacePlanRequestSerializer,
   PatchPlanRequestSerializer,
 } from "../../src/index.js";
@@ -62,31 +61,6 @@ test("plans.create", async () => {
     )
   );
   assert.deepEqual(requests, ["POST /api/v1/plans"]);
-});
-
-test("plans.update_version_minimum", async () => {
-  const { client, requests } = mock({
-    status: 200,
-    contentType: "application/json",
-    body: '{"amount":"sample","scope":{"type":"all_components"}}',
-  });
-  await client.plans.updateVersionMinimum(
-    "plan_version_id",
-    MinimumCommitmentSerializer.parse(
-      parseJson('{"amount":"sample","scope":{"type":"all_components"}}')
-    )
-  );
-  assert.deepEqual(requests, ["PUT /api/v1/plans/versions/plan_version_id/minimum"]);
-});
-
-test("plans.delete_version_minimum", async () => {
-  const { client, requests } = mock({
-    status: 204,
-    contentType: null,
-    body: "",
-  });
-  await client.plans.deleteVersionMinimum("plan_version_id");
-  assert.deepEqual(requests, ["DELETE /api/v1/plans/versions/plan_version_id/minimum"]);
 });
 
 test("plans.retrieve", async () => {
@@ -154,14 +128,4 @@ test("plans.unarchive", async () => {
   });
   await client.plans.unarchive("plan_id");
   assert.deepEqual(requests, ["POST /api/v1/plans/plan_id/unarchive"]);
-});
-
-test("plans.list_versions", async () => {
-  const { client, requests } = mock({
-    status: 200,
-    contentType: "application/json",
-    body: '{"data":[{"created_at":"2023-12-31T23:59:59.999-05:30","currency":"sample","id":"plan_version_id_2","is_draft":true,"version":-2147483648}],"pagination_meta":{"page":-123456789,"per_page":-123456789,"total_items":-9007199254740993,"total_pages":123456789}}',
-  });
-  await client.plans.listVersions("plan_id");
-  assert.deepEqual(requests, ["GET /api/v1/plans/plan_id/versions"]);
 });

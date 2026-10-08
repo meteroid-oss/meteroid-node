@@ -1,17 +1,9 @@
 // this file is @generated
 
 import {
-  type CreateEntitlementsRequest,
-  CreateEntitlementsRequestSerializer,
-} from "../models/createEntitlementsRequest.js";
-import {
   type CreateProductRequest,
   CreateProductRequestSerializer,
 } from "../models/createProductRequest.js";
-import {
-  type EntitlementListResponse,
-  EntitlementListResponseSerializer,
-} from "../models/entitlementListResponse.js";
 import { type Product, ProductSerializer } from "../models/product.js";
 import type { ProductFamilyId } from "../models/productFamilyId.js";
 import {
@@ -19,13 +11,10 @@ import {
   ProductListResponseSerializer,
 } from "../models/productListResponse.js";
 import {
-  type ResolvedEntitlementListResponse,
-  ResolvedEntitlementListResponseSerializer,
-} from "../models/resolvedEntitlementListResponse.js";
-import {
   type UpdateProductRequest,
   UpdateProductRequestSerializer,
 } from "../models/updateProductRequest.js";
+import { ProductsEntitlements } from "./productsEntitlements.js";
 import type { APIPromise } from "../apiPromise.js";
 import { PagePromise } from "../pagination.js";
 import {
@@ -48,8 +37,15 @@ export interface ProductsListOptions {
 
 /** The products operations, reached through the client's `products`. */
 export class Products {
+  private _entitlements?: ProductsEntitlements;
   /** @internal */
   public constructor(private readonly requestCtx: MeteroidRequestContext) {}
+
+  /** The entitlements operations. */
+  public get entitlements(): ProductsEntitlements {
+    this._entitlements ??= new ProductsEntitlements(this.requestCtx);
+    return this._entitlements;
+  }
 
   /**
    * List products
@@ -137,56 +133,6 @@ export class Products {
 
     request.setPathParam("product_id", productId);
     return request.sendNoResponseBody(this.requestCtx, requestOptions);
-  }
-
-  /** List product entitlements */
-  public listEntitlements(
-    productId: string,
-    requestOptions?: RequestOptions
-  ): APIPromise<ResolvedEntitlementListResponse> {
-    const request = new MeteroidRequest(
-      "GET",
-      "/api/v1/products/{product_id}/entitlements"
-    );
-
-    request.setPathParam("product_id", productId);
-    return request.send(
-      this.requestCtx,
-      ResolvedEntitlementListResponseSerializer.parse,
-      requestOptions
-    );
-  }
-
-  /**
-   * Create product entitlements
-   *
-   * A product has no entitlement rows of its own: its entitlements are the feature-level
-   * defaults of the features scoped to it, which is what `GET` on this path resolves. Every
-   * spec must therefore target a feature belonging to `product_id`. Features that already
-   * carry a default entitlement are skipped.
-   *
-   * Specs are validated up front, but the writes are not atomic: each feature is written on
-   * its own, so a failure part-way can leave earlier specs committed. Retrying is safe.
-   */
-  public createEntitlement(
-    productId: string,
-    createEntitlementsRequest: CreateEntitlementsRequest,
-    requestOptions?: RequestOptions
-  ): APIPromise<EntitlementListResponse> {
-    const request = new MeteroidRequest(
-      "POST",
-      "/api/v1/products/{product_id}/entitlements"
-    );
-
-    request.setPathParam("product_id", productId);
-    request.setBody(
-      CreateEntitlementsRequestSerializer.serialize(createEntitlementsRequest)
-    );
-    return request.send(
-      this.requestCtx,
-      EntitlementListResponseSerializer.parse,
-      requestOptions
-    );
   }
 
   /** Unarchive a product */

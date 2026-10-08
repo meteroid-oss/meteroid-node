@@ -13,10 +13,6 @@ import {
   EntitlementListResponseSerializer,
 } from "../models/entitlementListResponse.js";
 import {
-  type MinimumCommitment,
-  MinimumCommitmentSerializer,
-} from "../models/minimumCommitment.js";
-import {
   type PatchPlanRequest,
   PatchPlanRequestSerializer,
 } from "../models/patchPlanRequest.js";
@@ -27,11 +23,6 @@ import {
 } from "../models/planListResponse.js";
 import type { PlanStatusEnum } from "../models/planStatusEnum.js";
 import type { PlanTypeEnum } from "../models/planTypeEnum.js";
-import {
-  type PlanVersionListResponse,
-  PlanVersionListResponseSerializer,
-} from "../models/planVersionListResponse.js";
-import type { PlanVersionSummary } from "../models/planVersionSummary.js";
 import type { ProductFamilyId } from "../models/productFamilyId.js";
 import {
   type ReplacePlanRequest,
@@ -41,6 +32,7 @@ import {
   type ResolvedEntitlementListResponse,
   ResolvedEntitlementListResponseSerializer,
 } from "../models/resolvedEntitlementListResponse.js";
+import { PlansVersions } from "./plansVersions.js";
 import type { APIPromise } from "../apiPromise.js";
 import { PagePromise } from "../pagination.js";
 import {
@@ -72,18 +64,17 @@ export interface PlansRetrieveOptions {
   version?: string | undefined;
 }
 
-/** The query and header parameters of `listVersions`. */
-export interface PlansListVersionsOptions {
-  /** Page number (0-indexed) */
-  page?: number | undefined;
-  /** Number of items per page */
-  perPage?: number | undefined;
-}
-
 /** The plans operations, reached through the client's `plans`. */
 export class Plans {
+  private _versions?: PlansVersions;
   /** @internal */
   public constructor(private readonly requestCtx: MeteroidRequestContext) {}
+
+  /** The versions operations. */
+  public get versions(): PlansVersions {
+    this._versions ??= new PlansVersions(this.requestCtx);
+    return this._versions;
+  }
 
   /** List plan version entitlements */
   public listPlanVersionEntitlements(
@@ -188,40 +179,6 @@ export class Plans {
     return request.send(this.requestCtx, PlanSerializer.parse, requestOptions);
   }
 
-  /** Set or replace the plan-level minimum commitment for a draft plan version. */
-  public updateVersionMinimum(
-    planVersionId: string,
-    minimumCommitment: MinimumCommitment,
-    requestOptions?: RequestOptions
-  ): APIPromise<MinimumCommitment> {
-    const request = new MeteroidRequest(
-      "PUT",
-      "/api/v1/plans/versions/{plan_version_id}/minimum"
-    );
-
-    request.setPathParam("plan_version_id", planVersionId);
-    request.setBody(MinimumCommitmentSerializer.serialize(minimumCommitment));
-    return request.send(
-      this.requestCtx,
-      MinimumCommitmentSerializer.parse,
-      requestOptions
-    );
-  }
-
-  /** Remove the plan-level minimum commitment for a draft plan version. */
-  public deleteVersionMinimum(
-    planVersionId: string,
-    requestOptions?: RequestOptions
-  ): APIPromise<void> {
-    const request = new MeteroidRequest(
-      "DELETE",
-      "/api/v1/plans/versions/{plan_version_id}/minimum"
-    );
-
-    request.setPathParam("plan_version_id", planVersionId);
-    return request.sendNoResponseBody(this.requestCtx, requestOptions);
-  }
-
   /**
    * Get plan details
    *
@@ -303,47 +260,5 @@ export class Plans {
 
     request.setPathParam("plan_id", planId);
     return request.sendNoResponseBody(this.requestCtx, requestOptions);
-  }
-
-  /**
-   * List plan versions
-   *
-   * Await it for the first page: the response body, its properties read on the page, with
-   * `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`. Or iterate it with `for await`
-   * over every item of every page, fetched on demand.
-   */
-  public listVersions(
-    planId: string,
-    options?: PlansListVersionsOptions,
-    requestOptions?: RequestOptions
-  ): PagePromise<PlanVersionListResponse, PlanVersionSummary> {
-    return new PagePromise<PlanVersionListResponse, PlanVersionSummary>(
-      {
-        style: "page",
-        items: (page) => page.data,
-        totalPages: (page) => page.paginationMeta?.totalPages,
-        firstPage: 0,
-        fetch: (page) =>
-          this.#listVersions(planId, { ...options, page: page }, requestOptions),
-      },
-      options?.page
-    );
-  }
-
-  #listVersions(
-    planId: string,
-    options?: PlansListVersionsOptions,
-    requestOptions?: RequestOptions
-  ): APIPromise<PlanVersionListResponse> {
-    const request = new MeteroidRequest("GET", "/api/v1/plans/{plan_id}/versions");
-
-    request.setPathParam("plan_id", planId);
-    request.setQueryParam("page", options?.page);
-    request.setQueryParam("per_page", options?.perPage);
-    return request.send(
-      this.requestCtx,
-      PlanVersionListResponseSerializer.parse,
-      requestOptions
-    );
   }
 }
