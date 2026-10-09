@@ -1,6 +1,6 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
-import { decodeMap, decodeObject, decodeString } from "../decode.js";
+import { decodeDateTime, decodeMap, decodeObject, decodeString } from "../decode.js";
 
 export interface Event {
   /** Billable metric code. Max 512 characters. */
@@ -15,7 +15,7 @@ export interface Event {
    * RFC 3339 timestamp. Defaults to ingestion time if omitted.
    * Must be between 24 hours ago and 1 hour from now. Set `allow_backfilling` to remove the past limit.
    */
-  timestamp: string;
+  timestamp?: Date | null | undefined;
 }
 
 /** Converts `Event` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -42,7 +42,10 @@ export const EventSerializer = {
               (entry: any, p: string, key: string) => decodeString(entry, p, key)
             )
           : undefined,
-      timestamp: decodeString(json["timestamp"], path, "timestamp"),
+      timestamp:
+        json["timestamp"] != null
+          ? decodeDateTime(json["timestamp"], path, "timestamp")
+          : json["timestamp"],
     };
   },
 

@@ -13,7 +13,7 @@ test("events.ingest", async () => {
   await client.events.ingest(
     IngestEventsRequestSerializer.parse(
       parseJson(
-        '{"events":[{"code":"sample","customer_id":"sample","event_id":"sample","timestamp":"sample"}]}'
+        '{"events":[{"code":"sample","customer_id":"sample","event_id":"sample"}]}'
       )
     )
   );

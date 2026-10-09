@@ -6,13 +6,13 @@ import {
   decodeInteger,
   decodeObject,
   decodePath,
-  decodeString,
 } from "../decode.js";
+import { type Currency, CurrencySerializer } from "./currency.js";
 import { type PlanVersionId, PlanVersionIdSerializer } from "./planVersionId.js";
 
 export interface PlanVersionSummary {
   createdAt: Date;
-  currency: string;
+  currency: Currency;
   id: PlanVersionId;
   isDraft: boolean;
   version: number;
@@ -25,7 +25,7 @@ export const PlanVersionSummarySerializer = {
     return {
       ...extraProperties(json, ["created_at", "currency", "id", "is_draft", "version"]),
       createdAt: decodeDateTime(json["created_at"], path, "created_at"),
-      currency: decodeString(json["currency"], path, "currency"),
+      currency: CurrencySerializer.parse(json["currency"], decodePath(path, "currency")),
       id: PlanVersionIdSerializer.parse(json["id"], decodePath(path, "id")),
       isDraft: decodeBoolean(json["is_draft"], path, "is_draft"),
       version: decodeInteger(json["version"], path, "version"),
@@ -36,7 +36,7 @@ export const PlanVersionSummarySerializer = {
     return {
       ...extraProperties(value, ["createdAt", "currency", "id", "isDraft", "version"]),
       created_at: value.createdAt,
-      currency: value.currency,
+      currency: CurrencySerializer.serialize(value.currency),
       id: PlanVersionIdSerializer.serialize(value.id),
       is_draft: value.isDraft,
       version: value.version,

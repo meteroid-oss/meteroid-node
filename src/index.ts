@@ -19,6 +19,7 @@ import { ProductFamilies } from "./api/productFamilies.js";
 import { Products } from "./api/products.js";
 import { Subscriptions } from "./api/subscriptions.js";
 import { Usage } from "./api/usage.js";
+import { WebhookEndpoints } from "./api/webhookEndpoints.js";
 import type { Security, SecurityScheme } from "./auth.js";
 import type { Middleware } from "./middleware.js";
 import { readEnv, type MeteroidRequestContext } from "./request.js";
@@ -115,6 +116,9 @@ export { Usage } from "./api/usage.js";
 export type { UsageRetrieveCustomerOptions } from "./api/usage.js";
 export type { UsageRetrieveSubscriptionOptions } from "./api/usage.js";
 export type { UsageRetrieveSummaryOptions } from "./api/usage.js";
+export { WebhookEndpoints } from "./api/webhookEndpoints.js";
+export { WebhookEndpointsEndpoints } from "./api/webhookEndpointsEndpoints.js";
+export type { WebhookEndpointsEndpointsListDeliveriesOptions } from "./api/webhookEndpointsEndpoints.js";
 
 export type MeteroidOptions = {
   /**
@@ -212,6 +216,7 @@ export class Meteroid {
   private _products?: Products;
   private _subscriptions?: Subscriptions;
   private _usage?: Usage;
+  private _webhookEndpoints?: WebhookEndpoints;
 
   /**
    * Reads the API key from `METEROID_API_KEY` and the base URL from `METEROID_BASE_URL`
@@ -356,5 +361,11 @@ export class Meteroid {
   public get usage(): Usage {
     this._usage ??= new Usage(this.requestCtx);
     return this._usage;
+  }
+
+  /** The webhook endpoints API. */
+  public get webhookEndpoints(): WebhookEndpoints {
+    this._webhookEndpoints ??= new WebhookEndpoints(this.requestCtx);
+    return this._webhookEndpoints;
   }
 }

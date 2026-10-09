@@ -33,13 +33,13 @@ export interface CustomerCreateRequest {
    * tenant's `CUSTOMER` property definitions. Omit to leave unset.
    */
   customProperties?: unknown | undefined;
-  customTaxes: CustomTaxRate[];
+  customTaxes?: CustomTaxRate[] | undefined;
   /** `INDIVIDUAL` requires `first_name`, `last_name`, and a billing-address country. */
   customerType?: CustomerType | undefined;
   /** Free-text legal exemption mention surfaced on exempt invoices. */
   exemptionReason?: string | null | undefined;
   firstName?: string | null | undefined;
-  invoicingEmails: string[];
+  invoicingEmails?: string[] | undefined;
   invoicingEntityId?: InvoicingEntityId | null | undefined;
   /**
    * Deprecated: use `preferred_locales`. Applied only when `preferred_locales` is absent.
@@ -119,13 +119,16 @@ export const CustomerCreateRequestSerializer = {
           : json["connected_account_id"],
       currency: CurrencySerializer.parse(json["currency"], decodePath(path, "currency")),
       customProperties: json["custom_properties"],
-      customTaxes: decodeList(
-        json["custom_taxes"],
-        path,
-        "custom_taxes",
-        (item: any, p: string, i: number) =>
-          CustomTaxRateSerializer.parse(item, decodePath(p, i))
-      ),
+      customTaxes:
+        json["custom_taxes"] != null
+          ? decodeList(
+              json["custom_taxes"],
+              path,
+              "custom_taxes",
+              (item: any, p: string, i: number) =>
+                CustomTaxRateSerializer.parse(item, decodePath(p, i))
+            )
+          : undefined,
       customerType:
         json["customer_type"] != null
           ? CustomerTypeSerializer.parse(
@@ -141,12 +144,15 @@ export const CustomerCreateRequestSerializer = {
         json["first_name"] != null
           ? decodeString(json["first_name"], path, "first_name")
           : json["first_name"],
-      invoicingEmails: decodeList(
-        json["invoicing_emails"],
-        path,
-        "invoicing_emails",
-        (item: any, p: string, i: number) => decodeString(item, p, i)
-      ),
+      invoicingEmails:
+        json["invoicing_emails"] != null
+          ? decodeList(
+              json["invoicing_emails"],
+              path,
+              "invoicing_emails",
+              (item: any, p: string, i: number) => decodeString(item, p, i)
+            )
+          : undefined,
       invoicingEntityId:
         json["invoicing_entity_id"] != null
           ? InvoicingEntityIdSerializer.parse(
@@ -234,9 +240,10 @@ export const CustomerCreateRequestSerializer = {
       connected_account_id: value.connectedAccountId,
       currency: CurrencySerializer.serialize(value.currency),
       custom_properties: value.customProperties,
-      custom_taxes: value.customTaxes.map((item: any) =>
-        CustomTaxRateSerializer.serialize(item)
-      ),
+      custom_taxes:
+        value.customTaxes != null
+          ? value.customTaxes.map((item: any) => CustomTaxRateSerializer.serialize(item))
+          : undefined,
       customer_type:
         value.customerType != null
           ? CustomerTypeSerializer.serialize(value.customerType)
