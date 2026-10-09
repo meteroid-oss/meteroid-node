@@ -11,7 +11,7 @@ List methods return a `PagePromise`. Awaited, it gives the first `Page`: the res
 properties read on the page, with `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`.
 Iterated with `for await`, it yields every item of every page.
 
-[Add ons](#add-ons) · [Add ons entitlements](#add-ons-entitlements) · [Batch jobs](#batch-jobs) · [Checkout sessions](#checkout-sessions) · [Connect](#connect) · [Coupons](#coupons) · [Credit notes](#credit-notes) · [Custom properties](#custom-properties) · [Customers](#customers) · [Entitlements](#entitlements) · [Events](#events) · [Features](#features) · [Invoices](#invoices) · [Metrics](#metrics) · [Oauth](#oauth) · [Oauth apps](#oauth-apps) · [Plans](#plans) · [Plans versions](#plans-versions) · [Product families](#product-families) · [Products](#products) · [Products entitlements](#products-entitlements) · [Subscriptions](#subscriptions) · [Usage](#usage)
+[Add ons](#add-ons) · [Add ons entitlements](#add-ons-entitlements) · [Batch jobs](#batch-jobs) · [Checkout sessions](#checkout-sessions) · [Connect](#connect) · [Coupons](#coupons) · [Credit notes](#credit-notes) · [Custom properties](#custom-properties) · [Customers](#customers) · [Entitlements](#entitlements) · [Events](#events) · [Features](#features) · [Invoices](#invoices) · [Metrics](#metrics) · [Oauth](#oauth) · [Oauth apps](#oauth-apps) · [Plans](#plans) · [Plans versions](#plans-versions) · [Product families](#product-families) · [Products](#products) · [Products entitlements](#products-entitlements) · [Subscriptions](#subscriptions) · [Usage](#usage) · [Webhook endpoints](#webhook-endpoints) · [Webhook endpoints endpoints](#webhook-endpoints-endpoints)
 
 ## Add ons
 
@@ -284,3 +284,26 @@ Iterated with `for await`, it yields every item of every page.
 | `client.usage.retrieveCustomer(customerId: string, options: UsageRetrieveCustomerOptions): APIPromise<UsageResponse>` | `GET /api/v1/usage/customer/{customer_id}` | [`UsageResponse`](src/models/usageResponse.ts) |
 | `client.usage.retrieveSubscription(subscriptionId: string, options?: UsageRetrieveSubscriptionOptions): APIPromise<UsageResponse>` | `GET /api/v1/usage/subscription/{subscription_id}` | [`UsageResponse`](src/models/usageResponse.ts) |
 | `client.usage.retrieveSummary(options: UsageRetrieveSummaryOptions): APIPromise<UsageResponse>` | `GET /api/v1/usage/summary` | [`UsageResponse`](src/models/usageResponse.ts) |
+
+## Webhook endpoints
+
+[`client.webhookEndpoints`](src/api/webhookEndpoints.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.webhookEndpoints.resendWebhookDelivery(deliveryId: string): APIPromise<WebhookDelivery>` | `POST /api/v1/webhooks/deliveries/{delivery_id}/resend` | [`WebhookDelivery`](src/models/webhookDelivery.ts) |
+
+### Webhook endpoints endpoints
+
+[`client.webhookEndpoints.endpoints`](src/api/webhookEndpointsEndpoints.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.webhookEndpoints.endpoints.list(): APIPromise<WebhookEndpointListResponse>` | `GET /api/v1/webhooks/endpoints` | [`WebhookEndpointListResponse`](src/models/webhookEndpointListResponse.ts) |
+| `client.webhookEndpoints.endpoints.create(createWebhookEndpointRequest: CreateWebhookEndpointRequest): APIPromise<CreatedWebhookEndpoint>` | `POST /api/v1/webhooks/endpoints` | [`CreatedWebhookEndpoint`](src/models/createdWebhookEndpoint.ts) |
+| `client.webhookEndpoints.endpoints.retrieve(endpointId: string): APIPromise<WebhookEndpoint>` | `GET /api/v1/webhooks/endpoints/{endpoint_id}` | [`WebhookEndpoint`](src/models/webhookEndpoint.ts) |
+| `client.webhookEndpoints.endpoints.delete(endpointId: string): APIPromise<void>` | `DELETE /api/v1/webhooks/endpoints/{endpoint_id}` | nothing |
+| `client.webhookEndpoints.endpoints.update(endpointId: string, updateWebhookEndpointRequest: UpdateWebhookEndpointRequest): APIPromise<WebhookEndpoint>` | `PATCH /api/v1/webhooks/endpoints/{endpoint_id}` | [`WebhookEndpoint`](src/models/webhookEndpoint.ts) |
+| `client.webhookEndpoints.endpoints.listDeliveries(endpointId: string, options?: WebhookEndpointsEndpointsListDeliveriesOptions): PagePromise<WebhookDeliveryListResponse, WebhookDelivery>` | `GET /api/v1/webhooks/endpoints/{endpoint_id}/deliveries` | [`WebhookDeliveryListResponse`](src/models/webhookDeliveryListResponse.ts) pages of [`WebhookDelivery`](src/models/webhookDelivery.ts) |
+| `client.webhookEndpoints.endpoints.rotateSecret(endpointId: string): APIPromise<WebhookEndpointSecret>` | `POST /api/v1/webhooks/endpoints/{endpoint_id}/rotate-secret` | [`WebhookEndpointSecret`](src/models/webhookEndpointSecret.ts) |
+| `client.webhookEndpoints.endpoints.retrieveSecret(endpointId: string): APIPromise<WebhookEndpointSecret>` | `GET /api/v1/webhooks/endpoints/{endpoint_id}/secret` | [`WebhookEndpointSecret`](src/models/webhookEndpointSecret.ts) |

@@ -13,6 +13,7 @@ import {
   type AvailableParameters,
   AvailableParametersSerializer,
 } from "./availableParameters.js";
+import { type Currency, CurrencySerializer } from "./currency.js";
 import { type Entitlement, EntitlementSerializer } from "./entitlement.js";
 import {
   type MinimumCommitment,
@@ -30,7 +31,7 @@ export interface Plan {
   availableParameters: AvailableParameters;
   billingCycles?: number | null | undefined;
   createdAt: Date;
-  currency: string;
+  currency: Currency;
   description?: string | null | undefined;
   entitlements?: Entitlement[] | undefined;
   id: PlanId;
@@ -91,7 +92,7 @@ export const PlanSerializer = {
           ? decodeInteger(json["billing_cycles"], path, "billing_cycles")
           : json["billing_cycles"],
       createdAt: decodeDateTime(json["created_at"], path, "created_at"),
-      currency: decodeString(json["currency"], path, "currency"),
+      currency: CurrencySerializer.parse(json["currency"], decodePath(path, "currency")),
       description:
         json["description"] != null
           ? decodeString(json["description"], path, "description")
@@ -182,7 +183,7 @@ export const PlanSerializer = {
       ),
       billing_cycles: value.billingCycles,
       created_at: value.createdAt,
-      currency: value.currency,
+      currency: CurrencySerializer.serialize(value.currency),
       description: value.description,
       entitlements:
         value.entitlements != null
