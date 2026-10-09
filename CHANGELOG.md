@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.30.0](https://github.com/meteroid-oss/meteroid-node/compare/v0.29.0...v0.30.0) (2026-10-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** update SDKs to meteroid 0.1.0 ([#11](https://github.com/meteroid-oss/meteroid-node/issues/11))
+* **api:** `POST /api/v1/events/ingest`: the `events/items/timestamp` request property `type/format` changed from `string` to `string, null/date-time`
+
+### Features
+
+* **api:** `POST /api/v1/events/ingest`: the `events/items/timestamp` request property `type/format` changed from `string` to `string, null/date-time` ([dff2efa](https://github.com/meteroid-oss/meteroid-node/commit/dff2efa9a63d399202799958aa0ba9636d4b045c))
+* **api:** add `DELETE /api/v1/webhooks/endpoints/{endpoint_id}` ([dff2efa](https://github.com/meteroid-oss/meteroid-node/commit/dff2efa9a63d399202799958aa0ba9636d4b045c))
+* **api:** update `GET /api/v1/plans` and 1029 more ([dff2efa](https://github.com/meteroid-oss/meteroid-node/commit/dff2efa9a63d399202799958aa0ba9636d4b045c))
+* **api:** update SDKs to meteroid 0.1.0 ([#11](https://github.com/meteroid-oss/meteroid-node/issues/11)) ([dff2efa](https://github.com/meteroid-oss/meteroid-node/commit/dff2efa9a63d399202799958aa0ba9636d4b045c))
+
 ## [0.29.0](https://github.com/meteroid-oss/meteroid-node/compare/v0.28.0...v0.29.0) (2026-10-08)
 
 
