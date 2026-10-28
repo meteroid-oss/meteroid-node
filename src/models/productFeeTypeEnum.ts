@@ -8,6 +8,7 @@ export const ProductFeeTypeEnum = {
   Usage: "USAGE",
   ExtraRecurring: "EXTRA_RECURRING",
   OneTime: "ONE_TIME",
+  Credit: "CREDIT",
 } as const;
 export type ProductFeeTypeEnum =
   | (typeof ProductFeeTypeEnum)[keyof typeof ProductFeeTypeEnum]

@@ -13,6 +13,10 @@ import {
   CreateConnectedAccountRequestSerializer,
 } from "../models/createConnectedAccountRequest.js";
 import {
+  type CreateConnectedAccountResponse,
+  CreateConnectedAccountResponseSerializer,
+} from "../models/createConnectedAccountResponse.js";
+import {
   type CreateOnboardingLinkRequest,
   CreateOnboardingLinkRequestSerializer,
 } from "../models/createOnboardingLinkRequest.js";
@@ -52,13 +56,13 @@ export class Connect {
   /**
    * Create connected account
    *
-   * Create a new connected account (Express flow). Returns the account
-   * and an onboarding link for the user to complete setup.
+   * Create a new pending connected account (Express flow). Returns the
+   * account and an onboarding link for the user to complete setup.
    */
   public createConnectedAccount(
     createConnectedAccountRequest: CreateConnectedAccountRequest,
     requestOptions?: RequestOptions
-  ): APIPromise<ConnectedAccount> {
+  ): APIPromise<CreateConnectedAccountResponse> {
     const request = new MeteroidRequest("POST", "/api/v1/connected-accounts");
 
     request.setBody(
@@ -66,7 +70,7 @@ export class Connect {
     );
     return request.send(
       this.requestCtx,
-      ConnectedAccountSerializer.parse,
+      CreateConnectedAccountResponseSerializer.parse,
       requestOptions
     );
   }

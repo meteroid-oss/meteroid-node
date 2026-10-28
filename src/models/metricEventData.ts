@@ -36,6 +36,10 @@ export interface MetricEventData {
   segmentationMatrix?: MetricSegmentationMatrix | null | undefined;
   unitConversionFactor?: number | null | undefined;
   unitConversionRounding?: UnitConversionRoundingEnum | null | undefined;
+  /** What several units of the metric are called, e.g. `tokens`. */
+  unitPlural?: string | null | undefined;
+  /** What one unit of the metric is called, e.g. `token`. */
+  unitSingular?: string | null | undefined;
   usageGroupKey?: string | null | undefined;
 }
 
@@ -57,6 +61,8 @@ export const MetricEventDataSerializer = {
         "segmentation_matrix",
         "unit_conversion_factor",
         "unit_conversion_rounding",
+        "unit_plural",
+        "unit_singular",
         "usage_group_key",
       ]),
       aggregationKey:
@@ -104,6 +110,14 @@ export const MetricEventDataSerializer = {
               decodePath(path, "unit_conversion_rounding")
             )
           : json["unit_conversion_rounding"],
+      unitPlural:
+        json["unit_plural"] != null
+          ? decodeString(json["unit_plural"], path, "unit_plural")
+          : json["unit_plural"],
+      unitSingular:
+        json["unit_singular"] != null
+          ? decodeString(json["unit_singular"], path, "unit_singular")
+          : json["unit_singular"],
       usageGroupKey:
         json["usage_group_key"] != null
           ? decodeString(json["usage_group_key"], path, "usage_group_key")
@@ -126,6 +140,8 @@ export const MetricEventDataSerializer = {
         "segmentationMatrix",
         "unitConversionFactor",
         "unitConversionRounding",
+        "unitPlural",
+        "unitSingular",
         "usageGroupKey",
       ]),
       aggregation_key: value.aggregationKey,
@@ -151,6 +167,8 @@ export const MetricEventDataSerializer = {
         value.unitConversionRounding != null
           ? UnitConversionRoundingEnumSerializer.serialize(value.unitConversionRounding)
           : value.unitConversionRounding,
+      unit_plural: value.unitPlural,
+      unit_singular: value.unitSingular,
       usage_group_key: value.usageGroupKey,
     };
   },

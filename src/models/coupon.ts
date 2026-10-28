@@ -15,6 +15,12 @@ import { type PlanId, PlanIdSerializer } from "./planId.js";
 
 export interface Coupon {
   archivedAt?: Date | null | undefined;
+  /**
+   * A promotional-credit (`CREDIT`) code is stored upper-case; other codes as written. A code
+   * is redeemed by the coupon with exactly that code, else by the only live coupon equal to it
+   * ignoring the case of ASCII letters; several such coupons and no exact match make it
+   * ambiguous.
+   */
   code: string;
   createdAt: Date;
   description?: string | null | undefined;

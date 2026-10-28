@@ -7,6 +7,7 @@ import { decodeList, decodeObject, decodeString } from "../decode.js";
  */
 export interface ProductsScope {
   productIds: string[];
+  type: "products";
 }
 
 /** Converts `ProductsScope` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -14,20 +15,25 @@ export const ProductsScopeSerializer = {
   parse(json: any, path = "$"): ProductsScope {
     decodeObject(json, path);
     return {
-      ...extraProperties(json, ["product_ids"]),
+      ...extraProperties(json, ["product_ids", "type"]),
       productIds: decodeList(
         json["product_ids"],
         path,
         "product_ids",
         (item: any, p: string, i: number) => decodeString(item, p, i)
       ),
+      type:
+        json["type"] != null
+          ? (decodeString(json["type"], path, "type") as "products")
+          : "products",
     };
   },
 
   serialize(value: ProductsScope): any {
     return {
-      ...extraProperties(value, ["productIds"]),
+      ...extraProperties(value, ["productIds", "type"]),
       product_ids: value.productIds,
+      type: value.type ?? "products",
     };
   },
 };

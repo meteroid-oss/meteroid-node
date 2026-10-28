@@ -35,6 +35,10 @@ export interface Metric {
   productId?: ProductId | null | undefined;
   segmentationMatrix?: MetricSegmentationMatrix | null | undefined;
   unitConversion?: UnitConversion | null | undefined;
+  /** What several units of the metric are called, e.g. `tokens`. */
+  unitPlural?: string | null | undefined;
+  /** What one unit of the metric is called, e.g. `token`. Set together with `unit_plural`. */
+  unitSingular?: string | null | undefined;
   usageGroupKey?: string | null | undefined;
 }
 
@@ -57,6 +61,8 @@ export const MetricSerializer = {
         "product_id",
         "segmentation_matrix",
         "unit_conversion",
+        "unit_plural",
+        "unit_singular",
         "usage_group_key",
       ]),
       aggregationKey:
@@ -111,6 +117,14 @@ export const MetricSerializer = {
               decodePath(path, "unit_conversion")
             )
           : json["unit_conversion"],
+      unitPlural:
+        json["unit_plural"] != null
+          ? decodeString(json["unit_plural"], path, "unit_plural")
+          : json["unit_plural"],
+      unitSingular:
+        json["unit_singular"] != null
+          ? decodeString(json["unit_singular"], path, "unit_singular")
+          : json["unit_singular"],
       usageGroupKey:
         json["usage_group_key"] != null
           ? decodeString(json["usage_group_key"], path, "usage_group_key")
@@ -134,6 +148,8 @@ export const MetricSerializer = {
         "productId",
         "segmentationMatrix",
         "unitConversion",
+        "unitPlural",
+        "unitSingular",
         "usageGroupKey",
       ]),
       aggregation_key: value.aggregationKey,
@@ -163,6 +179,8 @@ export const MetricSerializer = {
         value.unitConversion != null
           ? UnitConversionSerializer.serialize(value.unitConversion)
           : value.unitConversion,
+      unit_plural: value.unitPlural,
+      unit_singular: value.unitSingular,
       usage_group_key: value.usageGroupKey,
     };
   },

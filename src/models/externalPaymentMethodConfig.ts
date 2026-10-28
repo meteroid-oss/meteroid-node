@@ -1,21 +1,28 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
-import { decodeObject } from "../decode.js";
+import { decodeObject, decodeString } from "../decode.js";
 
-export interface ExternalPaymentMethodConfig {}
+export interface ExternalPaymentMethodConfig {
+  type: "external";
+}
 
 /** Converts `ExternalPaymentMethodConfig` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ExternalPaymentMethodConfigSerializer = {
   parse(json: any, path = "$"): ExternalPaymentMethodConfig {
     decodeObject(json, path);
     return {
-      ...extraProperties(json, []),
+      ...extraProperties(json, ["type"]),
+      type:
+        json["type"] != null
+          ? (decodeString(json["type"], path, "type") as "external")
+          : "external",
     };
   },
 
   serialize(value: ExternalPaymentMethodConfig): any {
     return {
-      ...extraProperties(value, []),
+      ...extraProperties(value, ["type"]),
+      type: value.type ?? "external",
     };
   },
 };

@@ -16,6 +16,10 @@ export interface MetricSummary {
   description?: string | null | undefined;
   id: BillableMetricId;
   name: string;
+  /** What several units of the metric are called, e.g. `tokens`. */
+  unitPlural?: string | null | undefined;
+  /** What one unit of the metric is called, e.g. `token`. */
+  unitSingular?: string | null | undefined;
 }
 
 /** Converts `MetricSummary` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -32,6 +36,8 @@ export const MetricSummarySerializer = {
         "description",
         "id",
         "name",
+        "unit_plural",
+        "unit_singular",
       ]),
       aggregationKey:
         json["aggregation_key"] != null
@@ -53,6 +59,14 @@ export const MetricSummarySerializer = {
           : json["description"],
       id: BillableMetricIdSerializer.parse(json["id"], decodePath(path, "id")),
       name: decodeString(json["name"], path, "name"),
+      unitPlural:
+        json["unit_plural"] != null
+          ? decodeString(json["unit_plural"], path, "unit_plural")
+          : json["unit_plural"],
+      unitSingular:
+        json["unit_singular"] != null
+          ? decodeString(json["unit_singular"], path, "unit_singular")
+          : json["unit_singular"],
     };
   },
 
@@ -67,6 +81,8 @@ export const MetricSummarySerializer = {
         "description",
         "id",
         "name",
+        "unitPlural",
+        "unitSingular",
       ]),
       aggregation_key: value.aggregationKey,
       aggregation_type: BillingMetricAggregateEnumSerializer.serialize(
@@ -78,6 +94,8 @@ export const MetricSummarySerializer = {
       description: value.description,
       id: BillableMetricIdSerializer.serialize(value.id),
       name: value.name,
+      unit_plural: value.unitPlural,
+      unit_singular: value.unitSingular,
     };
   },
 };

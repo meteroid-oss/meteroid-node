@@ -2,19 +2,13 @@
 
 import type { BillableMetricId } from "../models/billableMetricId.js";
 import { type UsageResponse, UsageResponseSerializer } from "../models/usageResponse.js";
+import { UsageCustomer } from "./usageCustomer.js";
 import type { APIPromise } from "../apiPromise.js";
 import {
   MeteroidRequest,
   type MeteroidRequestContext,
   type RequestOptions,
 } from "../request.js";
-
-/** The query and header parameters of `retrieveCustomer`. */
-export interface UsageRetrieveCustomerOptions {
-  startDate: string;
-  endDate: string;
-  metricId?: BillableMetricId | undefined;
-}
 
 /** The query and header parameters of `retrieveSubscription`. */
 export interface UsageRetrieveSubscriptionOptions {
@@ -32,33 +26,24 @@ export interface UsageRetrieveSummaryOptions {
 
 /** The usage operations, reached through the client's `usage`. */
 export class Usage {
+  private _customer?: UsageCustomer;
   /** @internal */
   public constructor(private readonly requestCtx: MeteroidRequestContext) {}
 
-  /**
-   * Get customer usage
-   *
-   * Retrieve aggregated usage data for a customer over a specified period.
-   */
-  public retrieveCustomer(
-    customerId: string,
-    options: UsageRetrieveCustomerOptions,
-    requestOptions?: RequestOptions
-  ): APIPromise<UsageResponse> {
-    const request = new MeteroidRequest("GET", "/api/v1/usage/customer/{customer_id}");
-
-    request.setPathParam("customer_id", customerId);
-    request.setQueryParam("start_date", options.startDate);
-    request.setQueryParam("end_date", options.endDate);
-    request.setQueryParam("metric_id", options?.metricId);
-    return request.send(this.requestCtx, UsageResponseSerializer.parse, requestOptions);
+  /** The customer operations. */
+  public get customer(): UsageCustomer {
+    this._customer ??= new UsageCustomer(this.requestCtx);
+    return this._customer;
   }
 
   /**
    * Get subscription usage
    *
    * Retrieve aggregated usage data for a subscription's usage-based components.
-   * If start_date/end_date are omitted, defaults to the current billing period.
+   * If start_date/end_date are omitted, defaults to the current billing period, and the response
+   * then carries the running total (beta): what each metric's usage adds so far to the next invoice,
+   * and what they add up to, before discounts and credits. That reading is shared for up to 30
+   * seconds (see `computed_at`). Counts towards the usage cost reads' rate limit.
    */
   public retrieveSubscription(
     subscriptionId: string,

@@ -1,10 +1,11 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
-import { decodeInteger, decodeObject, decodePath } from "../decode.js";
+import { decodeInteger, decodeObject, decodePath, decodeString } from "../decode.js";
 import { type CalendarUnit, CalendarUnitSerializer } from "./calendarUnit.js";
 /** Resets at regular intervals — anchored to your subscription's exact activation time. */
 export interface FixedWindowResetPeriod {
   interval: number;
+  type: "FIXED_WINDOW";
   unit: CalendarUnit;
 }
 
@@ -13,16 +14,21 @@ export const FixedWindowResetPeriodSerializer = {
   parse(json: any, path = "$"): FixedWindowResetPeriod {
     decodeObject(json, path);
     return {
-      ...extraProperties(json, ["interval", "unit"]),
+      ...extraProperties(json, ["interval", "type", "unit"]),
       interval: decodeInteger(json["interval"], path, "interval"),
+      type:
+        json["type"] != null
+          ? (decodeString(json["type"], path, "type") as "FIXED_WINDOW")
+          : "FIXED_WINDOW",
       unit: CalendarUnitSerializer.parse(json["unit"], decodePath(path, "unit")),
     };
   },
 
   serialize(value: FixedWindowResetPeriod): any {
     return {
-      ...extraProperties(value, ["interval", "unit"]),
+      ...extraProperties(value, ["interval", "type", "unit"]),
       interval: value.interval,
+      type: value.type ?? "FIXED_WINDOW",
       unit: CalendarUnitSerializer.serialize(value.unit),
     };
   },

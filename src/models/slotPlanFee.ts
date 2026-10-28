@@ -14,6 +14,7 @@ export interface SlotPlanFee {
   quota?: number | null | undefined;
   rates: TermRate[];
   slotUnitName: string;
+  type: "SLOT";
 }
 
 /** Converts `SlotPlanFee` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -21,7 +22,13 @@ export const SlotPlanFeeSerializer = {
   parse(json: any, path = "$"): SlotPlanFee {
     decodeObject(json, path);
     return {
-      ...extraProperties(json, ["minimum_count", "quota", "rates", "slot_unit_name"]),
+      ...extraProperties(json, [
+        "minimum_count",
+        "quota",
+        "rates",
+        "slot_unit_name",
+        "type",
+      ]),
       minimumCount:
         json["minimum_count"] != null
           ? decodeInteger(json["minimum_count"], path, "minimum_count")
@@ -34,16 +41,27 @@ export const SlotPlanFeeSerializer = {
         TermRateSerializer.parse(item, decodePath(p, i))
       ),
       slotUnitName: decodeString(json["slot_unit_name"], path, "slot_unit_name"),
+      type:
+        json["type"] != null
+          ? (decodeString(json["type"], path, "type") as "SLOT")
+          : "SLOT",
     };
   },
 
   serialize(value: SlotPlanFee): any {
     return {
-      ...extraProperties(value, ["minimumCount", "quota", "rates", "slotUnitName"]),
+      ...extraProperties(value, [
+        "minimumCount",
+        "quota",
+        "rates",
+        "slotUnitName",
+        "type",
+      ]),
       minimum_count: value.minimumCount,
       quota: value.quota,
       rates: value.rates.map((item: any) => TermRateSerializer.serialize(item)),
       slot_unit_name: value.slotUnitName,
+      type: value.type ?? "SLOT",
     };
   },
 };

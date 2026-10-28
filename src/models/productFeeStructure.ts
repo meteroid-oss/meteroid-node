@@ -5,6 +5,10 @@ import {
   CapacityFeeStructureSerializer,
 } from "./capacityFeeStructure.js";
 import {
+  type CreditFeeStructure,
+  CreditFeeStructureSerializer,
+} from "./creditFeeStructure.js";
+import {
   type ExtraRecurringFeeStructure,
   ExtraRecurringFeeStructureSerializer,
 } from "./extraRecurringFeeStructure.js";
@@ -37,6 +41,9 @@ export interface ProductFeeStructureExtraRecurring extends ExtraRecurringFeeStru
 export interface ProductFeeStructureOneTime extends OneTimeFeeStructure {
   type: "ONE_TIME";
 }
+export interface ProductFeeStructureCredit extends CreditFeeStructure {
+  type: "CREDIT";
+}
 
 export type ProductFeeStructure =
   | ProductFeeStructureRate
@@ -44,7 +51,8 @@ export type ProductFeeStructure =
   | ProductFeeStructureCapacity
   | ProductFeeStructureUsage
   | ProductFeeStructureExtraRecurring
-  | ProductFeeStructureOneTime;
+  | ProductFeeStructureOneTime
+  | ProductFeeStructureCredit;
 
 /** Converts `ProductFeeStructure` values from (`parse`) and to (`serialize`) their JSON form. */
 export const ProductFeeStructureSerializer = {
@@ -80,6 +88,11 @@ export const ProductFeeStructureSerializer = {
         return {
           ...OneTimeFeeStructureSerializer.parse(json, path),
           type: "ONE_TIME",
+        };
+      case "CREDIT":
+        return {
+          ...CreditFeeStructureSerializer.parse(json, path),
+          type: "CREDIT",
         };
       default:
         // A variant added to the API after this SDK was generated, kept as received.
@@ -118,6 +131,11 @@ export const ProductFeeStructureSerializer = {
         return {
           ...OneTimeFeeStructureSerializer.serialize(value),
           type: "ONE_TIME",
+        };
+      case "CREDIT":
+        return {
+          ...CreditFeeStructureSerializer.serialize(value),
+          type: "CREDIT",
         };
       default:
         return value;

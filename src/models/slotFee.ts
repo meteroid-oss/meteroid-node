@@ -6,6 +6,7 @@ export interface SlotFee {
   initialSlots: number;
   maxSlots?: number | null | undefined;
   minSlots?: number | null | undefined;
+  type: "SLOT";
   unit: string;
   unitRate: string;
 }
@@ -19,6 +20,7 @@ export const SlotFeeSerializer = {
         "initial_slots",
         "max_slots",
         "min_slots",
+        "type",
         "unit",
         "unit_rate",
       ]),
@@ -31,6 +33,10 @@ export const SlotFeeSerializer = {
         json["min_slots"] != null
           ? decodeInteger(json["min_slots"], path, "min_slots")
           : json["min_slots"],
+      type:
+        json["type"] != null
+          ? (decodeString(json["type"], path, "type") as "SLOT")
+          : "SLOT",
       unit: decodeString(json["unit"], path, "unit"),
       unitRate: decodeString(json["unit_rate"], path, "unit_rate"),
     };
@@ -42,12 +48,14 @@ export const SlotFeeSerializer = {
         "initialSlots",
         "maxSlots",
         "minSlots",
+        "type",
         "unit",
         "unitRate",
       ]),
       initial_slots: value.initialSlots,
       max_slots: value.maxSlots,
       min_slots: value.minSlots,
+      type: value.type ?? "SLOT",
       unit: value.unit,
       unit_rate: value.unitRate,
     };

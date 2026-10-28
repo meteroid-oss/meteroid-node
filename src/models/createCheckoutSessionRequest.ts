@@ -34,6 +34,12 @@ export interface CreateCheckoutSessionRequest {
   /** Automatically try to charge the customer's configured payment method on finalize. Default is true. */
   chargeAutomatically?: boolean | null | undefined;
   components?: CreateSubscriptionComponents | null | undefined;
+  /**
+   * Code of the coupon to apply, used only when `coupon_ids` is empty. It names the coupon with
+   * exactly that code, else the only live coupon equal to it ignoring the case of ASCII
+   * letters. An unknown or ambiguous code is refused with 400. If the code no longer names a
+   * usable coupon when the customer pays, the payment is refused and nothing is charged.
+   */
   couponCode?: string | null | undefined;
   couponIds?: CouponId[] | undefined;
   /** Customer ID or alias */

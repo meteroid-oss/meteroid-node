@@ -1,10 +1,14 @@
 // this file is @generated
 import { AddOns } from "./api/addOns.js";
 import { BatchJobs } from "./api/batchJobs.js";
+import { Budgets } from "./api/budgets.js";
 import { CheckoutSessions } from "./api/checkoutSessions.js";
+import { Checks } from "./api/checks.js";
 import { Connect } from "./api/connect.js";
 import { Coupons } from "./api/coupons.js";
 import { CreditNotes } from "./api/creditNotes.js";
+import { CreditUnits } from "./api/creditUnits.js";
+import { Credits } from "./api/credits.js";
 import { CustomProperties } from "./api/customProperties.js";
 import { Customers } from "./api/customers.js";
 import { Entitlements } from "./api/entitlements.js";
@@ -19,6 +23,7 @@ import { ProductFamilies } from "./api/productFamilies.js";
 import { Products } from "./api/products.js";
 import { Subscriptions } from "./api/subscriptions.js";
 import { Usage } from "./api/usage.js";
+import { UsageCosts } from "./api/usageCosts.js";
 import { WebhookEndpoints } from "./api/webhookEndpoints.js";
 import type { Security, SecurityScheme } from "./auth.js";
 import type { Middleware } from "./middleware.js";
@@ -79,13 +84,34 @@ export { AddOnsEntitlements } from "./api/addOnsEntitlements.js";
 export { BatchJobs } from "./api/batchJobs.js";
 export type { BatchJobsListOptions } from "./api/batchJobs.js";
 export type { BatchJobsListFailuresOptions } from "./api/batchJobs.js";
+export { Budgets } from "./api/budgets.js";
+export type { BudgetsListOptions } from "./api/budgets.js";
+export type { BudgetsCreateOptions } from "./api/budgets.js";
+export type { BudgetsUpdateOptions } from "./api/budgets.js";
+export type { BudgetsArchiveOptions } from "./api/budgets.js";
 export { CheckoutSessions } from "./api/checkoutSessions.js";
 export type { CheckoutSessionsListOptions } from "./api/checkoutSessions.js";
+export { Checks } from "./api/checks.js";
+export type { ChecksCheckEntitlementOptions } from "./api/checks.js";
 export { Connect } from "./api/connect.js";
 export { Coupons } from "./api/coupons.js";
 export type { CouponsListOptions } from "./api/coupons.js";
 export { CreditNotes } from "./api/creditNotes.js";
 export type { CreditNotesListOptions } from "./api/creditNotes.js";
+export { CreditUnits } from "./api/creditUnits.js";
+export type { CreditUnitsListOptions } from "./api/creditUnits.js";
+export { CreditUnitsPrices } from "./api/creditUnitsPrices.js";
+export type { CreditUnitsPricesListOptions } from "./api/creditUnitsPrices.js";
+export { Credits } from "./api/credits.js";
+export type { CreditsListCustomerCreditLedgerOptions } from "./api/credits.js";
+export type { CreditsCreateCustomerTopUpOptions } from "./api/credits.js";
+export { CreditsGrants } from "./api/creditsGrants.js";
+export type { CreditsGrantsListOptions } from "./api/creditsGrants.js";
+export type { CreditsGrantsCreateOptions } from "./api/creditsGrants.js";
+export { CreditsWallets } from "./api/creditsWallets.js";
+export type { CreditsWalletsListOptions } from "./api/creditsWallets.js";
+export type { CreditsWalletsCheckOptions } from "./api/creditsWallets.js";
+export type { CreditsWalletsUpdateOptions } from "./api/creditsWallets.js";
 export { CustomProperties } from "./api/customProperties.js";
 export type { CustomPropertiesListCustomPropertyDefinitionsOptions } from "./api/customProperties.js";
 export { Customers } from "./api/customers.js";
@@ -113,9 +139,18 @@ export { ProductsEntitlements } from "./api/productsEntitlements.js";
 export { Subscriptions } from "./api/subscriptions.js";
 export type { SubscriptionsListOptions } from "./api/subscriptions.js";
 export { Usage } from "./api/usage.js";
-export type { UsageRetrieveCustomerOptions } from "./api/usage.js";
 export type { UsageRetrieveSubscriptionOptions } from "./api/usage.js";
 export type { UsageRetrieveSummaryOptions } from "./api/usage.js";
+export { UsageCustomer } from "./api/usageCustomer.js";
+export type { UsageCustomerRetrieveOptions } from "./api/usageCustomer.js";
+export type { UsageCustomerRetrieveUnattributedOptions } from "./api/usageCustomer.js";
+export { UsageCosts } from "./api/usageCosts.js";
+export { UsageCostsCustomer } from "./api/usageCostsCustomer.js";
+export type { UsageCostsCustomerListCostsOptions } from "./api/usageCostsCustomer.js";
+export type { UsageCostsCustomerListEventsOptions } from "./api/usageCostsCustomer.js";
+export { UsageCostsSubscription } from "./api/usageCostsSubscription.js";
+export type { UsageCostsSubscriptionListCostsOptions } from "./api/usageCostsSubscription.js";
+export type { UsageCostsSubscriptionListEventsOptions } from "./api/usageCostsSubscription.js";
 export { WebhookEndpoints } from "./api/webhookEndpoints.js";
 export { WebhookEndpointsEndpoints } from "./api/webhookEndpointsEndpoints.js";
 export type { WebhookEndpointsEndpointsListDeliveriesOptions } from "./api/webhookEndpointsEndpoints.js";
@@ -198,10 +233,14 @@ export class Meteroid {
   private readonly requestCtx: MeteroidRequestContext;
   private _addOns?: AddOns;
   private _batchJobs?: BatchJobs;
+  private _budgets?: Budgets;
   private _checkoutSessions?: CheckoutSessions;
+  private _checks?: Checks;
   private _connect?: Connect;
   private _coupons?: Coupons;
   private _creditNotes?: CreditNotes;
+  private _creditUnits?: CreditUnits;
+  private _credits?: Credits;
   private _customProperties?: CustomProperties;
   private _customers?: Customers;
   private _entitlements?: Entitlements;
@@ -216,6 +255,7 @@ export class Meteroid {
   private _products?: Products;
   private _subscriptions?: Subscriptions;
   private _usage?: Usage;
+  private _usageCosts?: UsageCosts;
   private _webhookEndpoints?: WebhookEndpoints;
 
   /**
@@ -255,10 +295,22 @@ export class Meteroid {
     return this._batchJobs;
   }
 
+  /** The budgets API. */
+  public get budgets(): Budgets {
+    this._budgets ??= new Budgets(this.requestCtx);
+    return this._budgets;
+  }
+
   /** The checkout sessions API. */
   public get checkoutSessions(): CheckoutSessions {
     this._checkoutSessions ??= new CheckoutSessions(this.requestCtx);
     return this._checkoutSessions;
+  }
+
+  /** The checks API. */
+  public get checks(): Checks {
+    this._checks ??= new Checks(this.requestCtx);
+    return this._checks;
   }
 
   /** The connect API. */
@@ -277,6 +329,18 @@ export class Meteroid {
   public get creditNotes(): CreditNotes {
     this._creditNotes ??= new CreditNotes(this.requestCtx);
     return this._creditNotes;
+  }
+
+  /** The credit units API. */
+  public get creditUnits(): CreditUnits {
+    this._creditUnits ??= new CreditUnits(this.requestCtx);
+    return this._creditUnits;
+  }
+
+  /** The credits API. */
+  public get credits(): Credits {
+    this._credits ??= new Credits(this.requestCtx);
+    return this._credits;
   }
 
   /** The custom properties API. */
@@ -361,6 +425,12 @@ export class Meteroid {
   public get usage(): Usage {
     this._usage ??= new Usage(this.requestCtx);
     return this._usage;
+  }
+
+  /** The usage costs API. */
+  public get usageCosts(): UsageCosts {
+    this._usageCosts ??= new UsageCosts(this.requestCtx);
+    return this._usageCosts;
   }
 
   /** The webhook endpoints API. */

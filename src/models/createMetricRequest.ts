@@ -26,6 +26,17 @@ export interface CreateMetricRequest {
   productId?: ProductId | null | undefined;
   segmentationMatrix?: MetricSegmentationMatrix | null | undefined;
   unitConversion?: UnitConversion | null | undefined;
+  /**
+   * What several units of the metric are called, e.g. `tokens`. Set together with
+   * `unit_singular`. Trimmed; at most 32 characters.
+   */
+  unitPlural?: string | null | undefined;
+  /**
+   * What one unit of the metric is called, e.g. `token`, used to label quantities and
+   * prices ("$12.00 per 1M tokens"). Set both `unit_singular` and `unit_plural`, or neither.
+   * Trimmed; at most 32 characters.
+   */
+  unitSingular?: string | null | undefined;
   usageGroupKey?: string | null | undefined;
 }
 
@@ -45,6 +56,8 @@ export const CreateMetricRequestSerializer = {
         "product_id",
         "segmentation_matrix",
         "unit_conversion",
+        "unit_plural",
+        "unit_singular",
         "usage_group_key",
       ]),
       aggregationKey:
@@ -93,6 +106,14 @@ export const CreateMetricRequestSerializer = {
               decodePath(path, "unit_conversion")
             )
           : json["unit_conversion"],
+      unitPlural:
+        json["unit_plural"] != null
+          ? decodeString(json["unit_plural"], path, "unit_plural")
+          : json["unit_plural"],
+      unitSingular:
+        json["unit_singular"] != null
+          ? decodeString(json["unit_singular"], path, "unit_singular")
+          : json["unit_singular"],
       usageGroupKey:
         json["usage_group_key"] != null
           ? decodeString(json["usage_group_key"], path, "usage_group_key")
@@ -113,6 +134,8 @@ export const CreateMetricRequestSerializer = {
         "productId",
         "segmentationMatrix",
         "unitConversion",
+        "unitPlural",
+        "unitSingular",
         "usageGroupKey",
       ]),
       aggregation_key: value.aggregationKey,
@@ -139,6 +162,8 @@ export const CreateMetricRequestSerializer = {
         value.unitConversion != null
           ? UnitConversionSerializer.serialize(value.unitConversion)
           : value.unitConversion,
+      unit_plural: value.unitPlural,
+      unit_singular: value.unitSingular,
       usage_group_key: value.usageGroupKey,
     };
   },

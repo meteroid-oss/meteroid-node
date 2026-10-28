@@ -6,6 +6,7 @@ export interface CapacityPricing {
   included: number;
   overageRate: string;
   rate: string;
+  type: "CAPACITY";
 }
 
 /** Converts `CapacityPricing` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -13,19 +14,24 @@ export const CapacityPricingSerializer = {
   parse(json: any, path = "$"): CapacityPricing {
     decodeObject(json, path);
     return {
-      ...extraProperties(json, ["included", "overage_rate", "rate"]),
+      ...extraProperties(json, ["included", "overage_rate", "rate", "type"]),
       included: decodeInteger(json["included"], path, "included"),
       overageRate: decodeString(json["overage_rate"], path, "overage_rate"),
       rate: decodeString(json["rate"], path, "rate"),
+      type:
+        json["type"] != null
+          ? (decodeString(json["type"], path, "type") as "CAPACITY")
+          : "CAPACITY",
     };
   },
 
   serialize(value: CapacityPricing): any {
     return {
-      ...extraProperties(value, ["included", "overageRate", "rate"]),
+      ...extraProperties(value, ["included", "overageRate", "rate", "type"]),
       included: value.included,
       overage_rate: value.overageRate,
       rate: value.rate,
+      type: value.type ?? "CAPACITY",
     };
   },
 };

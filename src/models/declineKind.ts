@@ -10,6 +10,7 @@ export const DeclineKind = {
   Fraud: "FRAUD",
   ProcessingError: "PROCESSING_ERROR",
   Other: "OTHER",
+  DoNotRetry: "DO_NOT_RETRY",
 } as const;
 export type DeclineKind = (typeof DeclineKind)[keyof typeof DeclineKind] | (string & {});
 

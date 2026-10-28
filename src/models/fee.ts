@@ -1,6 +1,7 @@
 // this file is @generated
 import { decodeObject } from "../decode.js";
 import { type CapacityPlanFee, CapacityPlanFeeSerializer } from "./capacityPlanFee.js";
+import { type CreditPlanFee, CreditPlanFeeSerializer } from "./creditPlanFee.js";
 import {
   type ExtraRecurringPlanFee,
   ExtraRecurringPlanFeeSerializer,
@@ -28,6 +29,9 @@ export interface FeeExtraRecurring extends ExtraRecurringPlanFee {
 export interface FeeOneTime extends OneTimePlanFee {
   type: "ONE_TIME";
 }
+export interface FeeCredit extends CreditPlanFee {
+  type: "CREDIT";
+}
 
 export type Fee =
   | FeeRate
@@ -35,7 +39,8 @@ export type Fee =
   | FeeCapacity
   | FeeUsage
   | FeeExtraRecurring
-  | FeeOneTime;
+  | FeeOneTime
+  | FeeCredit;
 
 /** Converts `Fee` values from (`parse`) and to (`serialize`) their JSON form. */
 export const FeeSerializer = {
@@ -71,6 +76,11 @@ export const FeeSerializer = {
         return {
           ...OneTimePlanFeeSerializer.parse(json, path),
           type: "ONE_TIME",
+        };
+      case "CREDIT":
+        return {
+          ...CreditPlanFeeSerializer.parse(json, path),
+          type: "CREDIT",
         };
       default:
         // A variant added to the API after this SDK was generated, kept as received.
@@ -109,6 +119,11 @@ export const FeeSerializer = {
         return {
           ...OneTimePlanFeeSerializer.serialize(value),
           type: "ONE_TIME",
+        };
+      case "CREDIT":
+        return {
+          ...CreditPlanFeeSerializer.serialize(value),
+          type: "CREDIT",
         };
       default:
         return value;

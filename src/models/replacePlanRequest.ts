@@ -9,6 +9,10 @@ import {
 } from "../decode.js";
 import { type BillingConfig, BillingConfigSerializer } from "./billingConfig.js";
 import {
+  type CreditExhaustedRule,
+  CreditExhaustedRuleSerializer,
+} from "./creditExhaustedRule.js";
+import {
   type EntitlementSpecRequest,
   EntitlementSpecRequestSerializer,
 } from "./entitlementSpecRequest.js";
@@ -28,6 +32,7 @@ export interface ReplacePlanRequest {
   addOns?: PlanAddOnInput[] | undefined;
   billing?: BillingConfig | null | undefined;
   components: PriceComponentInput[];
+  creditExhaustedRule?: CreditExhaustedRule | null | undefined;
   currency: string;
   description?: string | null | undefined;
   /**
@@ -58,6 +63,7 @@ export const ReplacePlanRequestSerializer = {
         "add_ons",
         "billing",
         "components",
+        "credit_exhausted_rule",
         "currency",
         "description",
         "entitlements",
@@ -88,6 +94,13 @@ export const ReplacePlanRequestSerializer = {
         (item: any, p: string, i: number) =>
           PriceComponentInputSerializer.parse(item, decodePath(p, i))
       ),
+      creditExhaustedRule:
+        json["credit_exhausted_rule"] != null
+          ? CreditExhaustedRuleSerializer.parse(
+              json["credit_exhausted_rule"],
+              decodePath(path, "credit_exhausted_rule")
+            )
+          : json["credit_exhausted_rule"],
       currency: decodeString(json["currency"], path, "currency"),
       description:
         json["description"] != null
@@ -132,6 +145,7 @@ export const ReplacePlanRequestSerializer = {
         "addOns",
         "billing",
         "components",
+        "creditExhaustedRule",
         "currency",
         "description",
         "entitlements",
@@ -152,6 +166,10 @@ export const ReplacePlanRequestSerializer = {
       components: value.components.map((item: any) =>
         PriceComponentInputSerializer.serialize(item)
       ),
+      credit_exhausted_rule:
+        value.creditExhaustedRule != null
+          ? CreditExhaustedRuleSerializer.serialize(value.creditExhaustedRule)
+          : value.creditExhaustedRule,
       currency: value.currency,
       description: value.description,
       entitlements:

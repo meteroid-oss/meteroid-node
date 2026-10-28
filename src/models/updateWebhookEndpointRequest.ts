@@ -18,7 +18,10 @@ export interface UpdateWebhookEndpointRequest {
   description?: string | null | undefined;
   /** Re-enabling an endpoint also resets its consecutive failure count. */
   disabled?: boolean | null | undefined;
-  /** Replaces the subscription list. An empty array subscribes to every event type. */
+  /**
+   * Replaces the subscription list. An empty array subscribes to every event type except Beta
+   * ones, which are sent only to endpoints that list them.
+   */
   eventTypes?: string[] | null | undefined;
   /** Replaces the custom header list. An empty array removes every header. */
   headers?: WebhookHeaderInput[] | null | undefined;

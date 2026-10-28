@@ -13,6 +13,7 @@ import {
 export interface SlotFeeStructure {
   downgradePolicy: SlotDowngradePolicyEnum;
   slotUnitName: string;
+  type: "SLOT";
   upgradePolicy: SlotUpgradePolicyEnum;
 }
 
@@ -21,12 +22,21 @@ export const SlotFeeStructureSerializer = {
   parse(json: any, path = "$"): SlotFeeStructure {
     decodeObject(json, path);
     return {
-      ...extraProperties(json, ["downgrade_policy", "slot_unit_name", "upgrade_policy"]),
+      ...extraProperties(json, [
+        "downgrade_policy",
+        "slot_unit_name",
+        "type",
+        "upgrade_policy",
+      ]),
       downgradePolicy: SlotDowngradePolicyEnumSerializer.parse(
         json["downgrade_policy"],
         decodePath(path, "downgrade_policy")
       ),
       slotUnitName: decodeString(json["slot_unit_name"], path, "slot_unit_name"),
+      type:
+        json["type"] != null
+          ? (decodeString(json["type"], path, "type") as "SLOT")
+          : "SLOT",
       upgradePolicy: SlotUpgradePolicyEnumSerializer.parse(
         json["upgrade_policy"],
         decodePath(path, "upgrade_policy")
@@ -36,11 +46,17 @@ export const SlotFeeStructureSerializer = {
 
   serialize(value: SlotFeeStructure): any {
     return {
-      ...extraProperties(value, ["downgradePolicy", "slotUnitName", "upgradePolicy"]),
+      ...extraProperties(value, [
+        "downgradePolicy",
+        "slotUnitName",
+        "type",
+        "upgradePolicy",
+      ]),
       downgrade_policy: SlotDowngradePolicyEnumSerializer.serialize(
         value.downgradePolicy
       ),
       slot_unit_name: value.slotUnitName,
+      type: value.type ?? "SLOT",
       upgrade_policy: SlotUpgradePolicyEnumSerializer.serialize(value.upgradePolicy),
     };
   },

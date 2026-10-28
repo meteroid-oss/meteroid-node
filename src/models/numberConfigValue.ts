@@ -3,6 +3,7 @@ import { extraProperties } from "../json.js";
 import { decodeObject, decodeString } from "../decode.js";
 /** A number config value (decimal, encoded as a string). */
 export interface NumberConfigValue {
+  kind: "NUMBER";
   value: string;
 }
 
@@ -11,14 +12,19 @@ export const NumberConfigValueSerializer = {
   parse(json: any, path = "$"): NumberConfigValue {
     decodeObject(json, path);
     return {
-      ...extraProperties(json, ["value"]),
+      ...extraProperties(json, ["kind", "value"]),
+      kind:
+        json["kind"] != null
+          ? (decodeString(json["kind"], path, "kind") as "NUMBER")
+          : "NUMBER",
       value: decodeString(json["value"], path, "value"),
     };
   },
 
   serialize(value: NumberConfigValue): any {
     return {
-      ...extraProperties(value, ["value"]),
+      ...extraProperties(value, ["kind", "value"]),
+      kind: value.kind ?? "NUMBER",
       value: value.value,
     };
   },

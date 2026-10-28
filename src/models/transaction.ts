@@ -31,6 +31,11 @@ import { type ReversalKind, ReversalKindSerializer } from "./reversalKind.js";
 export interface Transaction {
   amount: number;
   /**
+   * On a PAYMENT: the part of `amount_reversed` lost to disputes or chargebacks. The invoice
+   * stays paid; only the rest of `amount_reversed` (a failed collection) reopens it.
+   */
+  amountDisputed?: number | undefined;
+  /**
    * On a PAYMENT: how much was voluntarily given back (the sum of its settled REFUND
    * children). The invoice stays paid — the Refund credit note is what reduces it.
    */
@@ -40,6 +45,11 @@ export interface Transaction {
    * dispute). This is what the invoice nets out, reopening it.
    */
   amountReversed: number;
+  /**
+   * On a PAYMENT: what the provider withdrew above what the payment still held (refunded
+   * before). Never applied to the invoice or credit: contest it with the provider.
+   */
+  amountReversedExcess?: number | undefined;
   creditNoteId?: CreditNoteId | null | undefined;
   currency: string;
   error?: string | null | undefined;
@@ -64,8 +74,10 @@ export const TransactionSerializer = {
     return {
       ...extraProperties(json, [
         "amount",
+        "amount_disputed",
         "amount_refunded",
         "amount_reversed",
+        "amount_reversed_excess",
         "credit_note_id",
         "currency",
         "error",
@@ -82,8 +94,16 @@ export const TransactionSerializer = {
         "status",
       ]),
       amount: decodeInteger(json["amount"], path, "amount"),
+      amountDisputed:
+        json["amount_disputed"] != null
+          ? decodeInteger(json["amount_disputed"], path, "amount_disputed")
+          : undefined,
       amountRefunded: decodeInteger(json["amount_refunded"], path, "amount_refunded"),
       amountReversed: decodeInteger(json["amount_reversed"], path, "amount_reversed"),
+      amountReversedExcess:
+        json["amount_reversed_excess"] != null
+          ? decodeInteger(json["amount_reversed_excess"], path, "amount_reversed_excess")
+          : undefined,
       creditNoteId:
         json["credit_note_id"] != null
           ? CreditNoteIdSerializer.parse(
@@ -159,8 +179,10 @@ export const TransactionSerializer = {
     return {
       ...extraProperties(value, [
         "amount",
+        "amountDisputed",
         "amountRefunded",
         "amountReversed",
+        "amountReversedExcess",
         "creditNoteId",
         "currency",
         "error",
@@ -177,8 +199,10 @@ export const TransactionSerializer = {
         "status",
       ]),
       amount: value.amount,
+      amount_disputed: value.amountDisputed,
       amount_refunded: value.amountRefunded,
       amount_reversed: value.amountReversed,
+      amount_reversed_excess: value.amountReversedExcess,
       credit_note_id:
         value.creditNoteId != null
           ? CreditNoteIdSerializer.serialize(value.creditNoteId)

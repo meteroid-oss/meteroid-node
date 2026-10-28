@@ -28,6 +28,10 @@ import { type Transaction, TransactionSerializer } from "./transaction.js";
 
 export interface Invoice {
   amountDue: number;
+  /**
+   * Paid credit applied after tax, in minor units of the invoice currency: it settles part of
+   * `total` like a payment, and `amount_due` is net of it.
+   */
   appliedCredits: number;
   /**
    * The period/moment this invoice is about — the subscription period start, or the invoice's
@@ -56,9 +60,26 @@ export interface Invoice {
   netTerms: number;
   paidAt?: Date | null | undefined;
   parentInvoiceId?: InvoiceId | null | undefined;
+  /**
+   * When a dispute or chargeback first took money still lost on this invoice's payments. The
+   * invoice stays paid; absent when nothing is disputed.
+   */
+  paymentDisputedAt?: Date | null | undefined;
   paymentStatus: InvoicePaymentStatus;
+  /**
+   * Promotional credit applied before tax (credit included with the plan, coupon credit, bonus
+   * credit), in minor units of the invoice currency. Like a discount, it reduces the taxable
+   * amount: `tax_amount` and `total` already exclude it, `subtotal` does not. Unlike
+   * `applied_credits`, which settles part of the `total` after tax.
+   */
+  promotionalCredits?: number | undefined;
   purchaseOrder?: string | null | undefined;
   reference?: string | null | undefined;
+  /**
+   * True when the invoice is `PAID` without any payment: finalized credit notes cancelled its
+   * whole total. Nothing was collected, so it books no cash.
+   */
+  settledByCreditNotes: boolean;
   status: InvoiceStatus;
   subscriptionId?: SubscriptionId | null | undefined;
   subtotal: number;
@@ -105,9 +126,12 @@ export const InvoiceSerializer = {
         "net_terms",
         "paid_at",
         "parent_invoice_id",
+        "payment_disputed_at",
         "payment_status",
+        "promotional_credits",
         "purchase_order",
         "reference",
+        "settled_by_credit_notes",
         "status",
         "subscription_id",
         "subtotal",
@@ -202,10 +226,18 @@ export const InvoiceSerializer = {
               decodePath(path, "parent_invoice_id")
             )
           : json["parent_invoice_id"],
+      paymentDisputedAt:
+        json["payment_disputed_at"] != null
+          ? decodeDateTime(json["payment_disputed_at"], path, "payment_disputed_at")
+          : json["payment_disputed_at"],
       paymentStatus: InvoicePaymentStatusSerializer.parse(
         json["payment_status"],
         decodePath(path, "payment_status")
       ),
+      promotionalCredits:
+        json["promotional_credits"] != null
+          ? decodeInteger(json["promotional_credits"], path, "promotional_credits")
+          : undefined,
       purchaseOrder:
         json["purchase_order"] != null
           ? decodeString(json["purchase_order"], path, "purchase_order")
@@ -214,6 +246,11 @@ export const InvoiceSerializer = {
         json["reference"] != null
           ? decodeString(json["reference"], path, "reference")
           : json["reference"],
+      settledByCreditNotes: decodeBoolean(
+        json["settled_by_credit_notes"],
+        path,
+        "settled_by_credit_notes"
+      ),
       status: InvoiceStatusSerializer.parse(json["status"], decodePath(path, "status")),
       subscriptionId:
         json["subscription_id"] != null
@@ -282,9 +319,12 @@ export const InvoiceSerializer = {
         "netTerms",
         "paidAt",
         "parentInvoiceId",
+        "paymentDisputedAt",
         "paymentStatus",
+        "promotionalCredits",
         "purchaseOrder",
         "reference",
+        "settledByCreditNotes",
         "status",
         "subscriptionId",
         "subtotal",
@@ -331,9 +371,12 @@ export const InvoiceSerializer = {
         value.parentInvoiceId != null
           ? InvoiceIdSerializer.serialize(value.parentInvoiceId)
           : value.parentInvoiceId,
+      payment_disputed_at: value.paymentDisputedAt,
       payment_status: InvoicePaymentStatusSerializer.serialize(value.paymentStatus),
+      promotional_credits: value.promotionalCredits,
       purchase_order: value.purchaseOrder,
       reference: value.reference,
+      settled_by_credit_notes: value.settledByCreditNotes,
       status: InvoiceStatusSerializer.serialize(value.status),
       subscription_id:
         value.subscriptionId != null

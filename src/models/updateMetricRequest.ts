@@ -15,6 +15,14 @@ export interface UpdateMetricRequest {
   name?: string | null | undefined;
   segmentationMatrix?: MetricSegmentationMatrix | null | undefined;
   unitConversion?: UnitConversion | null | undefined;
+  /** What several units of the metric are called, e.g. `tokens`. See `unit_singular`. */
+  unitPlural?: string | null | undefined;
+  /**
+   * What one unit of the metric is called, e.g. `token`. Send `unit_singular` and
+   * `unit_plural` together; omit both to leave the label unchanged, or send both as empty
+   * strings to remove it. Trimmed; at most 32 characters.
+   */
+  unitSingular?: string | null | undefined;
 }
 
 /** Converts `UpdateMetricRequest` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -28,6 +36,8 @@ export const UpdateMetricRequestSerializer = {
         "name",
         "segmentation_matrix",
         "unit_conversion",
+        "unit_plural",
+        "unit_singular",
       ]),
       description:
         json["description"] != null
@@ -59,6 +69,14 @@ export const UpdateMetricRequestSerializer = {
               decodePath(path, "unit_conversion")
             )
           : json["unit_conversion"],
+      unitPlural:
+        json["unit_plural"] != null
+          ? decodeString(json["unit_plural"], path, "unit_plural")
+          : json["unit_plural"],
+      unitSingular:
+        json["unit_singular"] != null
+          ? decodeString(json["unit_singular"], path, "unit_singular")
+          : json["unit_singular"],
     };
   },
 
@@ -70,6 +88,8 @@ export const UpdateMetricRequestSerializer = {
         "name",
         "segmentationMatrix",
         "unitConversion",
+        "unitPlural",
+        "unitSingular",
       ]),
       description: value.description,
       filters:
@@ -85,6 +105,8 @@ export const UpdateMetricRequestSerializer = {
         value.unitConversion != null
           ? UnitConversionSerializer.serialize(value.unitConversion)
           : value.unitConversion,
+      unit_plural: value.unitPlural,
+      unit_singular: value.unitSingular,
     };
   },
 };

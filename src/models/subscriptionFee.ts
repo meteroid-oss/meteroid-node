@@ -1,6 +1,7 @@
 // this file is @generated
 import { decodeObject } from "../decode.js";
 import { type CapacityFee, CapacityFeeSerializer } from "./capacityFee.js";
+import { type CreditFee, CreditFeeSerializer } from "./creditFee.js";
 import { type OneTimeFee, OneTimeFeeSerializer } from "./oneTimeFee.js";
 import { type RateFee, RateFeeSerializer } from "./rateFee.js";
 import { type RecurringFee, RecurringFeeSerializer } from "./recurringFee.js";
@@ -25,6 +26,9 @@ export interface SubscriptionFeeSlot extends SlotFee {
 export interface SubscriptionFeeUsage extends UsageFee {
   type: "USAGE";
 }
+export interface SubscriptionFeeCredit extends CreditFee {
+  type: "CREDIT";
+}
 
 export type SubscriptionFee =
   | SubscriptionFeeRate
@@ -32,7 +36,8 @@ export type SubscriptionFee =
   | SubscriptionFeeRecurring
   | SubscriptionFeeCapacity
   | SubscriptionFeeSlot
-  | SubscriptionFeeUsage;
+  | SubscriptionFeeUsage
+  | SubscriptionFeeCredit;
 
 /** Converts `SubscriptionFee` values from (`parse`) and to (`serialize`) their JSON form. */
 export const SubscriptionFeeSerializer = {
@@ -68,6 +73,11 @@ export const SubscriptionFeeSerializer = {
         return {
           ...UsageFeeSerializer.parse(json, path),
           type: "USAGE",
+        };
+      case "CREDIT":
+        return {
+          ...CreditFeeSerializer.parse(json, path),
+          type: "CREDIT",
         };
       default:
         // A variant added to the API after this SDK was generated, kept as received.
@@ -106,6 +116,11 @@ export const SubscriptionFeeSerializer = {
         return {
           ...UsageFeeSerializer.serialize(value),
           type: "USAGE",
+        };
+      case "CREDIT":
+        return {
+          ...CreditFeeSerializer.serialize(value),
+          type: "CREDIT",
         };
       default:
         return value;
