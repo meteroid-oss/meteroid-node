@@ -39,7 +39,20 @@ export const EventType = {
   RefundSettled: "refund.settled",
   RefundFailed: "refund.failed",
   PaymentReversed: "payment.reversed",
+  PaymentReinstated: "payment.reinstated",
   PaymentFailed: "payment.failed",
+  WalletFunded: "wallet.funded",
+  WalletDebited: "wallet.debited",
+  WalletBalanceLow: "wallet.balance_low",
+  WalletCreditUnrecovered: "wallet.credit_unrecovered",
+  WalletCreditRecovered: "wallet.credit_recovered",
+  WalletAutoTopUpFailed: "wallet.auto_top_up_failed",
+  WalletAutoTopUpSuspended: "wallet.auto_top_up_suspended",
+  WalletAutoTopUpConsentChanged: "wallet.auto_top_up_consent_changed",
+  WalletDepleted: "wallet.depleted",
+  WalletRecovered: "wallet.recovered",
+  WalletAutoTopUpCapReached: "wallet.auto_top_up_cap_reached",
+  CreditGrantExpired: "credit_grant.expired",
 } as const;
 export type EventType = (typeof EventType)[keyof typeof EventType] | (string & {});
 

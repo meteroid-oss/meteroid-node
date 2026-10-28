@@ -11,6 +11,7 @@ import {
   type PaymentMethodsConfig,
   PaymentMethodsConfigSerializer,
 } from "./paymentMethodsConfig.js";
+import { type UsageFilter, UsageFilterSerializer } from "./usageFilter.js";
 
 export interface SubscriptionUpdateRequest {
   /** If false, invoices will stay in Draft until manually reviewed and finalized. */
@@ -29,6 +30,7 @@ export interface SubscriptionUpdateRequest {
   paymentMethodsConfig?: PaymentMethodsConfig | null | undefined;
   /** Purchase order number */
   purchaseOrder?: string | null | undefined;
+  usageFilter?: UsageFilter | null | undefined;
 }
 
 /** Converts `SubscriptionUpdateRequest` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -44,6 +46,7 @@ export const SubscriptionUpdateRequestSerializer = {
         "net_terms",
         "payment_methods_config",
         "purchase_order",
+        "usage_filter",
       ]),
       autoAdvanceInvoices:
         json["auto_advance_invoices"] != null
@@ -73,6 +76,13 @@ export const SubscriptionUpdateRequestSerializer = {
         json["purchase_order"] != null
           ? decodeString(json["purchase_order"], path, "purchase_order")
           : json["purchase_order"],
+      usageFilter:
+        json["usage_filter"] != null
+          ? UsageFilterSerializer.parse(
+              json["usage_filter"],
+              decodePath(path, "usage_filter")
+            )
+          : json["usage_filter"],
     };
   },
 
@@ -86,6 +96,7 @@ export const SubscriptionUpdateRequestSerializer = {
         "netTerms",
         "paymentMethodsConfig",
         "purchaseOrder",
+        "usageFilter",
       ]),
       auto_advance_invoices: value.autoAdvanceInvoices,
       charge_automatically: value.chargeAutomatically,
@@ -97,6 +108,10 @@ export const SubscriptionUpdateRequestSerializer = {
           ? PaymentMethodsConfigSerializer.serialize(value.paymentMethodsConfig)
           : value.paymentMethodsConfig,
       purchase_order: value.purchaseOrder,
+      usage_filter:
+        value.usageFilter != null
+          ? UsageFilterSerializer.serialize(value.usageFilter)
+          : value.usageFilter,
     };
   },
 };

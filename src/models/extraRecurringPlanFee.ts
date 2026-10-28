@@ -11,6 +11,7 @@ export interface ExtraRecurringPlanFee {
   billingType: BillingType;
   cadence: BillingPeriodEnum;
   quantity: number;
+  type: "EXTRA_RECURRING";
   unitPrice: string;
 }
 
@@ -19,7 +20,13 @@ export const ExtraRecurringPlanFeeSerializer = {
   parse(json: any, path = "$"): ExtraRecurringPlanFee {
     decodeObject(json, path);
     return {
-      ...extraProperties(json, ["billing_type", "cadence", "quantity", "unit_price"]),
+      ...extraProperties(json, [
+        "billing_type",
+        "cadence",
+        "quantity",
+        "type",
+        "unit_price",
+      ]),
       billingType: BillingTypeSerializer.parse(
         json["billing_type"],
         decodePath(path, "billing_type")
@@ -29,16 +36,27 @@ export const ExtraRecurringPlanFeeSerializer = {
         decodePath(path, "cadence")
       ),
       quantity: decodeInteger(json["quantity"], path, "quantity"),
+      type:
+        json["type"] != null
+          ? (decodeString(json["type"], path, "type") as "EXTRA_RECURRING")
+          : "EXTRA_RECURRING",
       unitPrice: decodeString(json["unit_price"], path, "unit_price"),
     };
   },
 
   serialize(value: ExtraRecurringPlanFee): any {
     return {
-      ...extraProperties(value, ["billingType", "cadence", "quantity", "unitPrice"]),
+      ...extraProperties(value, [
+        "billingType",
+        "cadence",
+        "quantity",
+        "type",
+        "unitPrice",
+      ]),
       billing_type: BillingTypeSerializer.serialize(value.billingType),
       cadence: BillingPeriodEnumSerializer.serialize(value.cadence),
       quantity: value.quantity,
+      type: value.type ?? "EXTRA_RECURRING",
       unit_price: value.unitPrice,
     };
   },

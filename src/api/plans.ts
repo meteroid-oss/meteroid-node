@@ -202,7 +202,9 @@ export class Plans {
    *
    * Full replacement of a plan's version. On a draft plan, updates in-place.
    * On a published plan, creates a new version. Set `status` to `DRAFT` to
-   * stage as a new draft without publishing.
+   * stage as a new draft without publishing. A usage or capacity component priced in a credit
+   * unit must be sent with its `credit_unit`, or the request is refused: omitting it would bill
+   * its credits as money.
    */
   public replace(
     planId: string,

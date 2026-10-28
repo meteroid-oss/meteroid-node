@@ -13,6 +13,10 @@ import { type CouponDiscount, CouponDiscountSerializer } from "./couponDiscount.
 import { type PlanId, PlanIdSerializer } from "./planId.js";
 
 export interface CreateCouponRequest {
+  /**
+   * 1 to 64 ASCII letters, digits, hyphens or underscores. A promotional-credit (`CREDIT`) code
+   * is stored upper-case. Codes are matched as described on `Coupon.code`.
+   */
   code: string;
   description?: string | null | undefined;
   discount: CouponDiscount;
@@ -20,6 +24,10 @@ export interface CreateCouponRequest {
   planIds?: PlanId[] | undefined;
   recurringValue?: number | null | undefined;
   redemptionLimit?: number | null | undefined;
+  /**
+   * Whether one customer may redeem the coupon more than once. Must be false for a
+   * promotional-credit (`CREDIT`) coupon.
+   */
   reusable?: boolean | undefined;
 }
 

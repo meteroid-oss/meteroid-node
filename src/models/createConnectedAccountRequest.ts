@@ -1,14 +1,16 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
 import { decodeObject, decodePath, decodeString } from "../decode.js";
-import { type ConnectionType, ConnectionTypeSerializer } from "./connectionType.js";
-import { type CustomerId, CustomerIdSerializer } from "./customerId.js";
+import { type CountryCode, CountryCodeSerializer } from "./countryCode.js";
+import { type OnboardingMode, OnboardingModeSerializer } from "./onboardingMode.js";
 
 export interface CreateConnectedAccountRequest {
-  connectedOrganizationId: string;
-  connectionType?: ConnectionType | null | undefined;
+  country?: CountryCode | null | undefined;
+  email: string;
   metadata?: unknown | undefined;
-  platformCustomerId?: CustomerId | null | undefined;
+  mode?: OnboardingMode | null | undefined;
+  organizationName: string;
+  redirectUrl?: string | null | undefined;
 }
 
 /** Converts `CreateConnectedAccountRequest` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -17,52 +19,55 @@ export const CreateConnectedAccountRequestSerializer = {
     decodeObject(json, path);
     return {
       ...extraProperties(json, [
-        "connected_organization_id",
-        "connection_type",
+        "country",
+        "email",
         "metadata",
-        "platform_customer_id",
+        "mode",
+        "organization_name",
+        "redirect_url",
       ]),
-      connectedOrganizationId: decodeString(
-        json["connected_organization_id"],
-        path,
-        "connected_organization_id"
-      ),
-      connectionType:
-        json["connection_type"] != null
-          ? ConnectionTypeSerializer.parse(
-              json["connection_type"],
-              decodePath(path, "connection_type")
-            )
-          : json["connection_type"],
+      country:
+        json["country"] != null
+          ? CountryCodeSerializer.parse(json["country"], decodePath(path, "country"))
+          : json["country"],
+      email: decodeString(json["email"], path, "email"),
       metadata: json["metadata"],
-      platformCustomerId:
-        json["platform_customer_id"] != null
-          ? CustomerIdSerializer.parse(
-              json["platform_customer_id"],
-              decodePath(path, "platform_customer_id")
-            )
-          : json["platform_customer_id"],
+      mode:
+        json["mode"] != null
+          ? OnboardingModeSerializer.parse(json["mode"], decodePath(path, "mode"))
+          : json["mode"],
+      organizationName: decodeString(
+        json["organization_name"],
+        path,
+        "organization_name"
+      ),
+      redirectUrl:
+        json["redirect_url"] != null
+          ? decodeString(json["redirect_url"], path, "redirect_url")
+          : json["redirect_url"],
     };
   },
 
   serialize(value: CreateConnectedAccountRequest): any {
     return {
       ...extraProperties(value, [
-        "connectedOrganizationId",
-        "connectionType",
+        "country",
+        "email",
         "metadata",
-        "platformCustomerId",
+        "mode",
+        "organizationName",
+        "redirectUrl",
       ]),
-      connected_organization_id: value.connectedOrganizationId,
-      connection_type:
-        value.connectionType != null
-          ? ConnectionTypeSerializer.serialize(value.connectionType)
-          : value.connectionType,
+      country:
+        value.country != null
+          ? CountryCodeSerializer.serialize(value.country)
+          : value.country,
+      email: value.email,
       metadata: value.metadata,
-      platform_customer_id:
-        value.platformCustomerId != null
-          ? CustomerIdSerializer.serialize(value.platformCustomerId)
-          : value.platformCustomerId,
+      mode:
+        value.mode != null ? OnboardingModeSerializer.serialize(value.mode) : value.mode,
+      organization_name: value.organizationName,
+      redirect_url: value.redirectUrl,
     };
   },
 };

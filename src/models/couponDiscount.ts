@@ -1,5 +1,6 @@
 // this file is @generated
 import { decodeObject } from "../decode.js";
+import { type CreditDiscount, CreditDiscountSerializer } from "./creditDiscount.js";
 import { type FixedDiscount, FixedDiscountSerializer } from "./fixedDiscount.js";
 import {
   type PercentageDiscount,
@@ -12,8 +13,14 @@ export interface CouponDiscountPercentage extends PercentageDiscount {
 export interface CouponDiscountFixed extends FixedDiscount {
   type: "FIXED";
 }
+export interface CouponDiscountCredit extends CreditDiscount {
+  type: "CREDIT";
+}
 
-export type CouponDiscount = CouponDiscountPercentage | CouponDiscountFixed;
+export type CouponDiscount =
+  | CouponDiscountPercentage
+  | CouponDiscountFixed
+  | CouponDiscountCredit;
 
 /** Converts `CouponDiscount` values from (`parse`) and to (`serialize`) their JSON form. */
 export const CouponDiscountSerializer = {
@@ -29,6 +36,11 @@ export const CouponDiscountSerializer = {
         return {
           ...FixedDiscountSerializer.parse(json, path),
           type: "FIXED",
+        };
+      case "CREDIT":
+        return {
+          ...CreditDiscountSerializer.parse(json, path),
+          type: "CREDIT",
         };
       default:
         // A variant added to the API after this SDK was generated, kept as received.
@@ -47,6 +59,11 @@ export const CouponDiscountSerializer = {
         return {
           ...FixedDiscountSerializer.serialize(value),
           type: "FIXED",
+        };
+      case "CREDIT":
+        return {
+          ...CreditDiscountSerializer.serialize(value),
+          type: "CREDIT",
         };
       default:
         return value;

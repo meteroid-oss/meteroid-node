@@ -1,6 +1,7 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
 import {
+  decodeBoolean,
   decodeDateTime,
   decodeInteger,
   decodeObject,
@@ -22,6 +23,11 @@ export interface InvoiceEventData {
   /** Absent while the invoice is a draft — the number is assigned at finalization. */
   invoiceNumber?: string | null | undefined;
   parentInvoiceId?: InvoiceId | null | undefined;
+  /**
+   * On `invoice.paid`: true when finalized credit notes, not a payment, settled the invoice's
+   * whole total. Nothing was collected, so it books no cash. False on every other event.
+   */
+  settledByCreditNotes: boolean;
   status: InvoiceStatus;
   taxAmount: number;
   total: number;
@@ -41,6 +47,7 @@ export const InvoiceEventDataSerializer = {
         "invoice_id",
         "invoice_number",
         "parent_invoice_id",
+        "settled_by_credit_notes",
         "status",
         "tax_amount",
         "total",
@@ -74,6 +81,11 @@ export const InvoiceEventDataSerializer = {
               decodePath(path, "parent_invoice_id")
             )
           : json["parent_invoice_id"],
+      settledByCreditNotes: decodeBoolean(
+        json["settled_by_credit_notes"],
+        path,
+        "settled_by_credit_notes"
+      ),
       status: InvoiceStatusSerializer.parse(json["status"], decodePath(path, "status")),
       taxAmount: decodeInteger(json["tax_amount"], path, "tax_amount"),
       total: decodeInteger(json["total"], path, "total"),
@@ -91,6 +103,7 @@ export const InvoiceEventDataSerializer = {
         "invoiceId",
         "invoiceNumber",
         "parentInvoiceId",
+        "settledByCreditNotes",
         "status",
         "taxAmount",
         "total",
@@ -109,6 +122,7 @@ export const InvoiceEventDataSerializer = {
         value.parentInvoiceId != null
           ? InvoiceIdSerializer.serialize(value.parentInvoiceId)
           : value.parentInvoiceId,
+      settled_by_credit_notes: value.settledByCreditNotes,
       status: InvoiceStatusSerializer.serialize(value.status),
       tax_amount: value.taxAmount,
       total: value.total,

@@ -7,10 +7,15 @@ import {
   decodePath,
   decodeString,
 } from "../decode.js";
+import {
+  type InvoiceLineCreditUnit,
+  InvoiceLineCreditUnitSerializer,
+} from "./invoiceLineCreditUnit.js";
 import { type SubLineItem, SubLineItemSerializer } from "./subLineItem.js";
 
 export interface InvoiceLineItem {
   amountTotal: number;
+  creditUnit?: InvoiceLineCreditUnit | null | undefined;
   description?: string | null | undefined;
   endDate: string;
   name: string;
@@ -33,6 +38,7 @@ export const InvoiceLineItemSerializer = {
     return {
       ...extraProperties(json, [
         "amount_total",
+        "credit_unit",
         "description",
         "end_date",
         "name",
@@ -44,6 +50,13 @@ export const InvoiceLineItemSerializer = {
         "unit_price",
       ]),
       amountTotal: decodeInteger(json["amount_total"], path, "amount_total"),
+      creditUnit:
+        json["credit_unit"] != null
+          ? InvoiceLineCreditUnitSerializer.parse(
+              json["credit_unit"],
+              decodePath(path, "credit_unit")
+            )
+          : json["credit_unit"],
       description:
         json["description"] != null
           ? decodeString(json["description"], path, "description")
@@ -78,6 +91,7 @@ export const InvoiceLineItemSerializer = {
     return {
       ...extraProperties(value, [
         "amountTotal",
+        "creditUnit",
         "description",
         "endDate",
         "name",
@@ -89,6 +103,10 @@ export const InvoiceLineItemSerializer = {
         "unitPrice",
       ]),
       amount_total: value.amountTotal,
+      credit_unit:
+        value.creditUnit != null
+          ? InvoiceLineCreditUnitSerializer.serialize(value.creditUnit)
+          : value.creditUnit,
       description: value.description,
       end_date: value.endDate,
       name: value.name,

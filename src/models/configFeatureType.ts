@@ -6,6 +6,7 @@ import { type ConfigValueType, ConfigValueTypeSerializer } from "./configValueTy
 export interface ConfigFeatureType {
   /** Allowed values when `value_type = SELECT`. Empty otherwise. */
   options?: string[] | undefined;
+  type: "CONFIG";
   /** The feature's value type, fixed at creation. */
   valueType: ConfigValueType;
 }
@@ -15,7 +16,7 @@ export const ConfigFeatureTypeSerializer = {
   parse(json: any, path = "$"): ConfigFeatureType {
     decodeObject(json, path);
     return {
-      ...extraProperties(json, ["options", "value_type"]),
+      ...extraProperties(json, ["options", "type", "value_type"]),
       options:
         json["options"] != null
           ? decodeList(
@@ -25,6 +26,10 @@ export const ConfigFeatureTypeSerializer = {
               (item: any, p: string, i: number) => decodeString(item, p, i)
             )
           : undefined,
+      type:
+        json["type"] != null
+          ? (decodeString(json["type"], path, "type") as "CONFIG")
+          : "CONFIG",
       valueType: ConfigValueTypeSerializer.parse(
         json["value_type"],
         decodePath(path, "value_type")
@@ -34,8 +39,9 @@ export const ConfigFeatureTypeSerializer = {
 
   serialize(value: ConfigFeatureType): any {
     return {
-      ...extraProperties(value, ["options", "valueType"]),
+      ...extraProperties(value, ["options", "type", "valueType"]),
       options: value.options,
+      type: value.type ?? "CONFIG",
       value_type: ConfigValueTypeSerializer.serialize(value.valueType),
     };
   },

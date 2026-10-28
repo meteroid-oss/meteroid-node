@@ -25,6 +25,7 @@ import {
   type SubscriptionActivationConditionEnum,
   SubscriptionActivationConditionEnumSerializer,
 } from "./subscriptionActivationConditionEnum.js";
+import { type UsageFilter, UsageFilterSerializer } from "./usageFilter.js";
 
 export interface SubscriptionCreateRequest {
   activationCondition: SubscriptionActivationConditionEnum;
@@ -37,6 +38,12 @@ export interface SubscriptionCreateRequest {
   backdateInvoices?: boolean | undefined;
   billingDayAnchor?: number | null | undefined;
   chargeAutomatically?: boolean | undefined;
+  /**
+   * Codes of the coupons to apply. A code matches whatever the case of its ASCII letters; when
+   * several coupons differ from it only in that case, the one with exactly that code applies. A
+   * code that names no live coupon, or several differing only in case, refuses the request with
+   * 400 listing the codes (unknown codes used to be ignored silently).
+   */
   couponCodes?: string[] | undefined;
   /**
    * User-defined custom property values, keyed by definition `key`. Validated against the
@@ -59,6 +66,11 @@ export interface SubscriptionCreateRequest {
   skipPastInvoices?: boolean | undefined;
   startDate: string;
   trialDays?: number | undefined;
+  /**
+   * Bill only the customer's events whose property has this value. Omit to bill the events
+   * no usage filter of the customer's other subscriptions matches.
+   */
+  usageFilter?: UsageFilter | undefined;
   version?: number | undefined;
 }
 
@@ -87,6 +99,7 @@ export const SubscriptionCreateRequestSerializer = {
         "skip_past_invoices",
         "start_date",
         "trial_days",
+        "usage_filter",
         "version",
       ]),
       activationCondition: SubscriptionActivationConditionEnumSerializer.parse(
@@ -174,6 +187,13 @@ export const SubscriptionCreateRequestSerializer = {
         json["trial_days"] != null
           ? decodeInteger(json["trial_days"], path, "trial_days")
           : undefined,
+      usageFilter:
+        json["usage_filter"] != null
+          ? UsageFilterSerializer.parse(
+              json["usage_filter"],
+              decodePath(path, "usage_filter")
+            )
+          : undefined,
       version:
         json["version"] != null
           ? decodeInteger(json["version"], path, "version")
@@ -203,6 +223,7 @@ export const SubscriptionCreateRequestSerializer = {
         "skipPastInvoices",
         "startDate",
         "trialDays",
+        "usageFilter",
         "version",
       ]),
       activation_condition: SubscriptionActivationConditionEnumSerializer.serialize(
@@ -237,6 +258,10 @@ export const SubscriptionCreateRequestSerializer = {
       skip_past_invoices: value.skipPastInvoices,
       start_date: value.startDate,
       trial_days: value.trialDays,
+      usage_filter:
+        value.usageFilter != null
+          ? UsageFilterSerializer.serialize(value.usageFilter)
+          : undefined,
       version: value.version,
     };
   },

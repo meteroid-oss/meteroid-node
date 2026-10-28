@@ -25,6 +25,7 @@ import {
   type SubscriptionStatusEnum,
   SubscriptionStatusEnumSerializer,
 } from "./subscriptionStatusEnum.js";
+import { type UsageFilter, UsageFilterSerializer } from "./usageFilter.js";
 
 export interface Subscription {
   /** When the subscription was activated (first payment or activation condition met) */
@@ -73,6 +74,12 @@ export interface Subscription {
   taxInclusive: boolean;
   /** Trial duration in days */
   trialDuration?: number | null | undefined;
+  usageFilter?: UsageFilter | null | undefined;
+  /**
+   * When the current usage filter, or its removal, started to apply: the start of the usage
+   * neither this subscription nor the customer's others had invoiced when it was set.
+   */
+  usageFilterEffectiveFrom?: Date | null | undefined;
 }
 
 /** Converts `Subscription` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -111,6 +118,8 @@ export const SubscriptionSerializer = {
         "status",
         "tax_inclusive",
         "trial_duration",
+        "usage_filter",
+        "usage_filter_effective_from",
       ]),
       activatedAt:
         json["activated_at"] != null
@@ -203,6 +212,21 @@ export const SubscriptionSerializer = {
         json["trial_duration"] != null
           ? decodeInteger(json["trial_duration"], path, "trial_duration")
           : json["trial_duration"],
+      usageFilter:
+        json["usage_filter"] != null
+          ? UsageFilterSerializer.parse(
+              json["usage_filter"],
+              decodePath(path, "usage_filter")
+            )
+          : json["usage_filter"],
+      usageFilterEffectiveFrom:
+        json["usage_filter_effective_from"] != null
+          ? decodeDateTime(
+              json["usage_filter_effective_from"],
+              path,
+              "usage_filter_effective_from"
+            )
+          : json["usage_filter_effective_from"],
     };
   },
 
@@ -239,6 +263,8 @@ export const SubscriptionSerializer = {
         "status",
         "taxInclusive",
         "trialDuration",
+        "usageFilter",
+        "usageFilterEffectiveFrom",
       ]),
       activated_at: value.activatedAt,
       auto_advance_invoices: value.autoAdvanceInvoices,
@@ -273,6 +299,11 @@ export const SubscriptionSerializer = {
       status: SubscriptionStatusEnumSerializer.serialize(value.status),
       tax_inclusive: value.taxInclusive,
       trial_duration: value.trialDuration,
+      usage_filter:
+        value.usageFilter != null
+          ? UsageFilterSerializer.serialize(value.usageFilter)
+          : value.usageFilter,
+      usage_filter_effective_from: value.usageFilterEffectiveFrom,
     };
   },
 };

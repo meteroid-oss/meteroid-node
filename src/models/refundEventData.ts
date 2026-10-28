@@ -28,8 +28,15 @@ import { type ReversalKind, ReversalKindSerializer } from "./reversalKind.js";
  */
 export interface RefundEventData {
   amount: number;
+  /** The part of `amount_reversed` lost to disputes or chargebacks: the invoice stays paid. */
+  amountDisputed?: number | undefined;
   amountRefunded: number;
   amountReversed: number;
+  /**
+   * What the provider withdrew above what the payment still held (refunded before); never
+   * applied to the invoice or credit. Contest it with the provider.
+   */
+  amountReversedExcess?: number | undefined;
   creditNoteId?: CreditNoteId | null | undefined;
   currency: string;
   declineKind?: DeclineKind | null | undefined;
@@ -52,8 +59,10 @@ export const RefundEventDataSerializer = {
     return {
       ...extraProperties(json, [
         "amount",
+        "amount_disputed",
         "amount_refunded",
         "amount_reversed",
+        "amount_reversed_excess",
         "credit_note_id",
         "currency",
         "decline_kind",
@@ -69,8 +78,16 @@ export const RefundEventDataSerializer = {
         "transaction_id",
       ]),
       amount: decodeInteger(json["amount"], path, "amount"),
+      amountDisputed:
+        json["amount_disputed"] != null
+          ? decodeInteger(json["amount_disputed"], path, "amount_disputed")
+          : undefined,
       amountRefunded: decodeInteger(json["amount_refunded"], path, "amount_refunded"),
       amountReversed: decodeInteger(json["amount_reversed"], path, "amount_reversed"),
+      amountReversedExcess:
+        json["amount_reversed_excess"] != null
+          ? decodeInteger(json["amount_reversed_excess"], path, "amount_reversed_excess")
+          : undefined,
       creditNoteId:
         json["credit_note_id"] != null
           ? CreditNoteIdSerializer.parse(
@@ -142,8 +159,10 @@ export const RefundEventDataSerializer = {
     return {
       ...extraProperties(value, [
         "amount",
+        "amountDisputed",
         "amountRefunded",
         "amountReversed",
+        "amountReversedExcess",
         "creditNoteId",
         "currency",
         "declineKind",
@@ -159,8 +178,10 @@ export const RefundEventDataSerializer = {
         "transactionId",
       ]),
       amount: value.amount,
+      amount_disputed: value.amountDisputed,
       amount_refunded: value.amountRefunded,
       amount_reversed: value.amountReversed,
+      amount_reversed_excess: value.amountReversedExcess,
       credit_note_id:
         value.creditNoteId != null
           ? CreditNoteIdSerializer.serialize(value.creditNoteId)

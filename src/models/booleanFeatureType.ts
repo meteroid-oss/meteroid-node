@@ -1,21 +1,28 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
-import { decodeObject } from "../decode.js";
+import { decodeObject, decodeString } from "../decode.js";
 
-export interface BooleanFeatureType {}
+export interface BooleanFeatureType {
+  type: "BOOLEAN";
+}
 
 /** Converts `BooleanFeatureType` values from (`parse`) and to (`serialize`) their JSON form. */
 export const BooleanFeatureTypeSerializer = {
   parse(json: any, path = "$"): BooleanFeatureType {
     decodeObject(json, path);
     return {
-      ...extraProperties(json, []),
+      ...extraProperties(json, ["type"]),
+      type:
+        json["type"] != null
+          ? (decodeString(json["type"], path, "type") as "BOOLEAN")
+          : "BOOLEAN",
     };
   },
 
   serialize(value: BooleanFeatureType): any {
     return {
-      ...extraProperties(value, []),
+      ...extraProperties(value, ["type"]),
+      type: value.type ?? "BOOLEAN",
     };
   },
 };

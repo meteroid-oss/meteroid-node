@@ -13,6 +13,10 @@ import {
   type AvailableParameters,
   AvailableParametersSerializer,
 } from "./availableParameters.js";
+import {
+  type CreditExhaustedRule,
+  CreditExhaustedRuleSerializer,
+} from "./creditExhaustedRule.js";
 import { type Currency, CurrencySerializer } from "./currency.js";
 import { type Entitlement, EntitlementSerializer } from "./entitlement.js";
 import {
@@ -31,6 +35,7 @@ export interface Plan {
   availableParameters: AvailableParameters;
   billingCycles?: number | null | undefined;
   createdAt: Date;
+  creditExhaustedRule?: CreditExhaustedRule | null | undefined;
   currency: Currency;
   description?: string | null | undefined;
   entitlements?: Entitlement[] | undefined;
@@ -65,6 +70,7 @@ export const PlanSerializer = {
         "available_parameters",
         "billing_cycles",
         "created_at",
+        "credit_exhausted_rule",
         "currency",
         "description",
         "entitlements",
@@ -92,6 +98,13 @@ export const PlanSerializer = {
           ? decodeInteger(json["billing_cycles"], path, "billing_cycles")
           : json["billing_cycles"],
       createdAt: decodeDateTime(json["created_at"], path, "created_at"),
+      creditExhaustedRule:
+        json["credit_exhausted_rule"] != null
+          ? CreditExhaustedRuleSerializer.parse(
+              json["credit_exhausted_rule"],
+              decodePath(path, "credit_exhausted_rule")
+            )
+          : json["credit_exhausted_rule"],
       currency: CurrencySerializer.parse(json["currency"], decodePath(path, "currency")),
       description:
         json["description"] != null
@@ -160,6 +173,7 @@ export const PlanSerializer = {
         "availableParameters",
         "billingCycles",
         "createdAt",
+        "creditExhaustedRule",
         "currency",
         "description",
         "entitlements",
@@ -183,6 +197,10 @@ export const PlanSerializer = {
       ),
       billing_cycles: value.billingCycles,
       created_at: value.createdAt,
+      credit_exhausted_rule:
+        value.creditExhaustedRule != null
+          ? CreditExhaustedRuleSerializer.serialize(value.creditExhaustedRule)
+          : value.creditExhaustedRule,
       currency: CurrencySerializer.serialize(value.currency),
       description: value.description,
       entitlements:

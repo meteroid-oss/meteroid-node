@@ -125,7 +125,8 @@ export class Features {
   /**
    * Archive a feature
    *
-   * Keeps the feature and its entitlements but hides them from resolution.
+   * Turns the feature off and hides it and its entitlements until it is unarchived, and frees its
+   * code for a new feature.
    */
   public archive(idOrCode: string, requestOptions?: RequestOptions): APIPromise<void> {
     const request = new MeteroidRequest("POST", "/api/v1/features/{id_or_code}/archive");
@@ -134,7 +135,12 @@ export class Features {
     return request.sendNoResponseBody(this.requestCtx, requestOptions);
   }
 
-  /** Unarchive a feature */
+  /**
+   * Unarchive a feature
+   *
+   * Makes the feature active again with all its entitlements. Fails while another feature uses its
+   * code.
+   */
   public unarchive(idOrCode: string, requestOptions?: RequestOptions): APIPromise<void> {
     const request = new MeteroidRequest(
       "POST",

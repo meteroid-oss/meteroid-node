@@ -11,6 +11,7 @@ export interface PriceInput {
   cadence: BillingPeriodEnum;
   currency: string;
   pricing: Pricing;
+  type: "NEW";
 }
 
 /** Converts `PriceInput` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -18,22 +19,27 @@ export const PriceInputSerializer = {
   parse(json: any, path = "$"): PriceInput {
     decodeObject(json, path);
     return {
-      ...extraProperties(json, ["cadence", "currency", "pricing"]),
+      ...extraProperties(json, ["cadence", "currency", "pricing", "type"]),
       cadence: BillingPeriodEnumSerializer.parse(
         json["cadence"],
         decodePath(path, "cadence")
       ),
       currency: decodeString(json["currency"], path, "currency"),
       pricing: PricingSerializer.parse(json["pricing"], decodePath(path, "pricing")),
+      type:
+        json["type"] != null
+          ? (decodeString(json["type"], path, "type") as "NEW")
+          : "NEW",
     };
   },
 
   serialize(value: PriceInput): any {
     return {
-      ...extraProperties(value, ["cadence", "currency", "pricing"]),
+      ...extraProperties(value, ["cadence", "currency", "pricing", "type"]),
       cadence: BillingPeriodEnumSerializer.serialize(value.cadence),
       currency: value.currency,
       pricing: PricingSerializer.serialize(value.pricing),
+      type: value.type ?? "NEW",
     };
   },
 };

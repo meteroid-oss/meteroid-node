@@ -11,7 +11,7 @@ List methods return a `PagePromise`. Awaited, it gives the first `Page`: the res
 properties read on the page, with `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`.
 Iterated with `for await`, it yields every item of every page.
 
-[Add ons](#add-ons) · [Add ons entitlements](#add-ons-entitlements) · [Batch jobs](#batch-jobs) · [Checkout sessions](#checkout-sessions) · [Connect](#connect) · [Coupons](#coupons) · [Credit notes](#credit-notes) · [Custom properties](#custom-properties) · [Customers](#customers) · [Entitlements](#entitlements) · [Events](#events) · [Features](#features) · [Invoices](#invoices) · [Metrics](#metrics) · [Oauth](#oauth) · [Oauth apps](#oauth-apps) · [Plans](#plans) · [Plans versions](#plans-versions) · [Product families](#product-families) · [Products](#products) · [Products entitlements](#products-entitlements) · [Subscriptions](#subscriptions) · [Usage](#usage) · [Webhook endpoints](#webhook-endpoints) · [Webhook endpoints endpoints](#webhook-endpoints-endpoints)
+[Add ons](#add-ons) · [Add ons entitlements](#add-ons-entitlements) · [Batch jobs](#batch-jobs) · [Budgets](#budgets) · [Checkout sessions](#checkout-sessions) · [Checks](#checks) · [Connect](#connect) · [Coupons](#coupons) · [Credit notes](#credit-notes) · [Credit units](#credit-units) · [Credit units prices](#credit-units-prices) · [Credits](#credits) · [Credits grants](#credits-grants) · [Credits wallets](#credits-wallets) · [Custom properties](#custom-properties) · [Customers](#customers) · [Entitlements](#entitlements) · [Events](#events) · [Features](#features) · [Invoices](#invoices) · [Metrics](#metrics) · [Oauth](#oauth) · [Oauth apps](#oauth-apps) · [Plans](#plans) · [Plans versions](#plans-versions) · [Product families](#product-families) · [Products](#products) · [Products entitlements](#products-entitlements) · [Subscriptions](#subscriptions) · [Usage](#usage) · [Usage customer](#usage-customer) · [Usage costs](#usage-costs) · [Usage costs customer](#usage-costs-customer) · [Usage costs subscription](#usage-costs-subscription) · [Webhook endpoints](#webhook-endpoints) · [Webhook endpoints endpoints](#webhook-endpoints-endpoints)
 
 ## Add ons
 
@@ -45,6 +45,17 @@ Iterated with `for await`, it yields every item of every page.
 | `client.batchJobs.retrieve(batchJobId: string): APIPromise<BatchJobDetailResponse>` | `GET /api/v1/batch-jobs/{batch_job_id}` | [`BatchJobDetailResponse`](src/models/batchJobDetailResponse.ts) |
 | `client.batchJobs.listFailures(batchJobId: string, options?: BatchJobsListFailuresOptions): PagePromise<BatchJobFailuresResponse, BatchJobItemFailureResponse>` | `GET /api/v1/batch-jobs/{batch_job_id}/failures` | [`BatchJobFailuresResponse`](src/models/batchJobFailuresResponse.ts) pages of [`BatchJobItemFailureResponse`](src/models/batchJobItemFailureResponse.ts) |
 
+## Budgets
+
+[`client.budgets`](src/api/budgets.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.budgets.list(idOrAlias: string, options?: BudgetsListOptions): PagePromise<BudgetListResponse, Budget>` | `GET /api/v1/customers/{id_or_alias}/budgets` | [`BudgetListResponse`](src/models/budgetListResponse.ts) pages of [`Budget`](src/models/budget.ts) |
+| `client.budgets.create(idOrAlias: string, createBudgetRequest: CreateBudgetRequest, options: BudgetsCreateOptions): APIPromise<Budget>` | `POST /api/v1/customers/{id_or_alias}/budgets` | [`Budget`](src/models/budget.ts) |
+| `client.budgets.update(idOrAlias: string, budgetId: string, patchBudgetRequest: PatchBudgetRequest, options: BudgetsUpdateOptions): APIPromise<Budget>` | `PATCH /api/v1/customers/{id_or_alias}/budgets/{budget_id}` | [`Budget`](src/models/budget.ts) |
+| `client.budgets.archive(idOrAlias: string, budgetId: string, options: BudgetsArchiveOptions): APIPromise<Budget>` | `POST /api/v1/customers/{id_or_alias}/budgets/{budget_id}/archive` | [`Budget`](src/models/budget.ts) |
+
 ## Checkout sessions
 
 [`client.checkoutSessions`](src/api/checkoutSessions.ts)
@@ -56,6 +67,14 @@ Iterated with `for await`, it yields every item of every page.
 | `client.checkoutSessions.retrieve(id: string): APIPromise<GetCheckoutSessionResponse>` | `GET /api/v1/checkout-sessions/{id}` | [`GetCheckoutSessionResponse`](src/models/getCheckoutSessionResponse.ts) |
 | `client.checkoutSessions.cancel(id: string): APIPromise<CancelCheckoutSessionResponse>` | `POST /api/v1/checkout-sessions/{id}/cancel` | [`CancelCheckoutSessionResponse`](src/models/cancelCheckoutSessionResponse.ts) |
 
+## Checks
+
+[`client.checks`](src/api/checks.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.checks.checkEntitlement(idOrAlias: string, featureIdOrCode: string, options?: ChecksCheckEntitlementOptions): APIPromise<EntitlementCheck>` | `GET /api/v1/customers/{id_or_alias}/entitlements/{feature_id_or_code}/check` | [`EntitlementCheck`](src/models/entitlementCheck.ts) |
+
 ## Connect
 
 [`client.connect`](src/api/connect.ts)
@@ -63,7 +82,7 @@ Iterated with `for await`, it yields every item of every page.
 | Method | Request | Returns |
 | --- | --- | --- |
 | `client.connect.listConnectedAccounts(): APIPromise<ConnectedAccountsResponse>` | `GET /api/v1/connected-accounts` | [`ConnectedAccountsResponse`](src/models/connectedAccountsResponse.ts) |
-| `client.connect.createConnectedAccount(createConnectedAccountRequest: CreateConnectedAccountRequest): APIPromise<ConnectedAccount>` | `POST /api/v1/connected-accounts` | [`ConnectedAccount`](src/models/connectedAccount.ts) |
+| `client.connect.createConnectedAccount(createConnectedAccountRequest: CreateConnectedAccountRequest): APIPromise<CreateConnectedAccountResponse>` | `POST /api/v1/connected-accounts` | [`CreateConnectedAccountResponse`](src/models/createConnectedAccountResponse.ts) |
 | `client.connect.retrieveConnectedAccount(id: string): APIPromise<ConnectedAccount>` | `GET /api/v1/connected-accounts/{id}` | [`ConnectedAccount`](src/models/connectedAccount.ts) |
 | `client.connect.disconnectAccount(id: string): APIPromise<void>` | `DELETE /api/v1/connected-accounts/{id}` | nothing |
 | `client.connect.createOnboardingLink(id: string, createOnboardingLinkRequest: CreateOnboardingLinkRequest): APIPromise<OnboardingLinkResponse>` | `POST /api/v1/connected-accounts/{id}/onboarding` | [`OnboardingLinkResponse`](src/models/onboardingLinkResponse.ts) |
@@ -94,6 +113,55 @@ Iterated with `for await`, it yields every item of every page.
 | `client.creditNotes.updateCustomProperties(creditNoteId: string, creditNoteCustomPropertiesRequest: CreditNoteCustomPropertiesRequest): APIPromise<CreditNote>` | `PATCH /api/v1/credit-notes/{credit_note_id}/custom-properties` | [`CreditNote`](src/models/creditNote.ts) |
 | `client.creditNotes.download(creditNoteId: string): APIPromise<Uint8Array>` | `GET /api/v1/credit-notes/{credit_note_id}/download` | bytes |
 | `client.creditNotes.downloadXml(creditNoteId: string): APIPromise<Uint8Array>` | `GET /api/v1/credit-notes/{credit_note_id}/xml` | bytes |
+
+## Credit units
+
+[`client.creditUnits`](src/api/creditUnits.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.creditUnits.list(options?: CreditUnitsListOptions): APIPromise<CreditUnitListResponse>` | `GET /api/v1/credit-units` | [`CreditUnitListResponse`](src/models/creditUnitListResponse.ts) |
+| `client.creditUnits.create(creditUnitCreateRequest: CreditUnitCreateRequest): APIPromise<CreditUnit>` | `POST /api/v1/credit-units` | [`CreditUnit`](src/models/creditUnit.ts) |
+| `client.creditUnits.retrieve(id: string): APIPromise<CreditUnit>` | `GET /api/v1/credit-units/{id}` | [`CreditUnit`](src/models/creditUnit.ts) |
+| `client.creditUnits.update(id: string, creditUnitUpdateRequest: CreditUnitUpdateRequest): APIPromise<CreditUnit>` | `PATCH /api/v1/credit-units/{id}` | [`CreditUnit`](src/models/creditUnit.ts) |
+
+### Credit units prices
+
+[`client.creditUnits.prices`](src/api/creditUnitsPrices.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.creditUnits.prices.list(id: string, options?: CreditUnitsPricesListOptions): APIPromise<CreditUnitPriceListResponse>` | `GET /api/v1/credit-units/{id}/prices` | [`CreditUnitPriceListResponse`](src/models/creditUnitPriceListResponse.ts) |
+| `client.creditUnits.prices.update(id: string, currency: string, creditUnitPriceSetRequest: CreditUnitPriceSetRequest): APIPromise<CreditUnitPrice>` | `PUT /api/v1/credit-units/{id}/prices/{currency}` | [`CreditUnitPrice`](src/models/creditUnitPrice.ts) |
+| `client.creditUnits.prices.archive(id: string, currency: string): APIPromise<CreditUnitPrice>` | `DELETE /api/v1/credit-units/{id}/prices/{currency}` | [`CreditUnitPrice`](src/models/creditUnitPrice.ts) |
+
+## Credits
+
+[`client.credits`](src/api/credits.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.credits.listCustomerCreditLedger(idOrAlias: string, options?: CreditsListCustomerCreditLedgerOptions): PagePromise<LedgerListResponse, LedgerEntry>` | `GET /api/v1/customers/{id_or_alias}/credit-ledger` | [`LedgerListResponse`](src/models/ledgerListResponse.ts) pages of [`LedgerEntry`](src/models/ledgerEntry.ts) |
+| `client.credits.createCustomerTopUp(idOrAlias: string, createTopUpRequest: CreateTopUpRequest, options: CreditsCreateCustomerTopUpOptions): APIPromise<TopUpResponse>` | `POST /api/v1/customers/{id_or_alias}/top-ups` | [`TopUpResponse`](src/models/topUpResponse.ts) |
+
+### Credits grants
+
+[`client.credits.grants`](src/api/creditsGrants.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.credits.grants.list(idOrAlias: string, options?: CreditsGrantsListOptions): PagePromise<CreditGrantListResponse, CreditGrant>` | `GET /api/v1/customers/{id_or_alias}/credit-grants` | [`CreditGrantListResponse`](src/models/creditGrantListResponse.ts) pages of [`CreditGrant`](src/models/creditGrant.ts) |
+| `client.credits.grants.create(idOrAlias: string, createCreditGrantRequest: CreateCreditGrantRequest, options: CreditsGrantsCreateOptions): APIPromise<CreditGrant>` | `POST /api/v1/customers/{id_or_alias}/credit-grants` | [`CreditGrant`](src/models/creditGrant.ts) |
+
+### Credits wallets
+
+[`client.credits.wallets`](src/api/creditsWallets.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.credits.wallets.list(idOrAlias: string, options?: CreditsWalletsListOptions): APIPromise<WalletListResponse>` | `GET /api/v1/customers/{id_or_alias}/wallets` | [`WalletListResponse`](src/models/walletListResponse.ts) |
+| `client.credits.wallets.check(idOrAlias: string, options?: CreditsWalletsCheckOptions): APIPromise<WalletCheck>` | `GET /api/v1/customers/{id_or_alias}/wallets/check` | [`WalletCheck`](src/models/walletCheck.ts) |
+| `client.credits.wallets.update(idOrAlias: string, currency: string, patchWalletRequest: PatchWalletRequest, options: CreditsWalletsUpdateOptions): APIPromise<Wallet>` | `PATCH /api/v1/customers/{id_or_alias}/wallets/{currency}` | [`Wallet`](src/models/wallet.ts) |
 
 ## Custom properties
 
@@ -281,9 +349,42 @@ Iterated with `for await`, it yields every item of every page.
 
 | Method | Request | Returns |
 | --- | --- | --- |
-| `client.usage.retrieveCustomer(customerId: string, options: UsageRetrieveCustomerOptions): APIPromise<UsageResponse>` | `GET /api/v1/usage/customer/{customer_id}` | [`UsageResponse`](src/models/usageResponse.ts) |
 | `client.usage.retrieveSubscription(subscriptionId: string, options?: UsageRetrieveSubscriptionOptions): APIPromise<UsageResponse>` | `GET /api/v1/usage/subscription/{subscription_id}` | [`UsageResponse`](src/models/usageResponse.ts) |
 | `client.usage.retrieveSummary(options: UsageRetrieveSummaryOptions): APIPromise<UsageResponse>` | `GET /api/v1/usage/summary` | [`UsageResponse`](src/models/usageResponse.ts) |
+
+### Usage customer
+
+[`client.usage.customer`](src/api/usageCustomer.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.usage.customer.retrieve(customerId: string, options: UsageCustomerRetrieveOptions): APIPromise<UsageResponse>` | `GET /api/v1/usage/customer/{customer_id}` | [`UsageResponse`](src/models/usageResponse.ts) |
+| `client.usage.customer.retrieveUnattributed(customerId: string, options?: UsageCustomerRetrieveUnattributedOptions): APIPromise<UnattributedUsageResponse>` | `GET /api/v1/usage/customer/{customer_id}/unattributed` | [`UnattributedUsageResponse`](src/models/unattributedUsageResponse.ts) |
+
+## Usage costs
+
+[`client.usageCosts`](src/api/usageCosts.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+
+### Usage costs customer
+
+[`client.usageCosts.customer`](src/api/usageCostsCustomer.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.usageCosts.customer.listCosts(customerId: string, options: UsageCostsCustomerListCostsOptions): APIPromise<UsageCostListResponse>` | `GET /api/v1/usage/customer/{customer_id}/costs` | [`UsageCostListResponse`](src/models/usageCostListResponse.ts) |
+| `client.usageCosts.customer.listEvents(customerId: string, options: UsageCostsCustomerListEventsOptions): APIPromise<UsageEventListResponse>` | `GET /api/v1/usage/customer/{customer_id}/events` | [`UsageEventListResponse`](src/models/usageEventListResponse.ts) |
+
+### Usage costs subscription
+
+[`client.usageCosts.subscription`](src/api/usageCostsSubscription.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.usageCosts.subscription.listCosts(subscriptionId: string, options: UsageCostsSubscriptionListCostsOptions): APIPromise<UsageCostListResponse>` | `GET /api/v1/usage/subscription/{subscription_id}/costs` | [`UsageCostListResponse`](src/models/usageCostListResponse.ts) |
+| `client.usageCosts.subscription.listEvents(subscriptionId: string, options: UsageCostsSubscriptionListEventsOptions): APIPromise<UsageEventListResponse>` | `GET /api/v1/usage/subscription/{subscription_id}/events` | [`UsageEventListResponse`](src/models/usageEventListResponse.ts) |
 
 ## Webhook endpoints
 
