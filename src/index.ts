@@ -15,6 +15,7 @@ import { Entitlements } from "./api/entitlements.js";
 import { Events } from "./api/events.js";
 import { Features } from "./api/features.js";
 import { Invoices } from "./api/invoices.js";
+import { Licenses } from "./api/licenses.js";
 import { Metrics } from "./api/metrics.js";
 import { Oauth } from "./api/oauth.js";
 import { OauthApps } from "./api/oauthApps.js";
@@ -122,6 +123,8 @@ export { Features } from "./api/features.js";
 export type { FeaturesListOptions } from "./api/features.js";
 export { Invoices } from "./api/invoices.js";
 export type { InvoicesListOptions } from "./api/invoices.js";
+export { Licenses } from "./api/licenses.js";
+export type { LicensesListOptions } from "./api/licenses.js";
 export { Metrics } from "./api/metrics.js";
 export type { MetricsListOptions } from "./api/metrics.js";
 export { Oauth } from "./api/oauth.js";
@@ -247,6 +250,7 @@ export class Meteroid {
   private _events?: Events;
   private _features?: Features;
   private _invoices?: Invoices;
+  private _licenses?: Licenses;
   private _metrics?: Metrics;
   private _oauth?: Oauth;
   private _oauthApps?: OauthApps;
@@ -377,6 +381,12 @@ export class Meteroid {
   public get invoices(): Invoices {
     this._invoices ??= new Invoices(this.requestCtx);
     return this._invoices;
+  }
+
+  /** The licenses API. */
+  public get licenses(): Licenses {
+    this._licenses ??= new Licenses(this.requestCtx);
+    return this._licenses;
   }
 
   /** The metrics API. */
