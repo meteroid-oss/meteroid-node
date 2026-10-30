@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.31.1](https://github.com/meteroid-oss/meteroid-node/compare/v0.31.0...v0.31.1) (2026-10-30)
+
+
+### Features
+
+* **api:** add `GET /api/v1/licenses`, `GET /api/v1/licenses/{license_id}`, `GET /api/v1/licenses/{license_id}/activation-code`, `GET /api/v1/licensing/signing-keys`, `POST /api/v1/licenses` and 2 more ([6e5d84d](https://github.com/meteroid-oss/meteroid-node/commit/6e5d84ddb15250d4e81bc1c0c5e4466e4b90eb92))
+* **api:** update `GET /api/v1/plans`, `GET /api/v1/plans/{plan_id}`, `PATCH /api/v1/plans/{plan_id}`, `POST /api/v1/custom-property-definitions`, `POST /api/v1/plans` and 3 more ([6e5d84d](https://github.com/meteroid-oss/meteroid-node/commit/6e5d84ddb15250d4e81bc1c0c5e4466e4b90eb92))
+* **api:** update SDKs to meteroid 0.1.0 ([#17](https://github.com/meteroid-oss/meteroid-node/issues/17)) ([6e5d84d](https://github.com/meteroid-oss/meteroid-node/commit/6e5d84ddb15250d4e81bc1c0c5e4466e4b90eb92))
+
 ## [0.31.0](https://github.com/meteroid-oss/meteroid-node/compare/v0.30.1...v0.31.0) (2026-10-28)
 
 
