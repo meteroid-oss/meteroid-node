@@ -40,6 +40,8 @@ export interface Plan {
   description?: string | null | undefined;
   entitlements?: Entitlement[] | undefined;
   id: PlanId;
+  /** Subscriptions to this plan are issued a software license automatically. */
+  issuesLicense?: boolean | undefined;
   minimumCommitment?: MinimumCommitment | null | undefined;
   name: string;
   netTerms: number;
@@ -75,6 +77,7 @@ export const PlanSerializer = {
         "description",
         "entitlements",
         "id",
+        "issues_license",
         "minimum_commitment",
         "name",
         "net_terms",
@@ -121,6 +124,10 @@ export const PlanSerializer = {
             )
           : undefined,
       id: PlanIdSerializer.parse(json["id"], decodePath(path, "id")),
+      issuesLicense:
+        json["issues_license"] != null
+          ? decodeBoolean(json["issues_license"], path, "issues_license")
+          : undefined,
       minimumCommitment:
         json["minimum_commitment"] != null
           ? MinimumCommitmentSerializer.parse(
@@ -178,6 +185,7 @@ export const PlanSerializer = {
         "description",
         "entitlements",
         "id",
+        "issuesLicense",
         "minimumCommitment",
         "name",
         "netTerms",
@@ -208,6 +216,7 @@ export const PlanSerializer = {
           ? value.entitlements.map((item: any) => EntitlementSerializer.serialize(item))
           : undefined,
       id: PlanIdSerializer.serialize(value.id),
+      issues_license: value.issuesLicense,
       minimum_commitment:
         value.minimumCommitment != null
           ? MinimumCommitmentSerializer.serialize(value.minimumCommitment)
