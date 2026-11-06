@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.31.2](https://github.com/meteroid-oss/meteroid-node/compare/v0.31.1...v0.31.2) (2026-11-06)
+
+
+### Features
+
+* **api:** update `GET /api/v1/usage/customer/{customer_id}/costs`, `GET /api/v1/usage/customer/{customer_id}/events`, `GET /api/v1/usage/subscription/{subscription_id}/costs`, `GET /api/v1/usage/subscription/{subscription_id}/events`, `POST webhook:payment.failed` and 5 more ([a0a6e26](https://github.com/meteroid-oss/meteroid-node/commit/a0a6e2696e0496c3ad8a7aef02dc4018fda1e476))
+* **api:** update SDKs to meteroid 0.1.0 ([#19](https://github.com/meteroid-oss/meteroid-node/issues/19)) ([a0a6e26](https://github.com/meteroid-oss/meteroid-node/commit/a0a6e2696e0496c3ad8a7aef02dc4018fda1e476))
+
 ## [0.31.1](https://github.com/meteroid-oss/meteroid-node/compare/v0.31.0...v0.31.1) (2026-10-30)
 
 
