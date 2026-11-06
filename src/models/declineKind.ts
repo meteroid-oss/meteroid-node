@@ -11,6 +11,7 @@ export const DeclineKind = {
   ProcessingError: "PROCESSING_ERROR",
   Other: "OTHER",
   DoNotRetry: "DO_NOT_RETRY",
+  Unconfirmed: "UNCONFIRMED",
 } as const;
 export type DeclineKind = (typeof DeclineKind)[keyof typeof DeclineKind] | (string & {});
 
