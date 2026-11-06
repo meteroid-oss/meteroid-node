@@ -184,7 +184,8 @@ export class Customers {
   /**
    * Generate a portal token for a customer
    *
-   * Generates a JWT token that grants access to the customer portal.
+   * Generates an opaque token that grants access to the customer portal. A call may return the
+   * token of an earlier call with the same scopes, with up to 10% less lifetime: rely on `expires_at`.
    * The token can be used to access invoices, payment methods, and other portal features.
    */
   public createPortalToken(

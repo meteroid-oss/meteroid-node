@@ -11,7 +11,7 @@ export interface CustomerPortalTokenResponse {
   portalLink: string;
   /** Base URL of the customer portal */
   portalUrl: string;
-  /** JWT token for portal access */
+  /** Opaque token for portal access */
   token: string;
 }
 
