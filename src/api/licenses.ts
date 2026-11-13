@@ -106,7 +106,7 @@ export class Licenses {
   /**
    * Get a license's activation code
    *
-   * Available until the license is activated or revoked.
+   * Available until the license is activated or revoked; for an ephemeral license, until revoked.
    */
   public retrieveActivationCode(
     licenseId: string,

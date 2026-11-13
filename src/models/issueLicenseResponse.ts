@@ -4,7 +4,10 @@ import { decodeObject, decodePath, decodeString } from "../decode.js";
 import { type License, LicenseSerializer } from "./license.js";
 
 export interface IssueLicenseResponse {
-  /** Online: one-time code the customer enters in their installation to activate the license. */
+  /**
+   * Online: one-time code the customer enters in their installation to activate the license.
+   * Ephemeral: the reusable code, e.g. a CI secret.
+   */
   activationCode?: string | null | undefined;
   license: License;
   /** Offline: the signed license (a JWT) to install in the installation. */
