@@ -6,6 +6,12 @@ export interface IssueLicenseRequest {
   /** Customer ID or alias */
   customerId: string;
   /**
+   * Ephemeral, for CI and other short-lived installations: the activation code can be used
+   * any number of times, each activation gets a license of this many hours (1 to 24) for the
+   * installation activating, and nothing is refreshed. Not with `offline` or `validity_days`.
+   */
+  ephemeralHours?: number | null | undefined;
+  /**
    * Offline only. The installation's id as it reports it, up to 255 characters without
    * spaces: the license names it (`aud`) and stays bound to it. Without one, the license is
    * not tied to an installation.
@@ -35,12 +41,17 @@ export const IssueLicenseRequestSerializer = {
     return {
       ...extraProperties(json, [
         "customer_id",
+        "ephemeral_hours",
         "instance_id",
         "offline",
         "subscription_id",
         "validity_days",
       ]),
       customerId: decodeString(json["customer_id"], path, "customer_id"),
+      ephemeralHours:
+        json["ephemeral_hours"] != null
+          ? decodeInteger(json["ephemeral_hours"], path, "ephemeral_hours")
+          : json["ephemeral_hours"],
       instanceId:
         json["instance_id"] != null
           ? decodeString(json["instance_id"], path, "instance_id")
@@ -64,12 +75,14 @@ export const IssueLicenseRequestSerializer = {
     return {
       ...extraProperties(value, [
         "customerId",
+        "ephemeralHours",
         "instanceId",
         "offline",
         "subscriptionId",
         "validityDays",
       ]),
       customer_id: value.customerId,
+      ephemeral_hours: value.ephemeralHours,
       instance_id: value.instanceId,
       offline: value.offline,
       subscription_id: value.subscriptionId,

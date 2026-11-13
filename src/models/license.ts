@@ -19,6 +19,8 @@ export interface License {
   createdAt: Date;
   customerId: CustomerId;
   customerName: string;
+  /** Ephemeral: each activation of the reusable code gets a license of this many hours. */
+  ephemeralHours?: number | null | undefined;
   /** Whether the activation code can still be retrieved: only until activation or revocation. */
   hasActivationCode: boolean;
   id: LicenseId;
@@ -53,6 +55,7 @@ export const LicenseSerializer = {
         "created_at",
         "customer_id",
         "customer_name",
+        "ephemeral_hours",
         "has_activation_code",
         "id",
         "instance_id",
@@ -72,6 +75,10 @@ export const LicenseSerializer = {
         decodePath(path, "customer_id")
       ),
       customerName: decodeString(json["customer_name"], path, "customer_name"),
+      ephemeralHours:
+        json["ephemeral_hours"] != null
+          ? decodeInteger(json["ephemeral_hours"], path, "ephemeral_hours")
+          : json["ephemeral_hours"],
       hasActivationCode: decodeBoolean(
         json["has_activation_code"],
         path,
@@ -119,6 +126,7 @@ export const LicenseSerializer = {
         "createdAt",
         "customerId",
         "customerName",
+        "ephemeralHours",
         "hasActivationCode",
         "id",
         "instanceId",
@@ -135,6 +143,7 @@ export const LicenseSerializer = {
       created_at: value.createdAt,
       customer_id: CustomerIdSerializer.serialize(value.customerId),
       customer_name: value.customerName,
+      ephemeral_hours: value.ephemeralHours,
       has_activation_code: value.hasActivationCode,
       id: LicenseIdSerializer.serialize(value.id),
       instance_id: value.instanceId,
