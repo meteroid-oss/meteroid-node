@@ -1,6 +1,6 @@
 {
   "name": "@meteroid/node",
-  "version": "0.31.2",
+  "version": "0.31.3",
   "description": "Official Node.js / TypeScript SDK for Meteroid, the open-source billing platform: subscriptions, invoicing, usage-based billing and webhooks.",
   "keywords": [
     "meteroid",
