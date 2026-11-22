@@ -1,6 +1,9 @@
 // this file is @generated
 import { decodeString } from "../decode.js";
-
+/**
+ * `PendingCharge`, `Paused`, `Suspended`, `Superseded` and `Errored` stay in the published
+ * schema; no subscription holds them any more, and a filter on them lists none.
+ */
 export const SubscriptionStatusEnum = {
   PendingActivation: "PENDING_ACTIVATION",
   PendingCharge: "PENDING_CHARGE",

@@ -11,7 +11,7 @@ List methods return a `PagePromise`. Awaited, it gives the first `Page`: the res
 properties read on the page, with `items`, `hasNextPage()`, `getNextPage()` and `iterPages()`.
 Iterated with `for await`, it yields every item of every page.
 
-[Add ons](#add-ons) · [Add ons entitlements](#add-ons-entitlements) · [Batch jobs](#batch-jobs) · [Budgets](#budgets) · [Checkout sessions](#checkout-sessions) · [Checks](#checks) · [Connect](#connect) · [Coupons](#coupons) · [Credit notes](#credit-notes) · [Credit units](#credit-units) · [Credit units prices](#credit-units-prices) · [Credits](#credits) · [Credits grants](#credits-grants) · [Credits wallets](#credits-wallets) · [Custom properties](#custom-properties) · [Customers](#customers) · [Entitlements](#entitlements) · [Events](#events) · [Features](#features) · [Invoices](#invoices) · [Licenses](#licenses) · [Metrics](#metrics) · [Oauth](#oauth) · [Oauth apps](#oauth-apps) · [Plans](#plans) · [Plans versions](#plans-versions) · [Product families](#product-families) · [Products](#products) · [Products entitlements](#products-entitlements) · [Subscriptions](#subscriptions) · [Usage](#usage) · [Usage customer](#usage-customer) · [Usage costs](#usage-costs) · [Usage costs customer](#usage-costs-customer) · [Usage costs subscription](#usage-costs-subscription) · [Webhook endpoints](#webhook-endpoints) · [Webhook endpoints endpoints](#webhook-endpoints-endpoints)
+[Add ons](#add-ons) · [Add ons entitlements](#add-ons-entitlements) · [Batch jobs](#batch-jobs) · [Budgets](#budgets) · [Checkout sessions](#checkout-sessions) · [Checks](#checks) · [Connect](#connect) · [Coupons](#coupons) · [Credit notes](#credit-notes) · [Credit units](#credit-units) · [Credit units prices](#credit-units-prices) · [Credits](#credits) · [Credits grants](#credits-grants) · [Credits wallets](#credits-wallets) · [Custom properties](#custom-properties) · [Customers](#customers) · [Entitlements](#entitlements) · [Events](#events) · [Features](#features) · [Invoices](#invoices) · [Invoices payments](#invoices-payments) · [Licenses](#licenses) · [Metrics](#metrics) · [Oauth](#oauth) · [Oauth apps](#oauth-apps) · [Plans](#plans) · [Plans versions](#plans-versions) · [Product families](#product-families) · [Products](#products) · [Products entitlements](#products-entitlements) · [Subscriptions](#subscriptions) · [Usage](#usage) · [Usage customer](#usage-customer) · [Usage costs](#usage-costs) · [Usage costs customer](#usage-costs-customer) · [Usage costs subscription](#usage-costs-subscription) · [Webhook endpoints](#webhook-endpoints) · [Webhook endpoints endpoints](#webhook-endpoints-endpoints)
 
 ## Add ons
 
@@ -232,8 +232,19 @@ Iterated with `for await`, it yields every item of every page.
 | `client.invoices.retrieve(invoiceId: string): APIPromise<Invoice>` | `GET /api/v1/invoices/{invoice_id}` | [`Invoice`](src/models/invoice.ts) |
 | `client.invoices.updateCustomProperties(invoiceId: string, invoiceCustomPropertiesRequest: InvoiceCustomPropertiesRequest): APIPromise<Invoice>` | `PATCH /api/v1/invoices/{invoice_id}/custom-properties` | [`Invoice`](src/models/invoice.ts) |
 | `client.invoices.download(invoiceId: string): APIPromise<Uint8Array>` | `GET /api/v1/invoices/{invoice_id}/download` | bytes |
+| `client.invoices.markPaid(invoiceId: string, recordInvoicePaymentRequest: RecordInvoicePaymentRequest, options: InvoicesMarkPaidOptions): APIPromise<Transaction>` | `POST /api/v1/invoices/{invoice_id}/mark-paid` | [`Transaction`](src/models/transaction.ts) |
+| `client.invoices.markUncollectible(invoiceId: string, options: InvoicesMarkUncollectibleOptions): APIPromise<void>` | `POST /api/v1/invoices/{invoice_id}/mark-uncollectible` | nothing |
 | `client.invoices.refresh(invoiceId: string): APIPromise<Invoice>` | `POST /api/v1/invoices/{invoice_id}/refresh` | [`Invoice`](src/models/invoice.ts) |
 | `client.invoices.downloadXml(invoiceId: string): APIPromise<Uint8Array>` | `GET /api/v1/invoices/{invoice_id}/xml` | bytes |
+
+### Invoices payments
+
+[`client.invoices.payments`](src/api/invoicesPayments.ts)
+
+| Method | Request | Returns |
+| --- | --- | --- |
+| `client.invoices.payments.create(invoiceId: string, recordInvoicePaymentRequest: RecordInvoicePaymentRequest, options: InvoicesPaymentsCreateOptions): APIPromise<Transaction>` | `POST /api/v1/invoices/{invoice_id}/payments` | [`Transaction`](src/models/transaction.ts) |
+| `client.invoices.payments.reverse(invoiceId: string, transactionId: string, reverseInvoicePaymentRequest: ReverseInvoicePaymentRequest, options: InvoicesPaymentsReverseOptions): APIPromise<Transaction>` | `POST /api/v1/invoices/{invoice_id}/payments/{transaction_id}/reverse` | [`Transaction`](src/models/transaction.ts) |
 
 ## Licenses
 
