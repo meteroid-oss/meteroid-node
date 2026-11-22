@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.31.4](https://github.com/meteroid-oss/meteroid-node/compare/v0.31.3...v0.31.4) (2026-11-22)
+
+
+### Features
+
+* **api:** add `POST /api/v1/invoices/{invoice_id}/mark-paid`, `POST /api/v1/invoices/{invoice_id}/mark-uncollectible`, `POST /api/v1/invoices/{invoice_id}/payments`, `POST /api/v1/invoices/{invoice_id}/payments/{transaction_id}/reverse` ([6f2f071](https://github.com/meteroid-oss/meteroid-node/commit/6f2f0719bc706b0667c8e53a41d79f0d199a7691))
+* **api:** update `GET /api/v1/credit-notes`, `GET /api/v1/credit-notes/{credit_note_id}`, `GET /api/v1/invoices`, `GET /api/v1/invoices/{invoice_id}`, `GET /api/v1/metrics/{metric_id}` and 11 more ([6f2f071](https://github.com/meteroid-oss/meteroid-node/commit/6f2f0719bc706b0667c8e53a41d79f0d199a7691))
+* **api:** update SDKs to meteroid 0.1.0 ([#23](https://github.com/meteroid-oss/meteroid-node/issues/23)) ([6f2f071](https://github.com/meteroid-oss/meteroid-node/commit/6f2f0719bc706b0667c8e53a41d79f0d199a7691))
+
 ## [0.31.3](https://github.com/meteroid-oss/meteroid-node/compare/v0.31.2...v0.31.3) (2026-11-13)
 
 
