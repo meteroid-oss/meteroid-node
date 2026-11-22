@@ -623,6 +623,8 @@ export { PaymentStatusEnum, PaymentStatusEnumSerializer } from "./paymentStatusE
 export type { PaymentTransactionId } from "./paymentTransactionId.js";
 export { PaymentTransactionIdSerializer } from "./paymentTransactionId.js";
 export { PaymentTypeEnum, PaymentTypeEnumSerializer } from "./paymentTypeEnum.js";
+export type { PendingScheduledEvent } from "./pendingScheduledEvent.js";
+export { PendingScheduledEventSerializer } from "./pendingScheduledEvent.js";
 export type { PerUnitPlanPricing } from "./perUnitPlanPricing.js";
 export { PerUnitPlanPricingSerializer } from "./perUnitPlanPricing.js";
 export type { PerUnitPricing } from "./perUnitPricing.js";
@@ -739,6 +741,12 @@ export type { RevokeLicenseRequest } from "./revokeLicenseRequest.js";
 export { RevokeLicenseRequestSerializer } from "./revokeLicenseRequest.js";
 export type { RotatedSecret } from "./rotatedSecret.js";
 export { RotatedSecretSerializer } from "./rotatedSecret.js";
+export type { ScheduledEventId } from "./scheduledEventId.js";
+export { ScheduledEventIdSerializer } from "./scheduledEventId.js";
+export {
+  ScheduledEventType,
+  ScheduledEventTypeSerializer,
+} from "./scheduledEventType.js";
 export type { SelectOption } from "./selectOption.js";
 export { SelectOptionSerializer } from "./selectOption.js";
 export type { ShippingAddress } from "./shippingAddress.js";
