@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.31.5](https://github.com/meteroid-oss/meteroid-node/compare/v0.31.4...v0.31.5) (2026-11-22)
+
+
+### Features
+
+* **api:** update `GET /api/v1/subscriptions/{subscription_id}`, `PATCH /api/v1/subscriptions/{subscription_id}`, `POST /api/v1/subscriptions`, `POST /api/v1/subscriptions/{subscription_id}/cancel` ([b23ca14](https://github.com/meteroid-oss/meteroid-node/commit/b23ca14b86011a06bc66234060d7c25c3e5fdeaf))
+* **api:** update SDKs to meteroid 0.1.0 ([#25](https://github.com/meteroid-oss/meteroid-node/issues/25)) ([b23ca14](https://github.com/meteroid-oss/meteroid-node/commit/b23ca14b86011a06bc66234060d7c25c3e5fdeaf))
+
 ## [0.31.4](https://github.com/meteroid-oss/meteroid-node/compare/v0.31.3...v0.31.4) (2026-11-22)
 
 
