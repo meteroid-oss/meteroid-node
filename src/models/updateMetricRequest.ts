@@ -23,6 +23,8 @@ export interface UpdateMetricRequest {
    * strings to remove it. Trimmed; at most 32 characters.
    */
   unitSingular?: string | null | undefined;
+  /** Omit to leave the breakdown key unchanged; send `null` to remove it. */
+  usageBreakdownKey?: string | null | undefined;
 }
 
 /** Converts `UpdateMetricRequest` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -38,6 +40,7 @@ export const UpdateMetricRequestSerializer = {
         "unit_conversion",
         "unit_plural",
         "unit_singular",
+        "usage_breakdown_key",
       ]),
       description:
         json["description"] != null
@@ -77,6 +80,10 @@ export const UpdateMetricRequestSerializer = {
         json["unit_singular"] != null
           ? decodeString(json["unit_singular"], path, "unit_singular")
           : json["unit_singular"],
+      usageBreakdownKey:
+        json["usage_breakdown_key"] != null
+          ? decodeString(json["usage_breakdown_key"], path, "usage_breakdown_key")
+          : json["usage_breakdown_key"],
     };
   },
 
@@ -90,6 +97,7 @@ export const UpdateMetricRequestSerializer = {
         "unitConversion",
         "unitPlural",
         "unitSingular",
+        "usageBreakdownKey",
       ]),
       description: value.description,
       filters:
@@ -107,6 +115,7 @@ export const UpdateMetricRequestSerializer = {
           : value.unitConversion,
       unit_plural: value.unitPlural,
       unit_singular: value.unitSingular,
+      usage_breakdown_key: value.usageBreakdownKey,
     };
   },
 };

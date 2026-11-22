@@ -40,6 +40,7 @@ export interface MetricEventData {
   unitPlural?: string | null | undefined;
   /** What one unit of the metric is called, e.g. `token`. */
   unitSingular?: string | null | undefined;
+  usageBreakdownKey?: string | null | undefined;
   usageGroupKey?: string | null | undefined;
 }
 
@@ -63,6 +64,7 @@ export const MetricEventDataSerializer = {
         "unit_conversion_rounding",
         "unit_plural",
         "unit_singular",
+        "usage_breakdown_key",
         "usage_group_key",
       ]),
       aggregationKey:
@@ -118,6 +120,10 @@ export const MetricEventDataSerializer = {
         json["unit_singular"] != null
           ? decodeString(json["unit_singular"], path, "unit_singular")
           : json["unit_singular"],
+      usageBreakdownKey:
+        json["usage_breakdown_key"] != null
+          ? decodeString(json["usage_breakdown_key"], path, "usage_breakdown_key")
+          : json["usage_breakdown_key"],
       usageGroupKey:
         json["usage_group_key"] != null
           ? decodeString(json["usage_group_key"], path, "usage_group_key")
@@ -142,6 +148,7 @@ export const MetricEventDataSerializer = {
         "unitConversionRounding",
         "unitPlural",
         "unitSingular",
+        "usageBreakdownKey",
         "usageGroupKey",
       ]),
       aggregation_key: value.aggregationKey,
@@ -169,6 +176,7 @@ export const MetricEventDataSerializer = {
           : value.unitConversionRounding,
       unit_plural: value.unitPlural,
       unit_singular: value.unitSingular,
+      usage_breakdown_key: value.usageBreakdownKey,
       usage_group_key: value.usageGroupKey,
     };
   },

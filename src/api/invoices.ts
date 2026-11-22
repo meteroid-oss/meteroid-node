@@ -11,7 +11,13 @@ import {
   InvoiceListResponseSerializer,
 } from "../models/invoiceListResponse.js";
 import type { InvoiceStatus } from "../models/invoiceStatus.js";
+import {
+  type RecordInvoicePaymentRequest,
+  RecordInvoicePaymentRequestSerializer,
+} from "../models/recordInvoicePaymentRequest.js";
 import type { SubscriptionId } from "../models/subscriptionId.js";
+import { type Transaction, TransactionSerializer } from "../models/transaction.js";
+import { InvoicesPayments } from "./invoicesPayments.js";
 import type { APIPromise } from "../apiPromise.js";
 import { PagePromise } from "../pagination.js";
 import {
@@ -39,10 +45,29 @@ export interface InvoicesListOptions {
   perPage?: number | undefined;
 }
 
+/** The query and header parameters of `markPaid`. */
+export interface InvoicesMarkPaidOptions {
+  /** Sent as the `Idempotency-Key` header. */
+  idempotencyKey: string;
+}
+
+/** The query and header parameters of `markUncollectible`. */
+export interface InvoicesMarkUncollectibleOptions {
+  /** Sent as the `Idempotency-Key` header. */
+  idempotencyKey: string;
+}
+
 /** The invoices operations, reached through the client's `invoices`. */
 export class Invoices {
+  private _payments?: InvoicesPayments;
   /** @internal */
   public constructor(private readonly requestCtx: MeteroidRequestContext) {}
+
+  /** The payments operations. */
+  public get payments(): InvoicesPayments {
+    this._payments ??= new InvoicesPayments(this.requestCtx);
+    return this._payments;
+  }
 
   /**
    * List invoices with optional filtering by customer, subscription, or status.
@@ -140,6 +165,51 @@ export class Invoices {
 
     request.setPathParam("invoice_id", invoiceId);
     return request.sendBinary(this.requestCtx, requestOptions);
+  }
+
+  /**
+   * Mark an invoice as paid
+   *
+   * Record an external payment for the entire remaining balance of a finalized invoice. The amount
+   * must match the remaining balance.
+   */
+  public markPaid(
+    invoiceId: string,
+    recordInvoicePaymentRequest: RecordInvoicePaymentRequest,
+    options: InvoicesMarkPaidOptions,
+    requestOptions?: RequestOptions
+  ): APIPromise<Transaction> {
+    const request = new MeteroidRequest(
+      "POST",
+      "/api/v1/invoices/{invoice_id}/mark-paid"
+    );
+
+    request.setPathParam("invoice_id", invoiceId);
+    request.setHeaderParam("Idempotency-Key", options.idempotencyKey);
+    request.setBody(
+      RecordInvoicePaymentRequestSerializer.serialize(recordInvoicePaymentRequest)
+    );
+    return request.send(this.requestCtx, TransactionSerializer.parse, requestOptions);
+  }
+
+  /**
+   * Mark an invoice as uncollectible
+   *
+   * Transition a finalized invoice to uncollectible and stop its payment reminders.
+   */
+  public markUncollectible(
+    invoiceId: string,
+    options: InvoicesMarkUncollectibleOptions,
+    requestOptions?: RequestOptions
+  ): APIPromise<void> {
+    const request = new MeteroidRequest(
+      "POST",
+      "/api/v1/invoices/{invoice_id}/mark-uncollectible"
+    );
+
+    request.setPathParam("invoice_id", invoiceId);
+    request.setHeaderParam("Idempotency-Key", options.idempotencyKey);
+    return request.sendNoResponseBody(this.requestCtx, requestOptions);
   }
 
   /**

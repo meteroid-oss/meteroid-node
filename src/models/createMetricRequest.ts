@@ -37,6 +37,15 @@ export interface CreateMetricRequest {
    * Trimmed; at most 32 characters.
    */
   unitSingular?: string | null | undefined;
+  /**
+   * Event property, e.g. `project_id`, that breaks each invoice line down by value. The line is
+   * still priced on its total usage, and each value shows its quantity and share of the amount.
+   */
+  usageBreakdownKey?: string | null | undefined;
+  /**
+   * Event property, e.g. `cluster_id`, whose values are billed as separate invoice lines, each
+   * priced on its own usage.
+   */
   usageGroupKey?: string | null | undefined;
 }
 
@@ -58,6 +67,7 @@ export const CreateMetricRequestSerializer = {
         "unit_conversion",
         "unit_plural",
         "unit_singular",
+        "usage_breakdown_key",
         "usage_group_key",
       ]),
       aggregationKey:
@@ -114,6 +124,10 @@ export const CreateMetricRequestSerializer = {
         json["unit_singular"] != null
           ? decodeString(json["unit_singular"], path, "unit_singular")
           : json["unit_singular"],
+      usageBreakdownKey:
+        json["usage_breakdown_key"] != null
+          ? decodeString(json["usage_breakdown_key"], path, "usage_breakdown_key")
+          : json["usage_breakdown_key"],
       usageGroupKey:
         json["usage_group_key"] != null
           ? decodeString(json["usage_group_key"], path, "usage_group_key")
@@ -136,6 +150,7 @@ export const CreateMetricRequestSerializer = {
         "unitConversion",
         "unitPlural",
         "unitSingular",
+        "usageBreakdownKey",
         "usageGroupKey",
       ]),
       aggregation_key: value.aggregationKey,
@@ -164,6 +179,7 @@ export const CreateMetricRequestSerializer = {
           : value.unitConversion,
       unit_plural: value.unitPlural,
       unit_singular: value.unitSingular,
+      usage_breakdown_key: value.usageBreakdownKey,
       usage_group_key: value.usageGroupKey,
     };
   },

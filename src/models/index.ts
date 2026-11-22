@@ -449,6 +449,10 @@ export type { InvoiceLineCreditUnit } from "./invoiceLineCreditUnit.js";
 export { InvoiceLineCreditUnitSerializer } from "./invoiceLineCreditUnit.js";
 export type { InvoiceLineItem } from "./invoiceLineItem.js";
 export { InvoiceLineItemSerializer } from "./invoiceLineItem.js";
+export type { InvoiceLineUsageBreakdown } from "./invoiceLineUsageBreakdown.js";
+export { InvoiceLineUsageBreakdownSerializer } from "./invoiceLineUsageBreakdown.js";
+export type { InvoiceLineUsageBreakdownItem } from "./invoiceLineUsageBreakdownItem.js";
+export { InvoiceLineUsageBreakdownItemSerializer } from "./invoiceLineUsageBreakdownItem.js";
 export type { InvoiceListResponse } from "./invoiceListResponse.js";
 export { InvoiceListResponseSerializer } from "./invoiceListResponse.js";
 export {
@@ -707,6 +711,8 @@ export type { RatePlanFee } from "./ratePlanFee.js";
 export { RatePlanFeeSerializer } from "./ratePlanFee.js";
 export type { RatePricing } from "./ratePricing.js";
 export { RatePricingSerializer } from "./ratePricing.js";
+export type { RecordInvoicePaymentRequest } from "./recordInvoicePaymentRequest.js";
+export { RecordInvoicePaymentRequestSerializer } from "./recordInvoicePaymentRequest.js";
 export type { RecurringFee } from "./recurringFee.js";
 export { RecurringFeeSerializer } from "./recurringFee.js";
 export type { RefundEventData } from "./refundEventData.js";
@@ -725,6 +731,8 @@ export { ResolvedEntitlementValueSerializer } from "./resolvedEntitlementValue.j
 export type { RestErrorResponse } from "./restErrorResponse.js";
 export { RestErrorResponseSerializer } from "./restErrorResponse.js";
 export { ReversalKind, ReversalKindSerializer } from "./reversalKind.js";
+export type { ReverseInvoicePaymentRequest } from "./reverseInvoicePaymentRequest.js";
+export { ReverseInvoicePaymentRequestSerializer } from "./reverseInvoicePaymentRequest.js";
 export type { RevocationRequest } from "./revocationRequest.js";
 export { RevocationRequestSerializer } from "./revocationRequest.js";
 export type { RevokeLicenseRequest } from "./revokeLicenseRequest.js";

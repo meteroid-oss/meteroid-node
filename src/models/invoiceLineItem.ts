@@ -11,6 +11,10 @@ import {
   type InvoiceLineCreditUnit,
   InvoiceLineCreditUnitSerializer,
 } from "./invoiceLineCreditUnit.js";
+import {
+  type InvoiceLineUsageBreakdown,
+  InvoiceLineUsageBreakdownSerializer,
+} from "./invoiceLineUsageBreakdown.js";
 import { type SubLineItem, SubLineItemSerializer } from "./subLineItem.js";
 
 export interface InvoiceLineItem {
@@ -29,6 +33,7 @@ export interface InvoiceLineItem {
   subLineItems: SubLineItem[];
   taxRate: string;
   unitPrice?: string | undefined;
+  usageBreakdown?: InvoiceLineUsageBreakdown | null | undefined;
 }
 
 /** Converts `InvoiceLineItem` values from (`parse`) and to (`serialize`) their JSON form. */
@@ -48,6 +53,7 @@ export const InvoiceLineItemSerializer = {
         "sub_line_items",
         "tax_rate",
         "unit_price",
+        "usage_breakdown",
       ]),
       amountTotal: decodeInteger(json["amount_total"], path, "amount_total"),
       creditUnit:
@@ -84,6 +90,13 @@ export const InvoiceLineItemSerializer = {
         json["unit_price"] != null
           ? decodeString(json["unit_price"], path, "unit_price")
           : undefined,
+      usageBreakdown:
+        json["usage_breakdown"] != null
+          ? InvoiceLineUsageBreakdownSerializer.parse(
+              json["usage_breakdown"],
+              decodePath(path, "usage_breakdown")
+            )
+          : json["usage_breakdown"],
     };
   },
 
@@ -101,6 +114,7 @@ export const InvoiceLineItemSerializer = {
         "subLineItems",
         "taxRate",
         "unitPrice",
+        "usageBreakdown",
       ]),
       amount_total: value.amountTotal,
       credit_unit:
@@ -118,6 +132,10 @@ export const InvoiceLineItemSerializer = {
       ),
       tax_rate: value.taxRate,
       unit_price: value.unitPrice,
+      usage_breakdown:
+        value.usageBreakdown != null
+          ? InvoiceLineUsageBreakdownSerializer.serialize(value.usageBreakdown)
+          : value.usageBreakdown,
     };
   },
 };

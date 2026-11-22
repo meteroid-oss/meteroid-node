@@ -34,6 +34,7 @@ export const MetricEventSerializer = {
         "unit_conversion_rounding",
         "unit_plural",
         "unit_singular",
+        "usage_breakdown_key",
         "usage_group_key",
       ]),
       ...pickProperties(MetricEventDataSerializer.parse(json, path), [
@@ -51,6 +52,7 @@ export const MetricEventSerializer = {
         "unitConversionRounding",
         "unitPlural",
         "unitSingular",
+        "usageBreakdownKey",
         "usageGroupKey",
       ]),
       id: EventIdSerializer.parse(json["id"], decodePath(path, "id")),
@@ -79,6 +81,7 @@ export const MetricEventSerializer = {
         "unitConversionRounding",
         "unitPlural",
         "unitSingular",
+        "usageBreakdownKey",
         "usageGroupKey",
       ]),
       ...pickProperties(MetricEventDataSerializer.serialize(value), [
@@ -96,6 +99,7 @@ export const MetricEventSerializer = {
         "unit_conversion_rounding",
         "unit_plural",
         "unit_singular",
+        "usage_breakdown_key",
         "usage_group_key",
       ]),
       id: EventIdSerializer.serialize(value.id),

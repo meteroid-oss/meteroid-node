@@ -4,7 +4,7 @@ import { decodeBoolean, decodeList, decodeObject, decodePath } from "../decode.j
 import { type Event, EventSerializer } from "./event.js";
 
 export interface IngestEventsRequest {
-  /** Allow events with timestamps more than 1 day in the past. Defaults to `false`. */
+  /** Allow events with timestamps more than 1 day in the past, up to 13 months. Defaults to `false`. */
   allowBackfilling?: boolean | null | undefined;
   /**
    * Accept the batch even if some events fail validation. Defaults to `false`.

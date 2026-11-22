@@ -39,6 +39,15 @@ export interface Metric {
   unitPlural?: string | null | undefined;
   /** What one unit of the metric is called, e.g. `token`. Set together with `unit_plural`. */
   unitSingular?: string | null | undefined;
+  /**
+   * Event property, e.g. `project_id`, that breaks each invoice line down by value. The line is
+   * still priced on its total usage, and each value shows its quantity and share of the amount.
+   */
+  usageBreakdownKey?: string | null | undefined;
+  /**
+   * Event property, e.g. `cluster_id`, whose values are billed as separate invoice lines, each
+   * priced on its own usage.
+   */
   usageGroupKey?: string | null | undefined;
 }
 
@@ -63,6 +72,7 @@ export const MetricSerializer = {
         "unit_conversion",
         "unit_plural",
         "unit_singular",
+        "usage_breakdown_key",
         "usage_group_key",
       ]),
       aggregationKey:
@@ -125,6 +135,10 @@ export const MetricSerializer = {
         json["unit_singular"] != null
           ? decodeString(json["unit_singular"], path, "unit_singular")
           : json["unit_singular"],
+      usageBreakdownKey:
+        json["usage_breakdown_key"] != null
+          ? decodeString(json["usage_breakdown_key"], path, "usage_breakdown_key")
+          : json["usage_breakdown_key"],
       usageGroupKey:
         json["usage_group_key"] != null
           ? decodeString(json["usage_group_key"], path, "usage_group_key")
@@ -150,6 +164,7 @@ export const MetricSerializer = {
         "unitConversion",
         "unitPlural",
         "unitSingular",
+        "usageBreakdownKey",
         "usageGroupKey",
       ]),
       aggregation_key: value.aggregationKey,
@@ -181,6 +196,7 @@ export const MetricSerializer = {
           : value.unitConversion,
       unit_plural: value.unitPlural,
       unit_singular: value.unitSingular,
+      usage_breakdown_key: value.usageBreakdownKey,
       usage_group_key: value.usageGroupKey,
     };
   },
