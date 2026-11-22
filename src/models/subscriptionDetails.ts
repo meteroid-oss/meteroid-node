@@ -28,6 +28,10 @@ import {
   type PaymentMethodsConfig,
   PaymentMethodsConfigSerializer,
 } from "./paymentMethodsConfig.js";
+import {
+  type PendingScheduledEvent,
+  PendingScheduledEventSerializer,
+} from "./pendingScheduledEvent.js";
 import { type PlanId, PlanIdSerializer } from "./planId.js";
 import { type PlanVersionId, PlanVersionIdSerializer } from "./planVersionId.js";
 import {
@@ -81,6 +85,8 @@ export interface SubscriptionDetails {
   /** Payment terms in days (0 = due on issue) */
   netTerms: number;
   paymentMethodsConfig?: PaymentMethodsConfig | null | undefined;
+  /** Changes scheduled to apply later: cancellation, plan change or amendment. */
+  pendingEvents?: PendingScheduledEvent[] | undefined;
   /** Billing period (monthly, annual, etc.) */
   period: BillingPeriodEnum;
   planId: PlanId;
@@ -88,6 +94,11 @@ export interface SubscriptionDetails {
   planVersion: number;
   planVersionId: PlanVersionId;
   purchaseOrder?: string | null | undefined;
+  /**
+   * Date the subscription ends at the start of, when a cancellation is scheduled: its first
+   * day without service. `end_date` is not affected by a scheduled cancellation.
+   */
+  scheduledCancellationDate?: string | null | undefined;
   /** When the subscription contract starts (benefits apply from this date) */
   startDate: string;
   status: SubscriptionStatusEnum;
@@ -134,12 +145,14 @@ export const SubscriptionDetailsSerializer = {
         "mrr_cents",
         "net_terms",
         "payment_methods_config",
+        "pending_events",
         "period",
         "plan_id",
         "plan_name",
         "plan_version",
         "plan_version_id",
         "purchase_order",
+        "scheduled_cancellation_date",
         "start_date",
         "status",
         "tax_inclusive",
@@ -251,6 +264,16 @@ export const SubscriptionDetailsSerializer = {
               decodePath(path, "payment_methods_config")
             )
           : json["payment_methods_config"],
+      pendingEvents:
+        json["pending_events"] != null
+          ? decodeList(
+              json["pending_events"],
+              path,
+              "pending_events",
+              (item: any, p: string, i: number) =>
+                PendingScheduledEventSerializer.parse(item, decodePath(p, i))
+            )
+          : undefined,
       period: BillingPeriodEnumSerializer.parse(
         json["period"],
         decodePath(path, "period")
@@ -266,6 +289,14 @@ export const SubscriptionDetailsSerializer = {
         json["purchase_order"] != null
           ? decodeString(json["purchase_order"], path, "purchase_order")
           : json["purchase_order"],
+      scheduledCancellationDate:
+        json["scheduled_cancellation_date"] != null
+          ? decodeString(
+              json["scheduled_cancellation_date"],
+              path,
+              "scheduled_cancellation_date"
+            )
+          : json["scheduled_cancellation_date"],
       startDate: decodeString(json["start_date"], path, "start_date"),
       status: SubscriptionStatusEnumSerializer.parse(
         json["status"],
@@ -322,12 +353,14 @@ export const SubscriptionDetailsSerializer = {
         "mrrCents",
         "netTerms",
         "paymentMethodsConfig",
+        "pendingEvents",
         "period",
         "planId",
         "planName",
         "planVersion",
         "planVersionId",
         "purchaseOrder",
+        "scheduledCancellationDate",
         "startDate",
         "status",
         "taxInclusive",
@@ -375,12 +408,19 @@ export const SubscriptionDetailsSerializer = {
         value.paymentMethodsConfig != null
           ? PaymentMethodsConfigSerializer.serialize(value.paymentMethodsConfig)
           : value.paymentMethodsConfig,
+      pending_events:
+        value.pendingEvents != null
+          ? value.pendingEvents.map((item: any) =>
+              PendingScheduledEventSerializer.serialize(item)
+            )
+          : undefined,
       period: BillingPeriodEnumSerializer.serialize(value.period),
       plan_id: PlanIdSerializer.serialize(value.planId),
       plan_name: value.planName,
       plan_version: value.planVersion,
       plan_version_id: PlanVersionIdSerializer.serialize(value.planVersionId),
       purchase_order: value.purchaseOrder,
+      scheduled_cancellation_date: value.scheduledCancellationDate,
       start_date: value.startDate,
       status: SubscriptionStatusEnumSerializer.serialize(value.status),
       tax_inclusive: value.taxInclusive,
