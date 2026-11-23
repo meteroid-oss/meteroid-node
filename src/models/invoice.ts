@@ -39,6 +39,13 @@ export interface Invoice {
    * emission date). Shown as "Invoice date".
    */
   billingPeriodStart?: string | null | undefined;
+  /**
+   * Debts carried in from earlier invoices (amounts due below the payment providers' minimum
+   * charge, never collected on their own) less the one this invoice carried to a later
+   * invoice, in minor units. Included in `amount_due`:
+   * `amount_due = total + carried_balance - applied_credits - paid`.
+   */
+  carriedBalance?: number | undefined;
   childInvoiceId?: InvoiceId | null | undefined;
   coupons: CouponLineItem[];
   createdAt: Date;
@@ -106,6 +113,7 @@ export const InvoiceSerializer = {
         "amount_due",
         "applied_credits",
         "billing_period_start",
+        "carried_balance",
         "child_invoice_id",
         "coupons",
         "created_at",
@@ -150,6 +158,10 @@ export const InvoiceSerializer = {
         json["billing_period_start"] != null
           ? decodeString(json["billing_period_start"], path, "billing_period_start")
           : json["billing_period_start"],
+      carriedBalance:
+        json["carried_balance"] != null
+          ? decodeInteger(json["carried_balance"], path, "carried_balance")
+          : undefined,
       childInvoiceId:
         json["child_invoice_id"] != null
           ? InvoiceIdSerializer.parse(
@@ -299,6 +311,7 @@ export const InvoiceSerializer = {
         "amountDue",
         "appliedCredits",
         "billingPeriodStart",
+        "carriedBalance",
         "childInvoiceId",
         "coupons",
         "createdAt",
@@ -340,6 +353,7 @@ export const InvoiceSerializer = {
       amount_due: value.amountDue,
       applied_credits: value.appliedCredits,
       billing_period_start: value.billingPeriodStart,
+      carried_balance: value.carriedBalance,
       child_invoice_id:
         value.childInvoiceId != null
           ? InvoiceIdSerializer.serialize(value.childInvoiceId)
