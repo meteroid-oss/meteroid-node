@@ -208,6 +208,8 @@ Iterated with `for await`, it yields every item of every page.
 | Method | Request | Returns |
 | --- | --- | --- |
 | `client.events.ingest(ingestEventsRequest: IngestEventsRequest): APIPromise<IngestEventsResponse>` | `POST /api/v1/events/ingest` | [`IngestEventsResponse`](src/models/ingestEventsResponse.ts) |
+| `client.events.amend(eventId: string, amendEventRequest: AmendEventRequest): APIPromise<EventChangeResponse>` | `POST /api/v1/events/{event_id}/amend` | [`EventChangeResponse`](src/models/eventChangeResponse.ts) |
+| `client.events.void(eventId: string, voidEventRequest: VoidEventRequest): APIPromise<EventChangeResponse>` | `POST /api/v1/events/{event_id}/void` | [`EventChangeResponse`](src/models/eventChangeResponse.ts) |
 
 ## Features
 

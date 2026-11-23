@@ -1,6 +1,14 @@
 // this file is @generated
 
 import {
+  type AmendEventRequest,
+  AmendEventRequestSerializer,
+} from "../models/amendEventRequest.js";
+import {
+  type EventChangeResponse,
+  EventChangeResponseSerializer,
+} from "../models/eventChangeResponse.js";
+import {
   type IngestEventsRequest,
   IngestEventsRequestSerializer,
 } from "../models/ingestEventsRequest.js";
@@ -8,6 +16,10 @@ import {
   type IngestEventsResponse,
   IngestEventsResponseSerializer,
 } from "../models/ingestEventsResponse.js";
+import {
+  type VoidEventRequest,
+  VoidEventRequestSerializer,
+} from "../models/voidEventRequest.js";
 import type { APIPromise } from "../apiPromise.js";
 import {
   MeteroidRequest,
@@ -40,6 +52,66 @@ export class Events {
     return request.send(
       this.requestCtx,
       IngestEventsResponseSerializer.parse,
+      requestOptions
+    );
+  }
+
+  /**
+   * Amend an event
+   *
+   * Replaces the timestamp and the properties of an ingested event. The code and the customer
+   * cannot change: void the event and send a new one instead. The change is applied asynchronously,
+   * in order with the event's other copies.
+   *
+   * Only events ingested in the last 35 days can be amended, and neither their current nor their
+   * new timestamp can be in an invoiced period. Tenants that keep the last copy of an event correct
+   * it by sending it again instead.
+   *
+   * An event is found once metering has stored it: a just-ingested event can still return `404`.
+   * Wait until an amend is visible before sending the next change to the same event; concurrent
+   * changes resolve by `ingested_at`, the latest wins.
+   */
+  public amend(
+    eventId: string,
+    amendEventRequest: AmendEventRequest,
+    requestOptions?: RequestOptions
+  ): APIPromise<EventChangeResponse> {
+    const request = new MeteroidRequest("POST", "/api/v1/events/{event_id}/amend");
+
+    request.setPathParam("event_id", eventId);
+    request.setBody(AmendEventRequestSerializer.serialize(amendEventRequest));
+    return request.send(
+      this.requestCtx,
+      EventChangeResponseSerializer.parse,
+      requestOptions
+    );
+  }
+
+  /**
+   * Void an event
+   *
+   * Cancels an ingested event: it no longer counts in usage. The change is applied asynchronously,
+   * in order with the event's other copies.
+   *
+   * Only events ingested in the last 35 days, outside an invoiced period, can be voided. Tenants
+   * that keep the last copy of an event correct it by sending it again instead.
+   *
+   * An event is found once metering has stored it: a just-ingested event can still return `404`,
+   * and so does a retried void once the first one is applied. Wait until a change is visible
+   * before sending the next one to the same event; concurrent changes resolve by `ingested_at`.
+   */
+  public void(
+    eventId: string,
+    voidEventRequest: VoidEventRequest,
+    requestOptions?: RequestOptions
+  ): APIPromise<EventChangeResponse> {
+    const request = new MeteroidRequest("POST", "/api/v1/events/{event_id}/void");
+
+    request.setPathParam("event_id", eventId);
+    request.setBody(VoidEventRequestSerializer.serialize(voidEventRequest));
+    return request.send(
+      this.requestCtx,
+      EventChangeResponseSerializer.parse,
       requestOptions
     );
   }

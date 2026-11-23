@@ -7,6 +7,7 @@ export const InvoicePaymentStatus = {
   Paid: "PAID",
   Errored: "ERRORED",
   Processing: "PROCESSING",
+  Carried: "CARRIED",
 } as const;
 export type InvoicePaymentStatus =
   | (typeof InvoicePaymentStatus)[keyof typeof InvoicePaymentStatus]
