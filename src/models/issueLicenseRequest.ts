@@ -1,14 +1,20 @@
 // this file is @generated
 import { extraProperties } from "../json.js";
-import { decodeBoolean, decodeInteger, decodeObject, decodeString } from "../decode.js";
+import {
+  decodeBoolean,
+  decodeInteger,
+  decodeMap,
+  decodeObject,
+  decodeString,
+} from "../decode.js";
 
 export interface IssueLicenseRequest {
   /** Customer ID or alias */
   customerId: string;
   /**
    * Ephemeral, for CI and other short-lived installations: the activation code can be used
-   * any number of times, each activation gets a license of this many hours (1 to 24) for the
-   * installation activating, and nothing is refreshed. Not with `offline` or `validity_days`.
+   * by any number of installations, each gets one license of this many hours (1 to 24), never
+   * renewed. Not with `offline` or `validity_days`.
    */
   ephemeralHours?: number | null | undefined;
   /**
@@ -17,6 +23,12 @@ export interface IssueLicenseRequest {
    * not tied to an installation.
    */
   instanceId?: string | null | undefined;
+  /**
+   * Signed into the license as is, for the licensed software to read: at most 20 entries,
+   * keys of 1 to 64 characters among `a-z`, `0-9`, `_`, `.` and `-`, values up to 256
+   * characters. Reserved: `environment` only takes `non_production`.
+   */
+  metadata?: { [key: string]: string } | undefined;
   /**
    * Delivers the license at once as a signed offline license, for an installation that
    * can't reach the license server: no activation code, no refresh. Default: false.
@@ -43,6 +55,7 @@ export const IssueLicenseRequestSerializer = {
         "customer_id",
         "ephemeral_hours",
         "instance_id",
+        "metadata",
         "offline",
         "subscription_id",
         "validity_days",
@@ -56,6 +69,15 @@ export const IssueLicenseRequestSerializer = {
         json["instance_id"] != null
           ? decodeString(json["instance_id"], path, "instance_id")
           : json["instance_id"],
+      metadata:
+        json["metadata"] != null
+          ? decodeMap(
+              json["metadata"],
+              path,
+              "metadata",
+              (entry: any, p: string, key: string) => decodeString(entry, p, key)
+            )
+          : undefined,
       offline:
         json["offline"] != null
           ? decodeBoolean(json["offline"], path, "offline")
@@ -77,6 +99,7 @@ export const IssueLicenseRequestSerializer = {
         "customerId",
         "ephemeralHours",
         "instanceId",
+        "metadata",
         "offline",
         "subscriptionId",
         "validityDays",
@@ -84,6 +107,7 @@ export const IssueLicenseRequestSerializer = {
       customer_id: value.customerId,
       ephemeral_hours: value.ephemeralHours,
       instance_id: value.instanceId,
+      metadata: value.metadata,
       offline: value.offline,
       subscription_id: value.subscriptionId,
       validity_days: value.validityDays,
