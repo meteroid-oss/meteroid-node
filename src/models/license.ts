@@ -4,6 +4,7 @@ import {
   decodeBoolean,
   decodeDateTime,
   decodeInteger,
+  decodeMap,
   decodeObject,
   decodePath,
   decodeString,
@@ -27,6 +28,8 @@ export interface License {
   /** The installation the license is bound to, once activated. */
   instanceId?: string | null | undefined;
   lastRefreshedAt?: Date | null | undefined;
+  /** Signed into the license as is. */
+  metadata: { [key: string]: string };
   /** Issued as a signed offline license: never activated nor refreshed. */
   offline: boolean;
   planName?: string | null | undefined;
@@ -60,6 +63,7 @@ export const LicenseSerializer = {
         "id",
         "instance_id",
         "last_refreshed_at",
+        "metadata",
         "offline",
         "plan_name",
         "revoked_at",
@@ -93,6 +97,12 @@ export const LicenseSerializer = {
         json["last_refreshed_at"] != null
           ? decodeDateTime(json["last_refreshed_at"], path, "last_refreshed_at")
           : json["last_refreshed_at"],
+      metadata: decodeMap(
+        json["metadata"],
+        path,
+        "metadata",
+        (entry: any, p: string, key: string) => decodeString(entry, p, key)
+      ),
       offline: decodeBoolean(json["offline"], path, "offline"),
       planName:
         json["plan_name"] != null
@@ -131,6 +141,7 @@ export const LicenseSerializer = {
         "id",
         "instanceId",
         "lastRefreshedAt",
+        "metadata",
         "offline",
         "planName",
         "revokedAt",
@@ -148,6 +159,7 @@ export const LicenseSerializer = {
       id: LicenseIdSerializer.serialize(value.id),
       instance_id: value.instanceId,
       last_refreshed_at: value.lastRefreshedAt,
+      metadata: value.metadata,
       offline: value.offline,
       plan_name: value.planName,
       revoked_at: value.revokedAt,
